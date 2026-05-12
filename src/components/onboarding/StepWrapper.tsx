@@ -1,9 +1,11 @@
 'use client'
 
+import type { ReactNode } from 'react'
+
 const TOTAL_STEPS = 7
 
 interface StepWrapperProps {
-  children: React.ReactNode
+  children: ReactNode
   onNext: () => void
   onBack?: () => void
   nextLabel?: string
@@ -11,7 +13,7 @@ interface StepWrapperProps {
   stepIndex: number
 }
 
-export function StepWrapper({ children, onNext, onBack, nextLabel = 'Lanjut →', nextDisabled, stepIndex }: StepWrapperProps) {
+export function StepWrapper({ children, onNext, onBack, nextLabel = 'Lanjut →', nextDisabled = false, stepIndex }: StepWrapperProps) {
   const progress = ((stepIndex + 1) / TOTAL_STEPS) * 100
 
   return (
@@ -27,7 +29,7 @@ export function StepWrapper({ children, onNext, onBack, nextLabel = 'Lanjut →'
       {/* Nav row */}
       <div className="flex items-center justify-between px-5 py-3">
         {onBack ? (
-          <button onClick={onBack} className="text-nikah-muted text-sm font-medium">
+          <button onClick={onBack} aria-label="Kembali ke langkah sebelumnya" className="text-nikah-muted text-sm font-medium">
             ← Kembali
           </button>
         ) : <div />}
@@ -46,6 +48,7 @@ export function StepWrapper({ children, onNext, onBack, nextLabel = 'Lanjut →'
         <button
           onClick={onNext}
           disabled={nextDisabled}
+          aria-label={nextLabel}
           className="w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm disabled:opacity-40 transition"
         >
           {nextLabel}
