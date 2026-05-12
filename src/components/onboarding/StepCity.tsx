@@ -15,8 +15,9 @@ export function StepCity() {
       <p className="text-nikah-muted text-sm mb-6 font-light">Harga layanan berbeda di tiap kota.</p>
 
       <div>
-        <label className="block text-xs font-bold text-nikah-text mb-1.5">Kota pernikahan</label>
+        <label htmlFor="weddingCity" className="block text-xs font-bold text-nikah-text mb-1.5">Kota pernikahan</label>
         <select
+          id="weddingCity"
           value={weddingCity}
           onChange={e => setField('weddingCity', e.target.value)}
           className="w-full bg-white border border-nikah-border rounded-xl px-4 py-3 text-sm text-nikah-text focus:outline-none focus:border-nikah-mauve transition"

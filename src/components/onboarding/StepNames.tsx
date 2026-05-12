@@ -14,8 +14,9 @@ export function StepNames() {
 
       <div className="space-y-4">
         <div>
-          <label className="block text-xs font-bold text-nikah-text mb-1.5">Nama kamu</label>
+          <label htmlFor="partnerOneName" className="block text-xs font-bold text-nikah-text mb-1.5">Nama kamu</label>
           <input
+            id="partnerOneName"
             type="text"
             value={partnerOneName}
             onChange={e => setField('partnerOneName', e.target.value)}
@@ -24,8 +25,9 @@ export function StepNames() {
           />
         </div>
         <div>
-          <label className="block text-xs font-bold text-nikah-text mb-1.5">Nama pasangan</label>
+          <label htmlFor="partnerTwoName" className="block text-xs font-bold text-nikah-text mb-1.5">Nama pasangan</label>
           <input
+            id="partnerTwoName"
             type="text"
             value={partnerTwoName}
             onChange={e => setField('partnerTwoName', e.target.value)}

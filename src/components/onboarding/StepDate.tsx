@@ -12,8 +12,9 @@ export function StepDate() {
       <p className="text-nikah-muted text-sm mb-8 font-light">Estimasi hari H kamu.</p>
 
       <div>
-        <label className="block text-xs font-bold text-nikah-text mb-1.5">Tanggal rencana</label>
+        <label htmlFor="weddingDate" className="block text-xs font-bold text-nikah-text mb-1.5">Tanggal rencana</label>
         <input
+          id="weddingDate"
           type="date"
           value={weddingDate}
           min={new Date().toISOString().split('T')[0]}

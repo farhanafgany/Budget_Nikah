@@ -20,10 +20,11 @@ export function StepBudget() {
       <p className="text-nikah-muted text-sm mb-8 font-light">Total biaya yang kalian siapkan.</p>
 
       <div>
-        <label className="block text-xs font-bold text-nikah-text mb-1.5">Total budget</label>
+        <label htmlFor="totalBudget" className="block text-xs font-bold text-nikah-text mb-1.5">Total budget</label>
         <div className="relative">
           <span className="absolute left-4 top-1/2 -translate-y-1/2 text-xs font-bold text-nikah-mauve">Rp</span>
           <input
+            id="totalBudget"
             type="text"
             inputMode="numeric"
             value={totalBudget > 0 ? formatRupiah(totalBudget) : ''}

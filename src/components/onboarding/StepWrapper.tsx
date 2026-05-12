@@ -48,7 +48,6 @@ export function StepWrapper({ children, onNext, onBack, nextLabel = 'Lanjut →'
         <button
           onClick={onNext}
           disabled={nextDisabled}
-          aria-label={nextLabel}
           className="w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm disabled:opacity-40 transition"
         >
           {nextLabel}

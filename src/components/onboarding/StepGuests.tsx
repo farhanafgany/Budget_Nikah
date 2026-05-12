@@ -12,8 +12,9 @@ export function StepGuests() {
       <p className="text-nikah-muted text-sm mb-8 font-light">Perkiraan total undangan dua keluarga.</p>
 
       <div>
-        <label className="block text-xs font-bold text-nikah-text mb-1.5">Jumlah tamu</label>
+        <label htmlFor="guestCount" className="block text-xs font-bold text-nikah-text mb-1.5">Jumlah tamu</label>
         <input
+          id="guestCount"
           type="number"
           inputMode="numeric"
           value={guestCount || ''}
