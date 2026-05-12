@@ -10,13 +10,13 @@ const WHAT_YOU_GET = [
 ]
 
 export function PricingSection() {
-  const waNumber  = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ''
+  const waNumber  = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
   const waMessage = encodeURIComponent(
     process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE ??
     'Halo, saya ingin membeli akses BudgetNikah. Mohon konfirmasi.'
   )
-  const waUrl       = `https://wa.me/${waNumber}?text=${waMessage}`
-  const trakteerUrl = process.env.NEXT_PUBLIC_PAYMENT_URL ?? '#'
+  const waUrl       = waNumber ? `https://wa.me/${waNumber}?text=${waMessage}` : null
+  const trakteerUrl = process.env.NEXT_PUBLIC_PAYMENT_URL ?? null
 
   return (
     <section className="px-6 py-16 bg-nikah-bg" id="harga">
@@ -40,22 +40,26 @@ export function PricingSection() {
           </ul>
 
           <div className="flex flex-col gap-2">
-            <a
-              href={waUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm text-center"
-            >
-              Chat WhatsApp →
-            </a>
-            <a
-              href={trakteerUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block w-full border border-nikah-deep text-nikah-deep font-semibold py-3.5 rounded-full text-sm text-center"
-            >
-              Beli via Trakteer
-            </a>
+            {waUrl && (
+              <a
+                href={waUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm text-center"
+              >
+                Chat WhatsApp →
+              </a>
+            )}
+            {trakteerUrl && (
+              <a
+                href={trakteerUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full border border-nikah-deep text-nikah-deep font-semibold py-3.5 rounded-full text-sm text-center"
+              >
+                Beli via Trakteer →
+              </a>
+            )}
           </div>
 
           <p className="text-xs text-nikah-muted mt-4">
