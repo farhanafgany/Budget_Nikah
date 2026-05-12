@@ -23,7 +23,9 @@ const PRESSURE_COLORS: Record<PressureLevel, string> = {
 
 function daysUntil(dateStr: string | null): number | null {
   if (!dateStr) return null
-  const diff = new Date(dateStr).getTime() - Date.now()
+  const date = new Date(dateStr)
+  if (isNaN(date.getTime())) return null
+  const diff = date.getTime() - Date.now()
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
 }
 
@@ -59,9 +61,15 @@ export default async function DashboardPage() {
   const score     = (profile.readiness_score as number | null) ?? 0
   const label     = score >= 70 ? 'Healthy' : score >= 40 ? 'Moderate' : 'High Risk'
   const pressure  = calculatePressureLevel(score)
-  const alloc     = profile.allocation_result as Record<string, { percentage: number; estimatedAmount: number }> | null
-  const top3      = alloc
-    ? Object.entries(alloc).sort((a, b) => b[1].percentage - a[1].percentage).slice(0, 3)
+  const alloc     = profile.allocation_result as Record<string, unknown> | null
+  const top3 = alloc
+    ? (Object.entries(alloc) as [string, unknown][])
+        .filter((e): e is [string, { percentage: number; estimatedAmount: number }] => {
+          const v = e[1] as Record<string, unknown>
+          return typeof v?.percentage === 'number' && typeof v?.estimatedAmount === 'number'
+        })
+        .sort((a, b) => b[1].percentage - a[1].percentage)
+        .slice(0, 3)
     : []
   const isPremium = (profile.is_premium as boolean | null) ?? false
 
