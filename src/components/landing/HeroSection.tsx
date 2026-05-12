@@ -72,7 +72,7 @@ export function HeroSection() {
   return (
     <section
       aria-label="Hero"
-      className="relative overflow-hidden bg-gradient-to-b from-[#F5E8EC] via-[#EDD6DE] to-nikah-bg pt-28 pb-16 px-6 text-center"
+      className="relative overflow-hidden bg-gradient-to-b from-[#F5E8EC] via-[#EDD6DE] to-nikah-bg pt-28 pb-16 px-6"
     >
       {/* Decorative blobs */}
       <div
@@ -84,31 +84,35 @@ export function HeroSection() {
         aria-hidden="true"
       />
 
-      <div className="relative z-10 max-w-sm mx-auto flex flex-col items-center">
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12">
 
-        <p className="text-[10px] font-bold uppercase tracking-widest text-nikah-mauve mb-3">
-          Wedding Financial Planner · Indonesia
-        </p>
+        {/* Kiri: copy + CTA */}
+        <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-nikah-mauve mb-3">
+            Wedding Financial Planner · Indonesia
+          </p>
 
-        <h1 className="text-3xl md:text-4xl font-extrabold text-nikah-text leading-tight mb-4">
-          Cek Apakah Rencana Weddingmu Sudah Realistis.
-        </h1>
+          <h1 className="text-3xl md:text-5xl font-extrabold text-nikah-text leading-tight mb-4">
+            Cek Apakah Rencana Weddingmu Sudah Realistis.
+          </h1>
 
-        <p className="text-sm md:text-base text-nikah-muted font-light leading-relaxed mb-8 max-w-xs">
-          Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.
-        </p>
+          <p className="text-sm md:text-lg text-nikah-muted font-light leading-relaxed mb-8 max-w-sm">
+            Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.
+          </p>
 
-        <div className="mb-8">
-          <PhoneMockup />
+          <Link
+            href="/onboarding"
+            className="block w-full md:w-auto bg-nikah-deep text-white font-bold py-4 px-8 rounded-full text-sm text-center shadow-lg hover:opacity-90 active:scale-95 transition-all mb-3"
+          >
+            Cek Sekarang — Gratis →
+          </Link>
+          <p className="text-xs text-nikah-muted">Tanpa login · Selesai 2 menit</p>
         </div>
 
-        <Link
-          href="/onboarding"
-          className="block w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm text-center shadow-lg hover:opacity-90 active:scale-95 transition-all mb-3"
-        >
-          Cek Sekarang — Gratis →
-        </Link>
-        <p className="text-xs text-nikah-muted">Tanpa login · Selesai 2 menit</p>
+        {/* Kanan: phone mockup */}
+        <div className="flex-shrink-0 flex justify-center">
+          <PhoneMockup />
+        </div>
 
       </div>
 
