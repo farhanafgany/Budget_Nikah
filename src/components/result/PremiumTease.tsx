@@ -12,13 +12,15 @@ export function PremiumTease() {
         <div key={item.title} className="bg-white rounded-2xl p-4 border border-dashed border-nikah-border flex items-center gap-3 opacity-70">
           <span className="text-xl" aria-hidden="true">🔒</span>
           <div>
-            <p className="text-xs font-bold text-nikah-text">{item.title}</p>
+            <p className="text-xs font-bold text-nikah-text">
+              <span aria-hidden="true">{item.icon} </span>{item.title}
+            </p>
             <p className="text-[11px] text-nikah-muted">{item.desc}</p>
           </div>
         </div>
       ))}
       <button className="w-full bg-nikah-gold text-white font-bold py-3.5 rounded-full text-sm mt-2 hover:opacity-90 transition">
-        Unlock Full Planner ✦
+        Unlock Full Planner <span aria-hidden="true">✦</span>
       </button>
     </div>
   )
