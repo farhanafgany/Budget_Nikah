@@ -3,12 +3,12 @@ import Link from 'next/link'
 const DEMO_STATS = [
   { value: '73',     label: 'Readiness Score', badge: 'Healthy',   badgeClass: 'bg-green-100 text-green-700' },
   { value: 'Rp 4,6jt', label: 'nabung/bulan',   badge: null,        badgeClass: '' },
-  { value: '18/50',  label: 'checklist',         badge: null,        badgeClass: '' },
+  { value: '18/50',  label: 'checklist selesai',  badge: null,        badgeClass: '' },
 ]
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[90vh] flex flex-col items-center justify-center px-6 py-16 text-center bg-gradient-to-b from-nikah-bg to-[#F5EBF0]">
+    <section aria-label="Hero" className="relative min-h-[90vh] flex flex-col items-center justify-center px-6 py-16 text-center bg-gradient-to-b from-nikah-bg to-[#F5EBF0]">
       <div className="mb-6 text-xs font-bold tracking-widest uppercase text-nikah-mauve">
         BudgetNikah
       </div>
