@@ -49,7 +49,7 @@ export function generateInsights(input: InsightInput): Insight[] {
     })
   }
 
-  if (guestCount > 700) {
+  if (guestCount > 800) {
     insights.push({
       type: 'high_guest_count',
       icon: '👥',
@@ -57,7 +57,7 @@ export function generateInsights(input: InsightInput): Insight[] {
     })
   }
 
-  if (budgetPerGuest > 0 && budgetPerGuest < 150_000) {
+  if (budgetPerGuest > 0 && budgetPerGuest < 120_000) {
     insights.push({
       type: 'budget_per_tamu',
       icon: '🧮',

@@ -65,10 +65,11 @@ export default function ResultPage() {
         weddingCity: onboarding.weddingCity,
         allocation: alloc,
         score: sr.score,
+        weddingDate: onboarding.weddingDate,
       }),
     }
   }, [onboarding.totalBudget, onboarding.planningPriority, onboarding.weddingCity,
-      sim.guestCount, sim.weddingStyle])
+      onboarding.weddingDate, sim.guestCount, sim.weddingStyle])
 
   if (!onboarding.isComplete()) return null
 
