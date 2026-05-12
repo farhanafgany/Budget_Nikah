@@ -36,6 +36,7 @@ export default function ResultPage() {
     } else {
       sim.init(onboarding.guestCount, onboarding.weddingStyle)
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const { allocation, scoreResult, pressureLevel, insights } = useMemo(() => {

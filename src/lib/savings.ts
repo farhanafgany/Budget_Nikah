@@ -14,7 +14,7 @@ export function monthsUntilDate(dateStr: string | null | undefined, now = Date.n
   if (targetDate <= nowDate) return 12
 
   let months = 0
-  let current = new Date(nowDate)
+  const current = new Date(nowDate)
   while (current < targetDate) {
     current.setMonth(current.getMonth() + 1)
     months++
