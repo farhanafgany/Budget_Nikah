@@ -60,11 +60,11 @@ function ScreenshotSlot({
   const [error, setError]   = useState(false)
 
   return (
-    <div className="border border-nikah-border rounded-2xl overflow-hidden shadow-md bg-white">
+    <div className="border border-nikah-border rounded-2xl overflow-hidden shadow-md bg-white flex-shrink-0 w-full md:w-[280px]">
       <div className="bg-nikah-deep px-4 py-2.5">
         <span className="text-white text-[10px] font-bold">{title}</span>
       </div>
-      <div className="relative h-[200px] bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE]">
+      <div className="relative h-[220px] md:h-[340px] bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE]">
         {!error && (
           <Image
             src={src}
@@ -92,7 +92,7 @@ export function FeatureShowcase() {
 
   return (
     <section id="fitur" className="px-6 py-20 bg-nikah-bg">
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-3xl mx-auto">
 
         <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve text-center mb-2">
           Semua dalam satu tempat
@@ -119,17 +119,17 @@ export function FeatureShowcase() {
           ))}
         </div>
 
-        {/* Tab panel */}
-        <div className="space-y-6">
-          <div>
+        {/* Tab panel — stacked on mobile, side-by-side on desktop */}
+        <div className="flex flex-col md:flex-row md:items-start md:gap-12">
+          <div className="flex-1 mb-6 md:mb-0">
             <p className="text-[10px] font-bold uppercase tracking-widest text-nikah-mauve mb-2">
               {tab.eyebrow}
             </p>
-            <h3 className="text-xl font-extrabold text-nikah-text mb-3">{tab.title}</h3>
-            <p className="text-sm text-nikah-muted font-light leading-relaxed mb-5">
+            <h3 className="text-xl md:text-2xl font-extrabold text-nikah-text mb-3">{tab.title}</h3>
+            <p className="text-sm md:text-base text-nikah-muted font-light leading-relaxed mb-6">
               {tab.description}
             </p>
-            <ul className="space-y-2" aria-label={`Fitur ${tab.title}`}>
+            <ul className="space-y-3" aria-label={`Fitur ${tab.title}`}>
               {tab.bullets.map(b => (
                 <li key={b} className="flex items-center gap-3">
                   <div
@@ -140,7 +140,7 @@ export function FeatureShowcase() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <span className="text-sm font-medium text-nikah-text">{b}</span>
+                  <span className="text-sm md:text-base font-medium text-nikah-text">{b}</span>
                 </li>
               ))}
             </ul>

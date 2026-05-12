@@ -16,7 +16,7 @@ function PhoneMockup() {
   return (
     <div className="inline-block">
       <div className="bg-nikah-text rounded-[32px] p-1.5 shadow-[0_20px_60px_rgba(107,53,69,0.35)]">
-        <div className="bg-nikah-bg rounded-[28px] overflow-hidden w-[200px]">
+        <div className="bg-nikah-bg rounded-[28px] overflow-hidden w-[220px] md:w-[280px]">
 
           {/* Status bar */}
           <div className="bg-nikah-deep px-3 py-2 flex items-center justify-between">
@@ -25,7 +25,7 @@ function PhoneMockup() {
           </div>
 
           {/* Score area */}
-          <div className="relative h-[220px] bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE]">
+          <div className="relative h-[240px] md:h-[320px] bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE]">
             {!error && (
               <Image
                 src="/images/preview-result.png"
@@ -84,19 +84,19 @@ export function HeroSection() {
         aria-hidden="true"
       />
 
-      <div className="relative z-10 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-12">
+      <div className="relative z-10 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16">
 
         {/* Kiri: copy + CTA */}
         <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-nikah-mauve mb-3">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-nikah-mauve mb-4">
             Wedding Financial Planner · Indonesia
           </p>
 
-          <h1 className="text-3xl md:text-5xl font-extrabold text-nikah-text leading-tight mb-4">
+          <h1 className="text-3xl md:text-4xl font-extrabold text-nikah-text leading-tight mb-5">
             Cek Apakah Rencana Weddingmu Sudah Realistis.
           </h1>
 
-          <p className="text-sm md:text-lg text-nikah-muted font-light leading-relaxed mb-8 max-w-sm">
+          <p className="text-sm md:text-base text-nikah-muted font-light leading-relaxed mb-8 max-w-sm">
             Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.
           </p>
 
