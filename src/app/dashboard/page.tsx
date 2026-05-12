@@ -57,7 +57,7 @@ export default async function DashboardPage() {
   }
 
   const days     = daysUntil(profile.wedding_date as string | null)
-  const score    = profile.readiness_score as number
+  const score    = (profile.readiness_score as number | null) ?? 0
   const label    = score >= 70 ? 'Healthy' : score >= 40 ? 'Moderate' : 'High Risk'
   const pressure = calculatePressureLevel(score)
   const alloc    = profile.allocation_result as Record<string, { percentage: number; estimatedAmount: number }> | null
@@ -98,7 +98,7 @@ export default async function DashboardPage() {
         </div>
 
         {/* Countdown */}
-        {days !== null && (
+        {days !== null && days > 0 && (
           <div className="bg-white rounded-2xl p-5 border border-nikah-border shadow-sm flex items-center justify-between">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Hitung Mundur</p>
@@ -124,7 +124,7 @@ export default async function DashboardPage() {
         {top3.length > 0 && (
           <div className="bg-white rounded-2xl p-5 border border-nikah-border shadow-sm">
             <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-3">Ringkasan Budget</p>
-            <p className="text-nikah-muted text-xs mb-3">Total: <strong className="text-nikah-text">{formatRupiah(profile.total_budget as number)}</strong></p>
+            <p className="text-nikah-muted text-xs mb-3">Total: <strong className="text-nikah-text">{formatRupiah((profile.total_budget as number | null) ?? 0)}</strong></p>
             <div className="space-y-2">
               {top3.map(([key, val]) => (
                 <div key={key} className="flex items-center justify-between">
