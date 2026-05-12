@@ -35,7 +35,7 @@ export default function LoginPage() {
         allocation: alloc,
       })
 
-      await supabase.from('wedding_profiles').upsert({
+      const { error: upsertErr } = await supabase.from('wedding_profiles').upsert({
         user_id: userId,
         partner_one_name: onboarding.partnerOneName,
         partner_two_name: onboarding.partnerTwoName,
@@ -51,6 +51,12 @@ export default function LoginPage() {
         pressure_level: calculatePressureLevel(sr.score),
         allocation_result: alloc,
       }, { onConflict: 'user_id' })
+
+      if (upsertErr) {
+        setError('Gagal menyimpan data. Silakan coba lagi.')
+        setLoading(false)
+        return
+      }
 
       onboarding.reset()
     }
