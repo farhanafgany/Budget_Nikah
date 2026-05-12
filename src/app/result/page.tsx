@@ -41,14 +41,14 @@ export default function ResultPage() {
   const { allocation, scoreResult, pressureLevel, insights } = useMemo(() => {
     const alloc = calculateAllocation({
       totalBudget: onboarding.totalBudget,
-      guestCount: sim.guestCount || onboarding.guestCount,
-      weddingStyle: sim.weddingStyle || onboarding.weddingStyle,
+      guestCount: sim.guestCount,
+      weddingStyle: sim.weddingStyle,
       planningPriority: onboarding.planningPriority,
     })
     const sr = calculateScore({
       totalBudget: onboarding.totalBudget,
-      guestCount: sim.guestCount || onboarding.guestCount,
-      weddingStyle: sim.weddingStyle || onboarding.weddingStyle,
+      guestCount: sim.guestCount,
+      weddingStyle: sim.weddingStyle,
       planningPriority: onboarding.planningPriority,
       weddingCity: onboarding.weddingCity,
       allocation: alloc,
@@ -59,8 +59,8 @@ export default function ResultPage() {
       pressureLevel: calculatePressureLevel(sr.score),
       insights: generateInsights({
         totalBudget: onboarding.totalBudget,
-        guestCount: sim.guestCount || onboarding.guestCount,
-        weddingStyle: sim.weddingStyle || onboarding.weddingStyle,
+        guestCount: sim.guestCount,
+        weddingStyle: sim.weddingStyle,
         planningPriority: onboarding.planningPriority,
         weddingCity: onboarding.weddingCity,
         allocation: alloc,
