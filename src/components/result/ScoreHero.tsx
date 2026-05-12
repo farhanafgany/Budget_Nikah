@@ -24,7 +24,7 @@ export function ScoreHero({ score, label }: Props) {
       <div className="text-[64px] font-extrabold text-nikah-deep leading-none mb-2">{score}</div>
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-3">Wedding Readiness Score</p>
       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-4 ${LABEL_COLORS[label]}`}>
-        ✓ {label}
+        <span aria-hidden="true">✓</span> {label}
       </span>
       <p className="text-nikah-text text-sm font-light leading-relaxed italic">
         &ldquo;{QUOTES[label]}&rdquo;

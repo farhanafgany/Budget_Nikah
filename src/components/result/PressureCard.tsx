@@ -29,7 +29,7 @@ export function PressureCard({ pressureLevel, allocation }: Props) {
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm border border-nikah-border">
       <div className="flex items-center justify-between mb-2">
-        <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve">Tekanan Budget</p>
+        <h3 className="text-xs font-bold uppercase tracking-widest text-nikah-mauve">Tekanan Budget</h3>
         <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold ${badge}`}>{label}</span>
       </div>
       <p className="text-sm text-nikah-muted leading-relaxed">
