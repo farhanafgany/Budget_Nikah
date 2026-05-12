@@ -11,7 +11,7 @@ const FEATURE_IMAGES = [
 
 const SPILL_ITEMS = [
   'Wedding Readiness Score (0–100)',
-  'Estimasi biaya riil per kategori (Rupiah)',
+  'Estimasi biaya riil per kategori (dalam Rupiah)',
   'Kalkulasi nabung/bulan otomatis',
   'Checklist 50+ item berbasis timeline',
   'Tabungan Nikah tracker',
@@ -34,7 +34,7 @@ function FeatureSlot({ src, alt, label }: { src: string; alt: string; label: str
           onError={() => setImgError(true)}
         />
       )}
-      {!imgLoaded && (
+      {(!imgLoaded || imgError) && (
         <span className="text-[10px] text-nikah-mauve font-medium relative z-10">{label}</span>
       )}
     </div>
@@ -43,7 +43,7 @@ function FeatureSlot({ src, alt, label }: { src: string; alt: string; label: str
 
 export function FeatureShowcase() {
   return (
-    <section aria-label="Fitur" className="px-6 py-16 bg-nikah-bg">
+    <section className="px-6 py-16 bg-nikah-bg">
       <div className="max-w-md mx-auto">
         <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve text-center mb-2">
           Semua dalam satu dashboard
