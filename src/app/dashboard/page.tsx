@@ -8,6 +8,7 @@ import { PremiumCTA } from '@/components/dashboard/PremiumCTA'
 import { TabunganNikah } from '@/components/dashboard/TabunganNikah'
 import { ChecklistPernikahan } from '@/components/dashboard/ChecklistPernikahan'
 import { SeserahanList } from '@/components/dashboard/SeserahanList'
+import { DashboardNavbar } from '@/components/dashboard/DashboardNavbar'
 
 const LABEL_COLORS: Record<string, string> = {
   Healthy:     'text-green-700 bg-green-100',
@@ -80,8 +81,10 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="min-h-screen bg-nikah-bg pb-10">
-      <div className="max-w-md mx-auto px-4 py-8 space-y-4">
+    <div className="min-h-screen bg-nikah-bg pb-10">
+      <DashboardNavbar userEmail={user.email ?? ''} />
+
+      <main className="max-w-md mx-auto px-4 py-6 space-y-4">
 
         {/* Header */}
         <div className="mb-2">
@@ -178,7 +181,7 @@ export default async function DashboardPage() {
           <span aria-hidden="true">🎛️</span> Buka Simulasi →
         </Link>
 
-      </div>
-    </main>
+      </main>
+    </div>
   )
 }

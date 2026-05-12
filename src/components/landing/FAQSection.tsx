@@ -24,10 +24,11 @@ export function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   return (
-    <section className="px-6 py-16 bg-white">
-      <div className="max-w-md mx-auto">
-        <h2 className="text-2xl font-extrabold text-nikah-text text-center mb-8">
-          Pertanyaan Umum
+    <section className="px-6 py-20 bg-white">
+      <div className="max-w-xl mx-auto">
+        <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve text-center mb-2">FAQ</p>
+        <h2 className="text-2xl md:text-3xl font-extrabold text-nikah-text text-center mb-10">
+          Pertanyaan yang Sering Ditanyakan
         </h2>
         <div className="space-y-2">
           {FAQS.map((faq, i) => (
@@ -47,7 +48,7 @@ export function FAQSection() {
                 </span>
               </button>
               {openIndex === i && (
-                <div id={`faq-answer-${i}`} className="px-5 pb-4 text-sm text-nikah-muted font-light leading-relaxed">
+                <div id={`faq-answer-${i}`} className="px-5 pb-4 text-sm md:text-base text-nikah-muted font-light leading-relaxed">
                   {faq.a}
                 </div>
               )}

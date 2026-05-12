@@ -10,8 +10,22 @@ const jakarta = Plus_Jakarta_Sans({
 })
 
 export const metadata: Metadata = {
-  title: 'BudgetNikah — Cek Kesiapan Wedding Kamu',
-  description: 'Bantu pasangan Indonesia memahami kesiapan wedding sebelum biaya terasa overwhelming.',
+  title: 'BudgetNikah — Cek Apakah Rencana Weddingmu Sudah Realistis',
+  description: 'Dapatkan Wedding Readiness Score, estimasi budget riil per kategori, checklist 50+ item, dan rencana nabung bulanan. Gratis, tanpa login.',
+  keywords: ['wedding budget', 'budget nikah', 'perencana pernikahan', 'wedding planner indonesia', 'checklist pernikahan'],
+  openGraph: {
+    title: 'BudgetNikah — Cek Apakah Rencana Weddingmu Sudah Realistis',
+    description: 'Dapatkan Wedding Readiness Score, estimasi budget riil per kategori, checklist 50+ item, dan rencana nabung bulanan. Gratis, tanpa login.',
+    siteName: 'BudgetNikah',
+    locale: 'id_ID',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'BudgetNikah — Cek Apakah Rencana Weddingmu Sudah Realistis',
+    description: 'Dapatkan Wedding Readiness Score, estimasi budget riil, dan rencana nabung bulanan. Gratis, tanpa login.',
+  },
+  metadataBase: new URL('https://budgetnikah.com'),
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

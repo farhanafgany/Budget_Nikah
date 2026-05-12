@@ -6,6 +6,15 @@ Mobile-first wedding planning web app untuk pasangan Indonesia. Membantu memaham
 
 **Nuansa yang diinginkan:** Calming, elegant, emotionally supportive — BUKAN finance dashboard atau fintech.
 
+## Monetization (keputusan 2026-05-12)
+
+- Model: **one-time purchase** (satu kali bayar, akses seumur hidup)
+- Pendekatan cara jual: landing page style "spill everything" — tunjukkan semua yang didapat sebelum beli
+- Landing page hero: pain-driven question + preview angka konkret (score, tabungan/bulan, checklist count)
+- Feature preview section: phone mockup besar yang menampilkan semua fitur sekaligus
+- **TIDAK ada vendor comparison** — terlalu berat, Katsudoto sudah ada di sana, dilutes focus
+- Payment flow: TBD (belum diputuskan — opsi gateway atau link eksternal)
+
 ## Tech Stack
 
 - Next.js 14 App Router + TypeScript
@@ -106,11 +115,19 @@ Post-auth: upsert ke wedding_profiles, clear localStorage
 - `shadcn` is in `devDependencies` (it's a CLI tool, not a runtime dep)
 - Geist fonts removed; font-sans removed from html element; autoprefixer added to PostCSS
 
+## New Features (v2 — belum diimplementasi)
+
+- **Tabungan Nikah** — tracker simpel: terkumpul vs. target + kalkulasi nabung/bulan
+- **Checklist Pernikahan** — 50+ item berbasis timeline (12bln, 6bln, 3bln, 1bln, 1mgg sebelum H)
+- **Seserahan List** — daftar item seserahan dengan status (sudah/belum)
+- **Result page improvements** — angka lebih konkret (IDR per kategori, nabung/bulan, benchmark per tamu)
+- **Landing page revamp** — hero pain-driven + phone mockup preview semua fitur
+
 ## Specs & Plans
 
 - Design spec (EN): `docs/superpowers/specs/2026-05-12-budgetnikah-design.md`
 - Design spec (ID): `docs/superpowers/specs/2026-05-12-budgetnikah-design-id.md`
-- Implementation plan: `docs/superpowers/plans/2026-05-12-budgetnikah-mvp.md`
+- Implementation plan (MVP v1): `docs/superpowers/plans/2026-05-12-budgetnikah-mvp.md`
 
 ## Communication
 
