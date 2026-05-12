@@ -98,6 +98,14 @@ Post-auth: upsert ke wedding_profiles, clear localStorage
 - TIDAK ada exact pricing — hanya estimasi range
 - Simulasi di /result harus real-time, NO loading state
 
+## Setup Notes
+
+- `tailwind.config.ts` maps all shadcn CSS custom properties (`--background`, `--foreground`, etc.) to Tailwind color tokens using `var(--x)` syntax — full oklch values, no alpha modifier support
+- `globals.css` does NOT import `shadcn/tailwind.css` (v4-only syntax, incompatible with Tailwind v3); keyframe animations from shadcn are available via `tw-animate-css`
+- `outline-ring` used without opacity modifier in `globals.css` (oklch vars don't support Tailwind `/opacity` modifier)
+- `shadcn` is in `devDependencies` (it's a CLI tool, not a runtime dep)
+- Geist fonts removed; font-sans removed from html element; autoprefixer added to PostCSS
+
 ## Specs & Plans
 
 - Design spec (EN): `docs/superpowers/specs/2026-05-12-budgetnikah-design.md`
