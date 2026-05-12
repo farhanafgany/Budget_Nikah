@@ -3,11 +3,16 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { calculatePressureLevel } from '@/lib/scoring'
 import type { PressureLevel } from '@/lib/scoring'
+import { formatRupiah } from '@/lib/utils'
+import { PremiumCTA } from '@/components/dashboard/PremiumCTA'
+import { TabunganNikah } from '@/components/dashboard/TabunganNikah'
+import { ChecklistPernikahan } from '@/components/dashboard/ChecklistPernikahan'
+import { SeserahanList } from '@/components/dashboard/SeserahanList'
 
 const LABEL_COLORS: Record<string, string> = {
-  Healthy:    'text-green-700 bg-green-100',
-  Moderate:   'text-orange-700 bg-orange-100',
-  'High Risk':'text-red-700 bg-red-100',
+  Healthy:     'text-green-700 bg-green-100',
+  Moderate:    'text-orange-700 bg-orange-100',
+  'High Risk': 'text-red-700 bg-red-100',
 }
 
 const PRESSURE_COLORS: Record<PressureLevel, string> = {
@@ -20,12 +25,6 @@ function daysUntil(dateStr: string | null): number | null {
   if (!dateStr) return null
   const diff = new Date(dateStr).getTime() - Date.now()
   return Math.ceil(diff / (1000 * 60 * 60 * 24))
-}
-
-function formatRupiah(n: number) {
-  if (n >= 1_000_000_000) return `Rp ${(n / 1_000_000_000).toFixed(1)}M`
-  if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(0)}jt`
-  return `Rp ${n.toLocaleString('id-ID')}`
 }
 
 export default async function DashboardPage() {
@@ -56,14 +55,15 @@ export default async function DashboardPage() {
     )
   }
 
-  const days     = daysUntil(profile.wedding_date as string | null)
-  const score    = (profile.readiness_score as number | null) ?? 0
-  const label    = score >= 70 ? 'Healthy' : score >= 40 ? 'Moderate' : 'High Risk'
-  const pressure = calculatePressureLevel(score)
-  const alloc    = profile.allocation_result as Record<string, { percentage: number; estimatedAmount: number }> | null
-  const top3     = alloc
+  const days      = daysUntil(profile.wedding_date as string | null)
+  const score     = (profile.readiness_score as number | null) ?? 0
+  const label     = score >= 70 ? 'Healthy' : score >= 40 ? 'Moderate' : 'High Risk'
+  const pressure  = calculatePressureLevel(score)
+  const alloc     = profile.allocation_result as Record<string, { percentage: number; estimatedAmount: number }> | null
+  const top3      = alloc
     ? Object.entries(alloc).sort((a, b) => b[1].percentage - a[1].percentage).slice(0, 3)
     : []
+  const isPremium = (profile.is_premium as boolean | null) ?? false
 
   const CATEGORY_LABELS: Record<string, string> = {
     catering:'Catering', venue:'Venue', decoration:'Dekorasi',
@@ -83,7 +83,7 @@ export default async function DashboardPage() {
           </h1>
         </div>
 
-        {/* Readiness summary */}
+        {/* Readiness score */}
         <div className="bg-white rounded-2xl p-5 border border-nikah-border shadow-sm">
           <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-3">Kesiapan Wedding</p>
           <div className="flex items-center gap-4">
@@ -105,13 +105,13 @@ export default async function DashboardPage() {
               <p className="text-nikah-muted text-sm">Hari menuju hari H</p>
             </div>
             <div className="text-right">
-              <div className="text-3xl font-extrabold text-nikah-deep">{days > 0 ? days : 0}</div>
+              <div className="text-3xl font-extrabold text-nikah-deep">{days}</div>
               <div className="text-xs text-nikah-muted">hari lagi</div>
             </div>
           </div>
         )}
 
-        {/* Biggest risk */}
+        {/* Pressure */}
         <div className="bg-white rounded-2xl p-5 border border-nikah-border shadow-sm">
           <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-2">Tekanan Budget</p>
           <div className="flex items-center justify-between">
@@ -138,6 +138,29 @@ export default async function DashboardPage() {
             </div>
           </div>
         )}
+
+        {/* Tabungan Nikah */}
+        <TabunganNikah
+          isPremium={isPremium}
+          collected={(profile.savings_collected as number | null) ?? 0}
+          target={(profile.total_budget as number | null) ?? 0}
+          weddingDate={(profile.wedding_date as string | null)}
+        />
+
+        {/* Checklist Pernikahan */}
+        <ChecklistPernikahan
+          isPremium={isPremium}
+          checkedIds={(profile.checklist_checked as string[] | null) ?? []}
+        />
+
+        {/* Seserahan List */}
+        <SeserahanList
+          isPremium={isPremium}
+          checkedIds={(profile.seserahan_checked as string[] | null) ?? []}
+        />
+
+        {/* Premium CTA — shown only to non-premium users */}
+        {!isPremium && <PremiumCTA />}
 
         {/* Simulation shortcut */}
         <Link
