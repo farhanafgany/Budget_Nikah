@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+<style>
+* { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #FAF5F5; --card: #FFFFFF; --pink: #E8C0CC;
+  --mauve: #C07888; --deep: #6B3545;
+  --text: #261520; --muted: #9A7888; --border: #EDE4E6;
+}
+
+h2, .subtitle { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+.layout { display: flex; gap: 24px; justify-content: center; }
+.phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.phone-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; color: var(--muted); }
+.phone-shell {
+  width: 240px; height: 460px; border-radius: 32px;
+  background: var(--bg); border: 6px solid #2C1810;
+  overflow: hidden; position: relative;
+  box-shadow: 0 12px 40px rgba(44,24,16,0.18);
+  display: flex; flex-direction: column;
+}
+.phone-notch {
+  width: 70px; height: 14px; background: #2C1810;
+  border-radius: 0 0 10px 10px; margin: 0 auto;
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%); z-index: 10;
+}
+.phone-scroll {
+  flex: 1; overflow-y: auto; padding: 22px 12px 12px;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.phone-scroll::-webkit-scrollbar { width: 3px; }
+.phone-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Shared */
+.prog-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; }
+.prog-bar { height: 100%; background: linear-gradient(90deg, var(--mauve), var(--deep)); border-radius: 2px; }
+.step-lbl { font-size: 8px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mauve); font-weight: 700; }
+.step-q { font-size: 15px; font-weight: 700; color: var(--text); margin: 4px 0 2px; line-height: 1.3; }
+.step-sub { font-size: 10px; color: var(--muted); margin-bottom: 10px; }
+
+.inp-label { font-size: 9px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.inp { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 9px 11px; font-size: 11px; color: var(--muted); width: 100%; margin-bottom: 8px; }
+.inp.focus { border-color: var(--mauve); color: var(--text); }
+
+.btn { background: var(--deep); color: #fff; border-radius: 100px; padding: 11px; font-size: 11px; font-weight: 700; text-align: center; }
+.nav-row { display: flex; justify-content: space-between; align-items: center; }
+.back { font-size: 10px; color: var(--muted); }
+.step-cnt { font-size: 10px; color: var(--muted); }
+
+/* Style picker cards */
+.style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.sc { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 8px; text-align: center; }
+.sc .ico { font-size: 18px; display: block; margin-bottom: 4px; }
+.sc .lbl { font-size: 9px; font-weight: 700; color: var(--text); }
+.sc.sel { border-color: var(--deep); background: #F5E8EC; }
+
+.dots { display: flex; gap: 5px; justify-content: center; }
+.dot { width: 5px; height: 5px; border-radius: 50%; background: var(--border); }
+.dot.on { background: var(--deep); width: 16px; border-radius: 3px; }
+
+.swipe-hint { font-size: 9px; color: var(--border); text-align: center; }
+
+/* Currency input */
+.curr-wrap { position: relative; }
+.curr-prefix { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 10px; font-weight: 700; color: var(--mauve); }
+.inp-curr { padding-left: 36px !important; }
+.inp-helper { font-size: 9px; color: var(--muted); margin-top: -6px; margin-bottom: 8px; }
+
+/* Option cards */
+.cards { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.card { border-radius: 14px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; background: #fff; }
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+.card.selected { border-color: var(--deep); box-shadow: 0 0 0 3px rgba(107,53,69,0.1); }
+.card-inner { padding: 12px 14px; }
+.opt-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--mauve); margin-bottom: 5px; }
+</style>
+
+<h2>Gaya onboarding — tampilan mobile</h2>
+<p class="subtitle">Scroll ke dalam phone untuk lihat semua langkahnya</p>
+
+<div class="layout">
+
+  <!-- PHONE A: One question per screen -->
+  <div class="phone-wrap">
+    <div class="phone-label">A — Satu fokus</div>
+    <div class="phone-shell">
+      <div class="phone-notch"></div>
+      <div class="phone-scroll">
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:33%"></div></div>
+        <div class="nav-row" style="margin-top:4px">
+          <span class="back">← Kembali</span>
+          <span class="step-cnt">1 / 3</span>
+        </div>
+
+        <!-- Screen 1: Nama -->
+        <div>
+          <div class="step-lbl">Pasangan</div>
+          <p class="step-q">Siapa nama kalian?</p>
+          <p class="step-sub">Untuk personalisasi rencana wedding kalian.</p>
+          <div class="inp-label">Nama kamu</div>
+          <div class="inp focus">Siti Nurhaliza</div>
+          <div class="inp-label">Nama pasangan</div>
+          <div class="inp">Ahmad Dhani</div>
+        </div>
+        <div class="btn">Lanjut →</div>
+        <div class="swipe-hint">— Swipe untuk lanjut —</div>
+
+        <!-- Spacer to show next screen feeling -->
+        <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+          <div class="prog-bar-wrap"><div class="prog-bar" style="width:33%"></div></div>
+          <div class="nav-row" style="margin-top:4px"><span class="back">← Kembali</span><span class="step-cnt">1 / 3</span></div>
+          <div class="step-lbl" style="margin-top:6px">Pasangan</div>
+          <p class="step-q">Di kota mana pernikahan kalian?</p>
+          <p class="step-sub">Untuk menyesuaikan estimasi harga.</p>
+          <div class="inp-label">Kota pernikahan</div>
+          <div class="inp focus">Jakarta</div>
+        </div>
+        <div class="btn">Lanjut →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE B: All fields per step -->
+  <div class="phone-wrap">
+    <div class="phone-label">B — Semua field, scroll</div>
+    <div class="phone-shell">
+      <div class="phone-notch"></div>
+      <div class="phone-scroll">
+        <div class="dots"><div class="dot on"></div><div class="dot"></div><div class="dot"></div></div>
+
+        <div class="step-lbl">Step 1 · Pasangan</div>
+        <p class="step-q" style="font-size:13px">Ceritakan tentang kalian</p>
+
+        <div>
+          <div class="inp-label">Nama kamu</div>
+          <div class="inp focus">Siti Nurhaliza</div>
+          <div class="inp-label">Nama pasangan</div>
+          <div class="inp">Ahmad Dhani</div>
+          <div class="inp-label">Kota pernikahan</div>
+          <div class="inp">Jakarta</div>
+          <div class="inp-label">Tanggal rencana</div>
+          <div class="inp">15 Agustus 2025</div>
+        </div>
+        <div class="btn">Lanjut ke Step 2 →</div>
+
+        <!-- Step 2 preview -->
+        <div style="border-top:1px solid var(--border);padding-top:10px;margin-top:4px">
+          <div class="dots"><div class="dot"></div><div class="dot on"></div><div class="dot"></div></div>
+          <div class="step-lbl" style="margin-top:6px">Step 2 · Keuangan</div>
+          <p class="step-q" style="font-size:13px">Budget & Tamu</p>
+          <div class="inp-label">Total budget</div>
+          <div class="curr-wrap">
+            <span class="curr-prefix">Rp</span>
+            <div class="inp inp-curr focus">150.000.000</div>
+          </div>
+          <div class="inp-helper">Contoh: 100jt – 200jt untuk 300 tamu di Jakarta</div>
+          <div class="inp-label">Jumlah tamu</div>
+          <div class="inp">350 orang</div>
+        </div>
+        <div class="btn">Lanjut ke Step 3 →</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-inner">
+      <div class="opt-label">Pilih A — Satu fokus per layar</div>
+      <p style="margin:0;font-size:13px;color:#666">Tiap pertanyaan punya layarnya sendiri. Terasa lebih guided dan ringan — seperti quiz. Lebih banyak step tapi tidak overwhelming.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-inner">
+      <div class="opt-label">Pilih B — Semua field, scroll</div>
+      <p style="margin:0;font-size:13px;color:#666">Semua field step 1 di satu layar, lalu step 2, lalu step 3. Cuma 3 tap "Lanjut". Lebih cepat selesai, tapi layar lebih penuh.</p>
+    </div>
+  </div>
+</div>

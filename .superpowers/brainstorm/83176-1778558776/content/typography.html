@@ -1,0 +1,55 @@
+<h2>Which typography pairing feels right for BudgetNikah?</h2>
+<p class="subtitle">The font sets the emotional tone — premium, warm, and calming</p>
+
+<style>
+  .font-card { border: 1.5px solid #e5e0d8; border-radius: 16px; padding: 28px 24px; margin-bottom: 0; background: #fff; cursor: pointer; transition: box-shadow 0.15s; }
+  .font-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+  .font-card .tag { display: inline-block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: #b08060; background: #fdf6f0; border-radius: 20px; padding: 3px 10px; margin-bottom: 14px; font-family: sans-serif; }
+  .font-card .headline { margin: 0 0 6px; font-weight: 600; }
+  .font-card .sub { margin: 0 0 12px; color: #888; }
+  .font-card .body-sample { font-size: 13px; color: #666; line-height: 1.6; font-family: sans-serif; border-top: 1px solid #f0ebe4; padding-top: 12px; }
+
+  /* Option A: Playfair Display + DM Sans */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap');
+  .font-a .headline { font-family: 'Playfair Display', serif; font-size: 28px; color: #2c2218; }
+  .font-a .sub { font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 300; }
+
+  /* Option B: Cormorant Garamond + Inter */
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500&display=swap');
+  .font-b .headline { font-family: 'Cormorant Garamond', serif; font-size: 32px; color: #2c2218; letter-spacing: -0.01em; }
+  .font-b .sub { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 300; color: #a09080; }
+
+  /* Option C: Plus Jakarta Sans + Plus Jakarta Sans */
+  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+  .font-c .headline { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 26px; font-weight: 700; color: #2c2218; letter-spacing: -0.02em; }
+  .font-c .sub { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 14px; font-weight: 300; color: #a09080; }
+
+  .cards { display: flex; flex-direction: column; gap: 16px; }
+  .card { border: 2px solid #e5e0d8; border-radius: 16px; padding: 28px 24px; cursor: pointer; transition: all 0.15s; background: #fff; }
+  .card:hover { border-color: #c8a882; box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+  .card.selected { border-color: #b08060; box-shadow: 0 0 0 3px #f5ebe0; }
+  .card-body p { margin: 4px 0 0; font-size: 13px; color: #999; font-family: sans-serif; }
+</style>
+
+<div class="cards">
+  <div class="card font-a" data-choice="a" onclick="toggleSelect(this)">
+    <span class="tag" style="font-family:sans-serif">Option A — Editorial Warmth</span>
+    <p class="headline">Cek Apakah Rencana Weddingmu Sudah Realistis.</p>
+    <p class="sub">BudgetNikah membantu pasangan memahami kesiapan wedding mereka.</p>
+    <div class="body-sample">Playfair Display (headings) + DM Sans (body) — editorial serif meets clean modern. Warm, trustworthy, slightly journalistic. Popular in premium lifestyle apps.</div>
+  </div>
+
+  <div class="card font-b" data-choice="b" onclick="toggleSelect(this)">
+    <span class="tag" style="font-family:sans-serif">Option B — Romantic Luxury</span>
+    <p class="headline">Cek Apakah Rencana Weddingmu Sudah Realistis.</p>
+    <p class="sub">BudgetNikah membantu pasangan memahami kesiapan wedding mereka.</p>
+    <div class="body-sample">Cormorant Garamond (headings) + Inter (body) — high-contrast refined serif meets neutral utility font. More elegant and romantic, closer to luxury brand aesthetic.</div>
+  </div>
+
+  <div class="card font-c" data-choice="c" onclick="toggleSelect(this)">
+    <span class="tag" style="font-family:sans-serif">Option C — Modern Premium</span>
+    <p class="headline">Cek Apakah Rencana Weddingmu Sudah Realistis.</p>
+    <p class="sub">BudgetNikah membantu pasangan memahami kesiapan wedding mereka.</p>
+    <div class="body-sample">Plus Jakarta Sans throughout — geometric sans-serif with personality. Feels modern, approachable, and mobile-first. Used in Indonesian fintech/lifestyle apps (e.g. Gojek, Halodoc).</div>
+  </div>
+</div>

@@ -1,0 +1,286 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+<style>
+* { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #FAF5F5;
+  --card: #FFFFFF;
+  --pink: #E8C0CC;
+  --mauve: #C07888;
+  --deep: #6B3545;
+  --gold: #C8A860;
+  --text: #261520;
+  --muted: #9A7888;
+  --border: #EDE4E6;
+}
+
+h2, .subtitle { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+.layout { display: flex; gap: 24px; justify-content: center; }
+
+/* Phone shell */
+.phone-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.phone-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; color: var(--muted); }
+.phone-shell {
+  width: 240px;
+  height: 480px;
+  border-radius: 32px;
+  background: var(--bg);
+  border: 6px solid #2C1810;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 12px 40px rgba(44,24,16,0.18);
+  display: flex;
+  flex-direction: column;
+}
+.phone-notch {
+  width: 70px; height: 14px;
+  background: #2C1810;
+  border-radius: 0 0 10px 10px;
+  margin: 0 auto;
+  flex-shrink: 0;
+  position: absolute;
+  top: 0; left: 50%; transform: translateX(-50%);
+  z-index: 10;
+}
+.phone-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scroll-behavior: smooth;
+}
+.phone-scroll::-webkit-scrollbar { width: 3px; }
+.phone-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Mini cards */
+.mc { background: var(--card); border-radius: 14px; padding: 12px 12px; box-shadow: 0 2px 10px rgba(107,53,69,0.06); }
+.mc-label { font-size: 8px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mauve); font-weight: 700; margin-bottom: 6px; }
+
+/* --- LAYOUT A: Score prominent --- */
+.a-score-row { display: flex; align-items: center; gap: 10px; }
+.a-circle {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: linear-gradient(135deg, #E8C0CC, var(--deep));
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.a-circle .n { font-size: 22px; font-weight: 800; color: #fff; line-height: 1; }
+.a-circle .s { font-size: 7px; color: rgba(255,255,255,0.8); text-transform: uppercase; letter-spacing: 0.05em; }
+.a-info h3 { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.a-info p { font-size: 10px; color: var(--muted); line-height: 1.4; }
+.badge-healthy { display: inline-flex; align-items: center; gap: 3px; background: #E8F5E8; color: #2D7D2D; border-radius: 100px; padding: 2px 7px; font-size: 9px; font-weight: 700; margin-bottom: 4px; }
+
+.bar-row { display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); margin-bottom: 2px; margin-top: 5px; }
+.bar-row span:last-child { font-weight: 700; color: var(--text); }
+.bar { height: 5px; background: var(--pink); border-radius: 3px; margin-bottom: 1px; }
+
+.insight-row { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 5px; }
+.insight-row .ico { font-size: 11px; flex-shrink: 0; margin-top: 1px; }
+.insight-row p { font-size: 9px; color: var(--text); line-height: 1.4; }
+
+.slider-wrap { margin-top: 4px; }
+.slider-label { display: flex; justify-content: space-between; font-size: 9px; color: var(--muted); margin-bottom: 4px; }
+.slider-track { height: 4px; background: var(--pink); border-radius: 2px; position: relative; }
+.slider-thumb { width: 14px; height: 14px; background: var(--deep); border-radius: 50%; position: absolute; top: -5px; left: 38%; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.2); }
+
+.tag-row { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 7px; }
+.tag { font-size: 8px; padding: 2px 7px; border-radius: 100px; background: var(--bg); border: 1px solid var(--border); color: var(--muted); font-weight: 600; }
+.tag.on { background: var(--pink); border-color: var(--mauve); color: var(--deep); }
+
+.locked { background: var(--card); border-radius: 12px; padding: 10px 12px; border: 1.5px dashed var(--border); display: flex; align-items: center; gap: 8px; }
+.locked .lico { font-size: 14px; }
+.locked h4 { font-size: 10px; font-weight: 700; color: var(--text); margin-bottom: 1px; }
+.locked p { font-size: 9px; color: var(--muted); }
+
+.cta-btn { background: var(--deep); color: #fff; border-radius: 100px; padding: 10px; font-size: 11px; font-weight: 700; text-align: center; margin-top: 2px; }
+
+/* --- LAYOUT B: Emotional narrative --- */
+.b-hero {
+  background: linear-gradient(160deg, #F5E8EC 0%, #EDD6DE 60%, #E4C8D4 100%);
+  border-radius: 14px;
+  padding: 18px 12px 14px;
+  text-align: center;
+}
+.b-hero .score-num { font-size: 52px; font-weight: 800; color: var(--deep); line-height: 1; }
+.b-hero .score-lbl { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mauve); font-weight: 700; margin: 4px 0 8px; }
+.b-hero .badge-b { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.6); color: var(--deep); border-radius: 100px; padding: 3px 10px; font-size: 9px; font-weight: 700; margin-bottom: 10px; }
+.b-hero .quote { font-size: 11px; color: var(--text); line-height: 1.5; font-weight: 300; font-style: italic; }
+
+.b-pressure { display: flex; justify-content: space-between; align-items: center; }
+.b-pressure .label { font-size: 10px; font-weight: 700; color: var(--text); }
+.b-pressure .badge-m { background: #FFF3E0; color: #E65100; border-radius: 100px; padding: 2px 8px; font-size: 9px; font-weight: 700; }
+.b-pressure-desc { font-size: 10px; color: var(--muted); margin-top: 5px; line-height: 1.4; }
+
+/* Donut chart */
+.donut-wrap { display: flex; align-items: center; gap: 10px; }
+.donut { width: 52px; height: 52px; border-radius: 50%; background: conic-gradient(var(--mauve) 0% 42%, var(--pink) 42% 62%, #E8D0D8 62% 77%, #F0E0E6 77% 100%); flex-shrink: 0; position: relative; }
+.donut::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 30px; height: 30px; background: var(--card); border-radius: 50%; }
+.donut-legend { display: flex; flex-direction: column; gap: 3px; }
+.dl { display: flex; align-items: center; gap: 4px; font-size: 9px; color: var(--muted); }
+.dl-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+/* Option cards at bottom */
+.cards { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+.card { border-radius: 14px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; background: #fff; }
+.card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+.card.selected { border-color: var(--deep); box-shadow: 0 0 0 3px rgba(107,53,69,0.1); }
+.card-inner { padding: 12px 14px; }
+.opt-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--mauve); margin-bottom: 5px; }
+</style>
+
+<h2>Layout halaman Result — tampilan mobile</h2>
+<p class="subtitle">Scroll ke dalam phone untuk lihat konten penuh</p>
+
+<div class="layout">
+
+  <!-- PHONE A -->
+  <div class="phone-wrap">
+    <div class="phone-label">A — Score Terstruktur</div>
+    <div class="phone-shell">
+      <div class="phone-notch"></div>
+      <div class="phone-scroll">
+        <!-- Score card -->
+        <div class="mc">
+          <div class="mc-label">Wedding Readiness</div>
+          <div class="a-score-row">
+            <div class="a-circle"><span class="n">72</span><span class="s">Score</span></div>
+            <div class="a-info">
+              <span class="badge-healthy">✓ Healthy</span>
+              <h3>Cukup realistis!</h3>
+              <p>Bisa dikelola dengan penyesuaian kecil.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Pressure card -->
+        <div class="mc">
+          <div class="mc-label">Tekanan Budget</div>
+          <div class="a-score-row" style="gap:8px">
+            <div style="flex:1">
+              <div style="font-size:10px;color:var(--muted)">Risiko terbesar:</div>
+              <div style="font-size:11px;font-weight:700;color:var(--text);margin-top:2px">Catering</div>
+            </div>
+            <span style="background:#FFF3E0;color:#E65100;border-radius:100px;padding:2px 8px;font-size:9px;font-weight:700">Medium</span>
+          </div>
+        </div>
+        <!-- Allocation -->
+        <div class="mc">
+          <div class="mc-label">Alokasi Budget</div>
+          <div class="bar-row"><span>Catering</span><span>42%</span></div>
+          <div class="bar" style="width:90%"></div>
+          <div class="bar-row"><span>Venue</span><span>20%</span></div>
+          <div class="bar" style="width:48%"></div>
+          <div class="bar-row"><span>Dekorasi</span><span>15%</span></div>
+          <div class="bar" style="width:36%"></div>
+          <div class="bar-row"><span>Dokumentasi</span><span>8%</span></div>
+          <div class="bar" style="width:20%"></div>
+        </div>
+        <!-- Insights -->
+        <div class="mc">
+          <div class="mc-label">Smart Insights</div>
+          <div class="insight-row"><span class="ico">💡</span><p>Catering kemungkinan jadi pengeluaran terbesar.</p></div>
+          <div class="insight-row"><span class="ico">⚠️</span><p>Dana darurat masih sedikit untuk perubahan mendadak.</p></div>
+          <div class="insight-row"><span class="ico">✨</span><p>Style elegant cocok dengan budget yang kamu punya.</p></div>
+        </div>
+        <!-- Simulation -->
+        <div class="mc">
+          <div class="mc-label">Simulasi Skenario</div>
+          <div class="slider-label"><span>Jumlah Tamu</span><span style="font-weight:700;color:var(--text)">350</span></div>
+          <div class="slider-track"><div class="slider-thumb"></div></div>
+          <div class="tag-row">
+            <span class="tag">Simple</span>
+            <span class="tag on">Elegant</span>
+            <span class="tag">Luxury</span>
+          </div>
+        </div>
+        <!-- Locked -->
+        <div class="locked">
+          <span class="lico">🔒</span>
+          <div><h4>Timeline Planner</h4><p>Unlock Full Planner</p></div>
+        </div>
+        <div class="cta-btn">Simpan Hasil Ini</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHONE B -->
+  <div class="phone-wrap">
+    <div class="phone-label">B — Narasi Mengalir</div>
+    <div class="phone-shell">
+      <div class="phone-notch"></div>
+      <div class="phone-scroll">
+        <!-- Emotional hero -->
+        <div class="b-hero">
+          <div class="score-num">72</div>
+          <div class="score-lbl">Wedding Readiness Score</div>
+          <span class="badge-b">✓ Healthy</span>
+          <p class="quote">"Rencana kamu cukup realistis dan bisa dikelola dengan baik."</p>
+        </div>
+        <!-- Budget pressure -->
+        <div class="mc">
+          <div class="b-pressure">
+            <span class="label">Tekanan Budget</span>
+            <span class="badge-m">Medium</span>
+          </div>
+          <p class="b-pressure-desc">Catering mendominasi pengeluaran. Pertimbangkan untuk menyesuaikan jumlah tamu.</p>
+        </div>
+        <!-- Allocation pie -->
+        <div class="mc">
+          <div class="mc-label">Alokasi Budget</div>
+          <div class="donut-wrap">
+            <div class="donut"></div>
+            <div class="donut-legend">
+              <div class="dl"><div class="dl-dot" style="background:var(--mauve)"></div>Catering 42%</div>
+              <div class="dl"><div class="dl-dot" style="background:var(--pink)"></div>Venue 20%</div>
+              <div class="dl"><div class="dl-dot" style="background:#E8D0D8"></div>Dekorasi 15%</div>
+              <div class="dl"><div class="dl-dot" style="background:#F0E0E6"></div>Lainnya 23%</div>
+            </div>
+          </div>
+        </div>
+        <!-- Insights -->
+        <div class="mc">
+          <div class="mc-label">Smart Insights</div>
+          <div class="insight-row"><span class="ico">💡</span><p>Catering kemungkinan jadi pengeluaran terbesar.</p></div>
+          <div class="insight-row"><span class="ico">⚠️</span><p>Dana darurat masih sedikit untuk perubahan mendadak.</p></div>
+          <div class="insight-row"><span class="ico">✨</span><p>Style elegant cocok dengan budget yang kamu punya.</p></div>
+        </div>
+        <!-- Simulation -->
+        <div class="mc">
+          <div class="mc-label">Simulasi Skenario</div>
+          <div class="slider-label"><span>Jumlah Tamu</span><span style="font-weight:700;color:var(--text)">350</span></div>
+          <div class="slider-track"><div class="slider-thumb"></div></div>
+          <div class="tag-row">
+            <span class="tag">Simple</span>
+            <span class="tag on">Elegant</span>
+            <span class="tag">Luxury</span>
+          </div>
+        </div>
+        <!-- Locked -->
+        <div class="locked">
+          <span class="lico">🔒</span>
+          <div><h4>Timeline Planner</h4><p>Unlock Full Planner</p></div>
+        </div>
+        <div class="cta-btn">Simpan Hasil Ini</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-inner">
+      <div class="opt-label">Pilih A — Score Terstruktur</div>
+      <p style="margin:0;font-size:13px;color:#666">Score dalam lingkaran di samping teks. Terasa lebih informatif dan mudah di-scan. Cards lebih compact.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-inner">
+      <div class="opt-label">Pilih B — Narasi Mengalir</div>
+      <p style="margin:0;font-size:13px;color:#666">Score besar di tengah dengan gradient hero. Terasa lebih emosional dan "wow" saat pertama kali melihat hasil. Pie chart untuk alokasi.</p>
+    </div>
+  </div>
+</div>

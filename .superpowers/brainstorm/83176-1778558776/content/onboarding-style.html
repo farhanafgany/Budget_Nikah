@@ -1,0 +1,144 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+<style>
+* { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing: border-box; }
+:root {
+  --bg: #FAF5F5;
+  --card: #FFFFFF;
+  --pink: #E8C0CC;
+  --mauve: #C07888;
+  --deep: #6B3545;
+  --gold: #C8A860;
+  --text: #261520;
+  --muted: #9A7888;
+  --border: #EDE4E6;
+}
+
+.split { display: flex; gap: 20px; }
+.mockup { flex: 1; min-width: 0; }
+.mockup-header { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 10px 14px; background: var(--bg); border-radius: 12px 12px 0 0; border: 1.5px solid var(--border); border-bottom: none; font-weight: 600; }
+.mockup-body { border: 1.5px solid var(--border); border-radius: 0 0 12px 12px; background: var(--bg); padding: 12px 10px; }
+
+.phone { display: flex; flex-direction: column; gap: 8px; }
+
+/* Progress dots */
+.progress-dots { display: flex; gap: 6px; justify-content: center; padding: 4px 0; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); }
+.dot.active { background: var(--deep); width: 18px; border-radius: 3px; }
+
+/* Progress bar */
+.progress-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; margin: 4px 0 2px; }
+.progress-bar-fill { height: 100%; width: 33%; background: linear-gradient(90deg, var(--mauve), var(--deep)); border-radius: 2px; }
+
+.step-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mauve); font-weight: 700; }
+.step-title { font-size: 16px; font-weight: 700; color: var(--text); margin: 4px 0 2px; line-height: 1.2; }
+.step-sub { font-size: 11px; color: var(--muted); margin: 0 0 10px; }
+
+.mock-input { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 12px; font-size: 12px; color: var(--text); margin-bottom: 7px; width: 100%; }
+.mock-input-label { font-size: 10px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.input-group { margin-bottom: 6px; }
+
+.mock-btn { background: var(--deep); color: #fff; border-radius: 100px; padding: 10px 20px; font-size: 12px; font-weight: 700; text-align: center; margin-top: 4px; }
+.mock-btn-outline { background: transparent; color: var(--deep); border: 1.5px solid var(--deep); border-radius: 100px; padding: 9px 20px; font-size: 12px; font-weight: 600; text-align: center; margin-top: 4px; }
+
+/* Selectable cards for style picker */
+.style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.style-card { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 8px; text-align: center; font-size: 10px; font-weight: 600; color: var(--text); }
+.style-card.sel { border-color: var(--deep); background: #F5E8EC; color: var(--deep); }
+
+.nav-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.back-btn { font-size: 10px; color: var(--muted); font-weight: 500; }
+.step-count { font-size: 10px; color: var(--muted); }
+
+.swipe-hint { font-size: 9px; color: var(--border); text-align: center; margin-top: 4px; }
+
+/* Option cards */
+.cards { display: flex; flex-direction: column; gap: 12px; margin-top: 16px; }
+.card { border-radius: 14px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; background: #fff; }
+.card:hover { box-shadow: 0 4px 18px rgba(0,0,0,0.08); }
+.card.selected { border-color: var(--deep); box-shadow: 0 0 0 3px rgba(107,53,69,0.1); }
+.card-inner { padding: 14px 16px; }
+.opt-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--mauve); margin-bottom: 6px; }
+</style>
+
+<h2>Gaya onboarding flow yang mana?</h2>
+<p class="subtitle">Ini menentukan bagaimana user mengisi data di 3 langkah pertama</p>
+
+<div class="split">
+
+  <!-- Option A: One question per screen (full-page slide) -->
+  <div class="mockup">
+    <div class="mockup-header">A — Satu layar, satu fokus</div>
+    <div class="mockup-body">
+      <div class="phone">
+        <div class="progress-bar-wrap"><div class="progress-bar-fill"></div></div>
+        <div class="nav-row">
+          <span class="back-btn">← Kembali</span>
+          <span class="step-count">Langkah 1 dari 3</span>
+        </div>
+        <div class="step-label">Pasangan</div>
+        <p class="step-title">Siapa nama kalian berdua?</p>
+        <p class="step-sub">Ini untuk personalisasi rencana wedding kalian.</p>
+        <div class="input-group">
+          <div class="mock-input-label">Nama kamu</div>
+          <div class="mock-input" style="color:var(--muted)">Contoh: Siti Nurhaliza</div>
+        </div>
+        <div class="input-group">
+          <div class="mock-input-label">Nama pasangan</div>
+          <div class="mock-input" style="color:var(--muted)">Contoh: Ahmad Dhani</div>
+        </div>
+        <div class="mock-btn">Lanjut →</div>
+        <div class="swipe-hint">Swipe atau tap Lanjut untuk melanjutkan</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B: All fields in one step, with sections -->
+  <div class="mockup">
+    <div class="mockup-header">B — Semua field, scroll ke bawah</div>
+    <div class="mockup-body">
+      <div class="phone">
+        <div class="progress-dots">
+          <div class="dot active"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <div class="step-label">Step 1 · Pasangan</div>
+        <p class="step-title" style="font-size:14px">Ceritakan tentang kalian</p>
+        <div class="input-group">
+          <div class="mock-input-label">Nama kamu</div>
+          <div class="mock-input" style="color:var(--muted)">Siti Nurhaliza</div>
+        </div>
+        <div class="input-group">
+          <div class="mock-input-label">Nama pasangan</div>
+          <div class="mock-input" style="color:var(--muted)">Ahmad Dhani</div>
+        </div>
+        <div class="input-group">
+          <div class="mock-input-label">Kota pernikahan</div>
+          <div class="mock-input" style="color:var(--muted)">Jakarta</div>
+        </div>
+        <div class="input-group">
+          <div class="mock-input-label">Tanggal rencana</div>
+          <div class="mock-input" style="color:var(--muted)">15 Agustus 2025</div>
+        </div>
+        <div class="mock-btn">Lanjut ke Step 2 →</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="cards">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-inner">
+      <div class="opt-label">Pilih A — Satu fokus per layar</div>
+      <p style="margin:0;font-size:13px;color:#666">Setiap field atau kelompok field punya layar sendiri. Terasa lebih ringan dan guided — seperti quiz. Lebih banyak tap tapi less overwhelming.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-inner">
+      <div class="opt-label">Pilih B — Semua field per step</div>
+      <p style="margin:0;font-size:13px;color:#666">Semua field step 1 ada di satu layar, user scroll ke bawah lalu tap Lanjut. Lebih cepat selesai tapi layarnya lebih penuh.</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+<style>
+* { font-family: 'Plus Jakarta Sans', sans-serif; }
+h2, .subtitle { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+.palette-card {
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-bottom: 0;
+}
+.palette-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.1); }
+.palette-card.selected { border-color: #8b5e3c; box-shadow: 0 0 0 3px rgba(139,94,60,0.15); }
+
+.palette-hero {
+  padding: 28px 24px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.score-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-radius: 100px;
+  padding: 6px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  width: fit-content;
+}
+
+.card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.mini-headline {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 4px 0;
+}
+
+.mini-sub {
+  font-size: 13px;
+  font-weight: 300;
+  margin: 0;
+}
+
+.swatch-row {
+  display: flex;
+  gap: 8px;
+  padding: 14px 24px;
+  align-items: center;
+}
+.swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+.swatch-label {
+  font-size: 11px;
+  color: #888;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Palette A — Soft Blush Rose */
+.pal-a .palette-hero { background: #FDF8F5; }
+.pal-a .card-label { color: #C4855A; }
+.pal-a .mini-headline { color: #2C1810; }
+.pal-a .mini-sub { color: #9E7E6C; }
+.pal-a .score-pill { background: #F5E6DC; color: #B05A30; }
+.pal-a .swatch-row { background: #FFF; border-top: 1px solid #F0E8E0; }
+
+/* Palette B — Dusty Mauve */
+.pal-b .palette-hero { background: #FAF5F5; }
+.pal-b .card-label { color: #A06878; }
+.pal-b .mini-headline { color: #261520; }
+.pal-b .mini-sub { color: #9A7888; }
+.pal-b .score-pill { background: #F5E8EC; color: #A06878; }
+.pal-b .swatch-row { background: #FFF; border-top: 1px solid #EDE4E6; }
+
+/* Palette C — Warm Sand */
+.pal-c .palette-hero { background: #FBF7F0; }
+.pal-c .card-label { color: #8B6914; }
+.pal-c .mini-headline { color: #1E1608; }
+.pal-c .mini-sub { color: #9A8060; }
+.pal-c .score-pill { background: #F5EDD8; color: #8B6914; }
+.pal-c .swatch-row { background: #FFF; border-top: 1px solid #EDE5D0; }
+
+.cards { display: flex; flex-direction: column; gap: 14px; }
+.card { border-radius: 20px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; }
+.card:hover { box-shadow: 0 8px 30px rgba(0,0,0,0.09); }
+.card.selected { border-color: #8b5e3c; box-shadow: 0 0 0 3px rgba(139,94,60,0.12); }
+</style>
+
+<h2>Which color palette feels right?</h2>
+<p class="subtitle">Each shows how the app would look — background, text, and accent colors</p>
+
+<div class="cards">
+
+  <!-- Option A: Soft Blush -->
+  <div class="card pal-a" data-choice="a" onclick="toggleSelect(this)">
+    <div class="palette-hero">
+      <span class="card-label">Option A — Soft Blush Rose</span>
+      <p class="mini-headline">Wedding Readiness Score</p>
+      <p class="mini-sub">Wedding plan kamu masih cukup realistis dan manageable.</p>
+      <span class="score-pill">✦ 72 · Healthy</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FDF8F5"></div>
+      <div class="swatch" style="background:#E8C4A8"></div>
+      <div class="swatch" style="background:#C4855A"></div>
+      <div class="swatch" style="background:#8B4520"></div>
+      <div class="swatch" style="background:#D4A850"></div>
+      <span class="swatch-label">Cream · Peach · Terracotta · Brown · Gold — warm, earthy, inviting</span>
+    </div>
+  </div>
+
+  <!-- Option B: Dusty Mauve -->
+  <div class="card pal-b" data-choice="b" onclick="toggleSelect(this)">
+    <div class="palette-hero">
+      <span class="card-label">Option B — Dusty Mauve Pink</span>
+      <p class="mini-headline">Wedding Readiness Score</p>
+      <p class="mini-sub">Wedding plan kamu masih cukup realistis dan manageable.</p>
+      <span class="score-pill">✦ 72 · Healthy</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FAF5F5"></div>
+      <div class="swatch" style="background:#E8C0CC"></div>
+      <div class="swatch" style="background:#C07888"></div>
+      <div class="swatch" style="background:#6B3545"></div>
+      <div class="swatch" style="background:#C8A860"></div>
+      <span class="swatch-label">Rose white · Dusty pink · Mauve · Burgundy · Gold — romantic, feminine</span>
+    </div>
+  </div>
+
+  <!-- Option C: Warm Sand -->
+  <div class="card pal-c" data-choice="c" onclick="toggleSelect(this)">
+    <div class="palette-hero">
+      <span class="card-label">Option C — Warm Sand & Gold</span>
+      <p class="mini-headline">Wedding Readiness Score</p>
+      <p class="mini-sub">Wedding plan kamu masih cukup realistis dan manageable.</p>
+      <span class="score-pill">✦ 72 · Healthy</span>
+    </div>
+    <div class="swatch-row">
+      <div class="swatch" style="background:#FBF7F0"></div>
+      <div class="swatch" style="background:#E8D8B8"></div>
+      <div class="swatch" style="background:#C0A060"></div>
+      <div class="swatch" style="background:#5C3D10"></div>
+      <div class="swatch" style="background:#D4AF40"></div>
+      <span class="swatch-label">Linen · Sand · Warm gold · Dark brown · Bright gold — luxe, editorial</span>
+    </div>
+  </div>
+
+</div>

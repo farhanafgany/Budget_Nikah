@@ -1,0 +1,190 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+<style>
+* { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing: border-box; }
+
+/* Shared tokens */
+:root {
+  --bg: #FAF5F5;
+  --card: #FFFFFF;
+  --pink: #E8C0CC;
+  --mauve: #C07888;
+  --deep: #6B3545;
+  --gold: #C8A860;
+  --text: #261520;
+  --muted: #9A7888;
+  --border: #EDE4E6;
+}
+
+h2, .subtitle { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+.split { display: flex; gap: 20px; }
+.mockup { flex: 1; min-width: 0; }
+.mockup-header { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); padding: 10px 14px; background: var(--bg); border-radius: 12px 12px 0 0; border: 1.5px solid var(--border); border-bottom: none; font-weight: 600; }
+.mockup-body { border: 1.5px solid var(--border); border-radius: 0 0 12px 12px; background: var(--bg); padding: 14px; }
+
+/* Phone frame */
+.phone { width: 100%; background: var(--bg); border-radius: 8px; padding: 12px 10px; display: flex; flex-direction: column; gap: 10px; }
+
+/* Cards */
+.mini-card { background: var(--card); border-radius: 14px; padding: 14px; box-shadow: 0 2px 12px rgba(107,53,69,0.07); }
+
+/* Score circle */
+.score-circle { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #E8C0CC, #C07888); display: flex; flex-direction: column; align-items: center; justify-content: center; flex-shrink: 0; }
+.score-circle .num { font-size: 22px; font-weight: 700; color: #fff; line-height: 1; }
+.score-circle .lbl { font-size: 8px; color: rgba(255,255,255,0.85); text-transform: uppercase; letter-spacing: 0.05em; }
+
+.score-row { display: flex; align-items: center; gap: 12px; }
+.score-text h3 { margin: 0 0 3px; font-size: 13px; font-weight: 700; color: var(--text); }
+.score-text p { margin: 0; font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+.badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 100px; }
+.badge.healthy { background: #E8F5E8; color: #2D7D2D; }
+.badge.medium { background: #FFF3E0; color: #E65100; }
+
+/* Option A — Score prominent + cards stacked */
+.section-label { font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--mauve); font-weight: 700; margin-bottom: 6px; }
+.alloc-bar { height: 6px; border-radius: 3px; background: var(--pink); margin: 4px 0; }
+.alloc-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); }
+
+.insight-pill { background: #FAF5F5; border: 1px solid var(--border); border-radius: 10px; padding: 8px 10px; font-size: 10px; color: var(--text); line-height: 1.4; display: flex; gap: 6px; margin-bottom: 6px; }
+.insight-pill .icon { flex-shrink: 0; font-size: 12px; }
+
+/* Slider */
+.slider-track { height: 4px; background: var(--pink); border-radius: 2px; position: relative; margin: 8px 0 4px; }
+.slider-thumb { width: 16px; height: 16px; background: var(--deep); border-radius: 50%; position: absolute; top: -6px; left: 40%; border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+
+.mini-btn { font-size: 11px; font-weight: 600; padding: 8px 16px; border-radius: 100px; background: var(--deep); color: #fff; text-align: center; margin-top: 4px; }
+
+.tag-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 6px; }
+.tag { font-size: 9px; padding: 3px 8px; border-radius: 100px; background: var(--bg); border: 1px solid var(--border); color: var(--muted); font-weight: 500; }
+.tag.active { background: var(--pink); border-color: var(--mauve); color: var(--deep); }
+
+.locked-card { background: var(--card); border-radius: 14px; padding: 12px 14px; border: 1.5px dashed var(--border); display: flex; align-items: center; gap: 10px; }
+.lock-icon { font-size: 16px; }
+.locked-text h4 { margin: 0 0 2px; font-size: 11px; font-weight: 700; color: var(--text); }
+.locked-text p { margin: 0; font-size: 10px; color: var(--muted); }
+
+.cards { display: flex; flex-direction: column; gap: 14px; }
+.card { border-radius: 16px; overflow: hidden; border: 2px solid transparent; cursor: pointer; transition: all 0.15s; }
+.card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.09); }
+.card.selected { border-color: #6B3545; box-shadow: 0 0 0 3px rgba(107,53,69,0.12); }
+.card-inner { padding: 16px; background: #fff; }
+.option-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; color: var(--mauve); margin-bottom: 10px; }
+</style>
+
+<h2>Layout halaman Result yang mana?</h2>
+<p class="subtitle">Halaman paling penting di app — bagaimana informasi ditampilkan?</p>
+
+<div class="split">
+
+  <!-- Option A: Score at top, cards below -->
+  <div class="mockup">
+    <div class="mockup-header">A — Score Besar di Atas</div>
+    <div class="mockup-body">
+      <div class="phone">
+        <!-- Big score card -->
+        <div class="mini-card">
+          <div class="section-label">Wedding Readiness</div>
+          <div class="score-row">
+            <div class="score-circle">
+              <span class="num">72</span>
+              <span class="lbl">score</span>
+            </div>
+            <div class="score-text">
+              <span class="badge healthy">✓ Healthy</span>
+              <h3 style="margin-top:4px">Cukup realistis!</h3>
+              <p>Rencana ini manageable dengan penyesuaian kecil.</p>
+            </div>
+          </div>
+        </div>
+        <!-- Allocation card -->
+        <div class="mini-card">
+          <div class="section-label">Alokasi Budget</div>
+          <div class="alloc-row"><span>Catering</span><span style="color:var(--text);font-weight:600">42%</span></div>
+          <div class="alloc-bar" style="width:90%"></div>
+          <div class="alloc-row"><span>Venue</span><span style="color:var(--text);font-weight:600">20%</span></div>
+          <div class="alloc-bar" style="width:50%"></div>
+          <div class="alloc-row"><span>Dekorasi</span><span style="color:var(--text);font-weight:600">15%</span></div>
+          <div class="alloc-bar" style="width:38%"></div>
+        </div>
+        <!-- Insight -->
+        <div class="mini-card">
+          <div class="section-label">Smart Insights</div>
+          <div class="insight-pill"><span class="icon">💡</span>Catering jadi pengeluaran terbesar di rencana ini.</div>
+          <div class="insight-pill"><span class="icon">⚠️</span>Dana darurat masih sedikit untuk perubahan mendadak.</div>
+        </div>
+        <!-- Simulation -->
+        <div class="mini-card">
+          <div class="section-label">Simulasi</div>
+          <div class="alloc-row"><span>Jumlah Tamu</span><span style="color:var(--text);font-weight:600">350</span></div>
+          <div class="slider-track"><div class="slider-thumb"></div></div>
+          <div class="tag-row">
+            <span class="tag active">Elegant</span>
+            <span class="tag">Simple</span>
+            <span class="tag">Luxury</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Option B: Scrolling narrative -->
+  <div class="mockup">
+    <div class="mockup-header">B — Narasi Mengalir</div>
+    <div class="mockup-body">
+      <div class="phone">
+        <!-- Emotional header -->
+        <div class="mini-card" style="background: linear-gradient(135deg, #F5E8EC, #EDD6DE); text-align:center; padding: 20px 14px;">
+          <div style="font-size:10px;text-transform:uppercase;letter-spacing:0.12em;color:var(--mauve);font-weight:700;margin-bottom:8px">Hasil Analisis</div>
+          <div style="font-size:36px;font-weight:800;color:var(--deep);line-height:1">72</div>
+          <div style="font-size:11px;color:var(--mauve);margin:4px 0 8px">Wedding Readiness Score</div>
+          <div style="font-size:12px;color:var(--text);line-height:1.5;font-weight:300">"Rencana kamu cukup realistis dan bisa<br>dikelola dengan baik."</div>
+        </div>
+        <!-- Budget pressure -->
+        <div class="mini-card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+            <div class="section-label" style="margin:0">Tekanan Budget</div>
+            <span class="badge medium">Medium</span>
+          </div>
+          <p style="font-size:11px;color:var(--muted);margin:0;line-height:1.5">Catering mendominasi pengeluaran. Pertimbangkan untuk menyesuaikan jumlah tamu.</p>
+        </div>
+        <!-- Pie chart placeholder -->
+        <div class="mini-card" style="text-align:center">
+          <div class="section-label">Alokasi Budget</div>
+          <div style="width:60px;height:60px;border-radius:50%;background:conic-gradient(var(--mauve) 0% 42%, var(--pink) 42% 62%, #E8D0D8 62% 77%, #F0E0E6 77% 100%);margin:8px auto"></div>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px">
+            <span class="tag active" style="font-size:9px">Catering 42%</span>
+            <span class="tag" style="font-size:9px">Venue 20%</span>
+            <span class="tag" style="font-size:9px">Dekorasi 15%</span>
+          </div>
+        </div>
+        <!-- Locked -->
+        <div class="locked-card">
+          <span class="lock-icon">🔒</span>
+          <div class="locked-text">
+            <h4>Timeline Planner</h4>
+            <p>Unlock Full Planner untuk akses fitur ini</p>
+          </div>
+        </div>
+        <div class="mini-btn">Simpan Hasil Ini</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="cards" style="margin-top:16px">
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-inner">
+      <div class="option-label">Pilih A</div>
+      <p style="margin:0;font-size:13px;color:#666">Score besar di atas, lalu cards terpisah per kategori. Lebih terstruktur dan mudah di-scan.</p>
+    </div>
+  </div>
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-inner">
+      <div class="option-label">Pilih B</div>
+      <p style="margin:0;font-size:13px;color:#666">Header emosional dengan score besar, lalu narasi mengalir ke bawah. Lebih storytelling dan hangat.</p>
+    </div>
+  </div>
+</div>
