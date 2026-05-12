@@ -1,4 +1,6 @@
 import type { ReadinessLabel } from '@/lib/scoring'
+import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
+import { formatRupiah } from '@/lib/utils'
 
 const QUOTES: Record<ReadinessLabel, string> = {
   'Healthy':   'Rencana kamu cukup realistis dan bisa dikelola dengan baik.',
@@ -15,9 +17,14 @@ const LABEL_COLORS: Record<ReadinessLabel, string> = {
 interface Props {
   score: number
   label: ReadinessLabel
+  totalBudget: number
+  weddingDate: string
 }
 
-export function ScoreHero({ score, label }: Props) {
+export function ScoreHero({ score, label, totalBudget, weddingDate }: Props) {
+  const months = monthsUntilDate(weddingDate || null)
+  const monthlySavings = calculateMonthlySavings(totalBudget, 0, months)
+
   return (
     <div className="bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE] rounded-3xl p-7 text-center">
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-3">Hasil Analisis</p>
@@ -26,9 +33,14 @@ export function ScoreHero({ score, label }: Props) {
       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-4 ${LABEL_COLORS[label]}`}>
         <span aria-hidden="true">✓</span> {label}
       </span>
-      <p className="text-nikah-text text-sm font-light leading-relaxed italic">
+      <p className="text-nikah-text text-sm font-light leading-relaxed italic mb-4">
         &ldquo;{QUOTES[label]}&rdquo;
       </p>
+      <div className="bg-white/60 rounded-2xl px-4 py-3 inline-block">
+        <p className="text-xs text-nikah-muted mb-0.5">Estimasi nabung per bulan</p>
+        <p className="text-xl font-extrabold text-nikah-deep">{formatRupiah(monthlySavings)}/bln</p>
+        <p className="text-[10px] text-nikah-muted mt-0.5">selama {months} bulan ke depan</p>
+      </div>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 'use client'
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
 import type { AllocationResult } from '@/lib/allocation'
+import { formatRupiah } from '@/lib/utils'
 
 const COLORS = ['#C07888','#E8C0CC','#D4A0B0','#B06070','#C8A860','#A08870','#D0B890','#8B6080']
 const LABELS: Record<keyof AllocationResult, string> = {
@@ -13,6 +14,7 @@ export default function AllocationChart({ allocation }: { allocation: Allocation
   const data = Object.entries(allocation).map(([key, val], i) => ({
     name: LABELS[key as keyof AllocationResult],
     value: val.percentage,
+    amount: val.estimatedAmount,
     color: COLORS[i % COLORS.length],
   }))
 
@@ -26,14 +28,22 @@ export default function AllocationChart({ allocation }: { allocation: Allocation
               <Cell key={i} fill={entry.color} />
             ))}
           </Pie>
-          <Tooltip formatter={(v) => v != null ? `${v}%` : ''} />
+          <Tooltip
+            formatter={(value, name, item) => {
+              const amount = (item.payload as { amount?: number }).amount
+              return [`${value}% · ${amount != null ? formatRupiah(amount) : ''}`, name as string]
+            }}
+          />
         </PieChart>
       </ResponsiveContainer>
-      <div className="grid grid-cols-2 gap-1.5 mt-2">
+      <div className="grid grid-cols-2 gap-2 mt-2">
         {data.map(d => (
           <div key={d.name} className="flex items-center gap-1.5">
             <div className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: d.color }} />
-            <span className="text-[11px] text-nikah-muted">{d.name} {d.value}%</span>
+            <div className="min-w-0">
+              <div className="text-[11px] text-nikah-muted truncate">{d.name}</div>
+              <div className="text-[11px] font-bold text-nikah-text">{formatRupiah(d.amount)}</div>
+            </div>
           </div>
         ))}
       </div>

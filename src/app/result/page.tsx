@@ -75,7 +75,12 @@ export default function ResultPage() {
   return (
     <main className="min-h-screen bg-nikah-bg pb-32">
       <div className="max-w-md mx-auto px-4 py-6 space-y-4">
-        <ScoreHero score={scoreResult.score} label={scoreResult.label} />
+        <ScoreHero
+          score={scoreResult.score}
+          label={scoreResult.label}
+          totalBudget={onboarding.totalBudget}
+          weddingDate={onboarding.weddingDate}
+        />
         <PressureCard pressureLevel={pressureLevel} allocation={allocation} />
         <AllocationChart allocation={allocation} />
         <InsightCards insights={insights} />
