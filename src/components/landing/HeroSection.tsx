@@ -3,6 +3,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
+const PHONE_STATS = [
+  { val: '4,6jt',  lbl: 'nabung/bln' },
+  { val: '18/50',  lbl: 'checklist'  },
+  { val: 'Medium', lbl: 'tekanan'     },
+]
+
 function PhoneMockup() {
   const [loaded, setLoaded] = useState(false)
   const [error, setError]   = useState(false)
@@ -45,11 +51,7 @@ function PhoneMockup() {
 
           {/* Stat row */}
           <div className="flex border-t border-nikah-border">
-            {[
-              { val: '4,6jt',  lbl: 'nabung/bln' },
-              { val: '18/50',  lbl: 'checklist'  },
-              { val: 'Medium', lbl: 'tekanan'     },
-            ].map((s, i) => (
+            {PHONE_STATS.map((s, i) => (
               <div
                 key={s.lbl}
                 className={`flex-1 px-1 py-2 text-center ${i < 2 ? 'border-r border-nikah-border' : ''}`}
@@ -102,7 +104,7 @@ export function HeroSection() {
 
         <Link
           href="/onboarding"
-          className="w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm text-center shadow-lg hover:opacity-90 active:scale-95 transition-all mb-3"
+          className="block w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm text-center shadow-lg hover:opacity-90 active:scale-95 transition-all mb-3"
         >
           Cek Sekarang — Gratis →
         </Link>
