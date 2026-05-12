@@ -14,6 +14,6 @@ export function getCityMultiplier(tier: CityTier): number {
   return map[tier]
 }
 
-export const TIER_A_CITIES = [...TIER_A]
-export const TIER_B_CITIES = [...TIER_B]
-export const ALL_CITIES = [...TIER_A, ...TIER_B]
+export const TIER_A_CITIES = Array.from(TIER_A)
+export const TIER_B_CITIES = Array.from(TIER_B)
+export const ALL_CITIES = [...Array.from(TIER_A), ...Array.from(TIER_B)]
