@@ -24,6 +24,7 @@ export function StepStyle() {
           <button
             key={s.value}
             onClick={() => setField('weddingStyle', s.value)}
+            aria-pressed={weddingStyle === s.value}
             className={`w-full flex items-center gap-4 bg-white border-2 rounded-2xl px-4 py-3.5 text-left transition ${
               weddingStyle === s.value
                 ? 'border-nikah-deep bg-[#F5E8EC]'

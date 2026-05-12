@@ -44,6 +44,7 @@ export function StepEventPriority() {
             <button
               key={e.value}
               onClick={() => setField('eventType', e.value)}
+              aria-pressed={eventType === e.value}
               className={`flex flex-col items-center gap-1.5 bg-white border-2 rounded-2xl p-3 transition ${
                 eventType === e.value ? 'border-nikah-deep bg-[#F5E8EC]' : 'border-nikah-border hover:border-nikah-mauve'
               }`}
@@ -62,6 +63,7 @@ export function StepEventPriority() {
             <button
               key={p.value}
               onClick={() => setField('planningPriority', p.value)}
+              aria-pressed={planningPriority === p.value}
               className={`w-full flex flex-col bg-white border-2 rounded-2xl px-4 py-3 text-left transition ${
                 planningPriority === p.value ? 'border-nikah-deep bg-[#F5E8EC]' : 'border-nikah-border hover:border-nikah-mauve'
               }`}
