@@ -7,10 +7,10 @@ export function FinalCTA() {
         <p className="text-nikah-pink text-xs font-bold uppercase tracking-widest mb-3">
           Gratis · Tanpa Daftar
         </p>
-        <h2 className="text-white text-2xl font-extrabold mb-3 leading-snug">
+        <h2 className="font-extrabold tracking-tight text-white text-2xl mb-3 leading-snug">
           Mulai Cek Wedding Plan Kamu
         </h2>
-        <p className="text-nikah-pink/80 text-sm font-light mb-6 leading-relaxed">
+        <p className="text-nikah-pink/80 text-base font-light mb-6 leading-relaxed">
           Jawab 3 langkah singkat dan dapatkan Wedding Readiness Score kamu sekarang.
         </p>
         <Link

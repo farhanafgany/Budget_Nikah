@@ -28,7 +28,7 @@ export function ScoreHero({ score, label, totalBudget, weddingDate }: Props) {
   return (
     <div className="bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE] rounded-3xl p-7 text-center">
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-3">Hasil Analisis</p>
-      <div className="text-[64px] font-extrabold text-nikah-deep leading-none mb-2">{score}</div>
+      <div className="text-[64px] text-nikah-deep leading-none mb-2">{score}</div>
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-3">Wedding Readiness Score</p>
       <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold mb-4 ${LABEL_COLORS[label]}`}>
         <span aria-hidden="true">✓</span> {label}

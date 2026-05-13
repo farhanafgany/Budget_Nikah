@@ -5,7 +5,7 @@ import { useState } from 'react'
 const TABS = [
   {
     id:              'score',
-    label:           '📊 Score',
+    label:           'Score',
     eyebrow:         'Fitur Utama',
     title:           'Wedding Readiness Score',
     description:     'Tidak perlu tebak-tebak lagi. Masukkan data weddingmu, dapat angka 0–100 yang jelas kenapa segitu — bukan angka random.',
@@ -16,7 +16,7 @@ const TABS = [
   },
   {
     id:              'tabungan',
-    label:           '💰 Tabungan',
+    label:           'Tabungan',
     eyebrow:         'Tracker Keuangan',
     title:           'Tabungan Nikah',
     description:     'Pantau progress tabungan dan tahu harus nabung berapa per bulan supaya target tercapai tepat waktu.',
@@ -27,7 +27,7 @@ const TABS = [
   },
   {
     id:              'checklist',
-    label:           '✅ Checklist',
+    label:           'Checklist',
     eyebrow:         'Timeline Persiapan',
     title:           'Checklist 50+ Item',
     description:     'Timeline dari 12 bulan sampai H-1 minggu. Tidak ada yang terlewat.',
@@ -38,7 +38,7 @@ const TABS = [
   },
   {
     id:              'seserahan',
-    label:           '💍 Seserahan',
+    label:           'Seserahan',
     eyebrow:         'Daftar Seserahan',
     title:           'Seserahan List',
     description:     'Semua item seserahan dalam satu daftar lengkap, dengan status sudah/belum untuk tiap item.',
@@ -60,7 +60,7 @@ function ScreenshotSlot({
   const [error, setError]   = useState(false)
 
   return (
-    <div className="border border-nikah-border rounded-2xl overflow-hidden shadow-md bg-white flex-shrink-0 w-full md:w-[280px]">
+    <div className="border border-nikah-border rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(107,53,69,0.12)] bg-white flex-shrink-0 w-full md:w-[280px]">
       <div className="bg-nikah-deep px-4 py-2.5">
         <span className="text-white text-[10px] font-bold">{title}</span>
       </div>
@@ -97,18 +97,18 @@ export function FeatureShowcase() {
         <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve text-center mb-2">
           Semua dalam satu tempat
         </p>
-        <h2 className="text-2xl md:text-3xl font-extrabold text-nikah-text text-center mb-8">
+        <h2 className="font-extrabold tracking-tight text-3xl md:text-4xl text-nikah-text text-center mb-8">
           Yang kamu dapat
         </h2>
 
         {/* Tab strip */}
-        <div className="flex bg-white border border-nikah-border rounded-full p-1 mb-8 gap-1">
+        <div className="flex bg-white border border-nikah-border rounded-full p-1.5 mb-8 gap-1">
           {TABS.map((t, i) => (
             <button
               key={t.id}
               onClick={() => setActive(i)}
               aria-pressed={active === i}
-              className={`flex-1 py-2 px-1 rounded-full text-[11px] font-semibold transition-all ${
+              className={`flex-1 py-2.5 px-1.5 rounded-full text-[12px] font-bold transition-all ${
                 active === i
                   ? 'bg-nikah-deep text-white'
                   : 'text-nikah-muted hover:text-nikah-text'
@@ -125,8 +125,8 @@ export function FeatureShowcase() {
             <p className="text-[10px] font-bold uppercase tracking-widest text-nikah-mauve mb-2">
               {tab.eyebrow}
             </p>
-            <h3 className="text-xl md:text-2xl font-extrabold text-nikah-text mb-3">{tab.title}</h3>
-            <p className="text-sm md:text-base text-nikah-muted font-light leading-relaxed mb-6">
+            <h3 className="font-extrabold tracking-tight text-xl md:text-2xl text-nikah-text mb-3">{tab.title}</h3>
+            <p className="text-base md:text-lg text-nikah-muted font-light leading-relaxed mb-6">
               {tab.description}
             </p>
             <ul className="space-y-3" aria-label={`Fitur ${tab.title}`}>
@@ -140,7 +140,7 @@ export function FeatureShowcase() {
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
-                  <span className="text-sm md:text-base font-medium text-nikah-text">{b}</span>
+                  <span className="text-base md:text-lg font-medium text-nikah-text">{b}</span>
                 </li>
               ))}
             </ul>

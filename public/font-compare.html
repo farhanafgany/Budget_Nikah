@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Font Compare — Playfair vs DM Serif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:     #FAF5F5;
+    --pink:   #E8C0CC;
+    --mauve:  #C07888;
+    --deep:   #6B3545;
+    --text:   #261520;
+    --muted:  #9A7888;
+    --border: #EDE4E6;
+  }
+  body { background: #f0e8ec; font-family: 'Plus Jakarta Sans', sans-serif; padding: 32px 16px; }
+
+  .page-title {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mauve);
+    margin-bottom: 32px;
+  }
+
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .col-label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--deep);
+    margin-bottom: 12px;
+    padding: 8px 16px;
+    background: var(--deep);
+    color: white;
+    border-radius: 100px;
+  }
+
+  /* ─── HERO BLOCK ─── */
+  .hero {
+    background: linear-gradient(to bottom, #F5E8EC, #EDD6DE);
+    border-radius: 20px;
+    padding: 28px 24px;
+    margin-bottom: 12px;
+  }
+  .eyebrow {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mauve);
+    margin-bottom: 10px;
+  }
+  .hero h1 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .hero p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .btn {
+    display: block;
+    background: var(--deep);
+    color: white;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 12px 20px;
+    border-radius: 100px;
+    text-align: center;
+    border: none;
+    cursor: default;
+  }
+
+  /* ─── SCORE BLOCK ─── */
+  .score-block {
+    background: linear-gradient(to bottom, #F5E8EC, #EDD6DE);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .score-num {
+    font-size: 72px;
+    font-weight: 800;
+    color: var(--deep);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .score-sub {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mauve);
+    margin-bottom: 8px;
+  }
+  .badge {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    background: #dcfce7;
+    color: #15803d;
+    padding: 3px 12px;
+    border-radius: 100px;
+  }
+
+  /* ─── INSIGHT CARD ─── */
+  .insight {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 12px;
+  }
+  .insight-tag {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: #FEE2E2;
+    color: #b91c1c;
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-bottom: 8px;
+  }
+  .insight h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .insight p {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ─── SECTION HEADING ─── */
+  .section-heading {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .section-heading .eyebrow { margin-bottom: 8px; }
+  .section-heading h2 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.25;
+  }
+
+  /* Font overrides */
+  .playfair h1,
+  .playfair h2,
+  .playfair h3,
+  .playfair .score-num { font-family: 'Playfair Display', serif; }
+  .playfair .hero p,
+  .playfair .insight p { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  .dm h1,
+  .dm h2,
+  .dm h3,
+  .dm .score-num { font-family: 'DM Serif Display', serif; }
+  .dm .hero p,
+  .dm .insight p { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  @media (max-width: 600px) {
+    .columns { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<p class="page-title">Perbandingan Font — Playfair Display vs DM Serif Display</p>
+
+<div class="columns">
+
+  <!-- PLAYFAIR -->
+  <div class="playfair">
+    <div class="col-label">Playfair Display</div>
+
+    <div class="hero">
+      <div class="eyebrow">Wedding Financial Planner · Indonesia</div>
+      <h1>Cek Apakah Rencana Weddingmu Sudah Realistis.</h1>
+      <p>Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.</p>
+      <button class="btn">Cek Sekarang — Gratis →</button>
+    </div>
+
+    <div class="score-block">
+      <div class="score-num">73</div>
+      <div class="score-sub">Wedding Readiness Score</div>
+      <span class="badge">Healthy</span>
+    </div>
+
+    <div class="section-heading">
+      <div class="eyebrow">Semua dalam satu tempat</div>
+      <h2>Yang kamu dapat</h2>
+    </div>
+
+    <div class="insight">
+      <span class="insight-tag">Perhatian</span>
+      <h3>Budget per tamu terlalu tipis untuk gaya Elegant</h3>
+      <p>Dengan 300 tamu dan budget Rp 80jt, kamu hanya punya Rp 267rb/tamu — di bawah standar minimum gaya Elegant (Rp 350rb+).</p>
+    </div>
+  </div>
+
+  <!-- DM SERIF -->
+  <div class="dm">
+    <div class="col-label">DM Serif Display</div>
+
+    <div class="hero">
+      <div class="eyebrow">Wedding Financial Planner · Indonesia</div>
+      <h1>Cek Apakah Rencana Weddingmu Sudah Realistis.</h1>
+      <p>Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.</p>
+      <button class="btn">Cek Sekarang — Gratis →</button>
+    </div>
+
+    <div class="score-block">
+      <div class="score-num">73</div>
+      <div class="score-sub">Wedding Readiness Score</div>
+      <span class="badge">Healthy</span>
+    </div>
+
+    <div class="section-heading">
+      <div class="eyebrow">Semua dalam satu tempat</div>
+      <h2>Yang kamu dapat</h2>
+    </div>
+
+    <div class="insight">
+      <span class="insight-tag">Perhatian</span>
+      <h3>Budget per tamu terlalu tipis untuk gaya Elegant</h3>
+      <p>Dengan 300 tamu dan budget Rp 80jt, kamu hanya punya Rp 267rb/tamu — di bawah standar minimum gaya Elegant (Rp 350rb+).</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

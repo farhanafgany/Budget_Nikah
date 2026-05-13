@@ -15,8 +15,8 @@ function PhoneMockup() {
 
   return (
     <div className="inline-block">
-      <div className="bg-nikah-text rounded-[32px] p-1.5 shadow-[0_20px_60px_rgba(107,53,69,0.35)]">
-        <div className="bg-nikah-bg rounded-[28px] overflow-hidden w-[220px] md:w-[280px]">
+      <div className="bg-nikah-text rounded-[32px] p-1.5 shadow-[0_24px_80px_rgba(107,53,69,0.45),0_4px_20px_rgba(107,53,69,0.2)]">
+        <div className="bg-nikah-bg rounded-[28px] overflow-hidden w-[240px] md:w-[320px]">
 
           {/* Status bar */}
           <div className="bg-nikah-deep px-3 py-2 flex items-center justify-between">
@@ -25,7 +25,7 @@ function PhoneMockup() {
           </div>
 
           {/* Score area */}
-          <div className="relative h-[240px] md:h-[320px] bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE]">
+          <div className="relative h-[280px] md:h-[380px] bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE]">
             {!error && (
               <Image
                 src="/images/preview-result.png"
@@ -38,7 +38,7 @@ function PhoneMockup() {
             )}
             {(!loaded || error) && (
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <div className="text-[48px] font-extrabold text-nikah-deep leading-none">73</div>
+                <div className="text-[60px] text-nikah-deep leading-none">73</div>
                 <div className="text-[7px] font-bold tracking-widest text-nikah-mauve uppercase mt-1 mb-1.5">
                   Wedding Readiness Score
                 </div>
@@ -72,7 +72,7 @@ export function HeroSection() {
   return (
     <section
       aria-label="Hero"
-      className="relative overflow-hidden bg-gradient-to-b from-[#F5E8EC] via-[#EDD6DE] to-nikah-bg pt-28 pb-16 px-6"
+      className="relative overflow-hidden bg-gradient-to-b from-[#F5E8EC] via-[#EDD6DE] to-nikah-bg pt-32 pb-24 px-6"
     >
       {/* Decorative blobs */}
       <div
@@ -92,17 +92,17 @@ export function HeroSection() {
             Wedding Financial Planner · Indonesia
           </p>
 
-          <h1 className="text-3xl md:text-4xl font-extrabold text-nikah-text leading-tight mb-5">
+          <h1 className="font-extrabold tracking-tight text-[36px] md:text-[46px] text-nikah-text leading-tight mb-6">
             Cek Apakah Rencana Weddingmu Sudah Realistis.
           </h1>
 
-          <p className="text-sm md:text-base text-nikah-muted font-light leading-relaxed mb-8 max-w-sm">
+          <p className="text-lg md:text-xl text-nikah-muted font-light leading-relaxed mb-10 max-w-sm">
             Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.
           </p>
 
           <Link
             href="/onboarding"
-            className="block w-full md:w-auto bg-nikah-deep text-white font-bold py-4 px-8 rounded-full text-sm text-center shadow-lg hover:opacity-90 active:scale-95 transition-all mb-3"
+            className="block w-full md:w-auto bg-nikah-deep text-white font-bold py-5 px-10 rounded-full text-base text-center shadow-[0_8px_30px_rgba(107,53,69,0.4)] hover:shadow-[0_12px_40px_rgba(107,53,69,0.5)] hover:opacity-95 active:scale-95 transition-all mb-3"
           >
             Cek Sekarang — Gratis →
           </Link>

@@ -23,7 +23,7 @@ export function HowItWorks() {
         <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve text-center mb-2">
           Cara Kerja
         </p>
-        <h2 className="text-2xl md:text-3xl font-extrabold text-nikah-text text-center mb-12">
+        <h2 className="font-extrabold tracking-tight text-3xl md:text-4xl text-nikah-text text-center mb-12">
           Mulai dalam 3 langkah
         </h2>
         <div className="space-y-8">
@@ -38,8 +38,8 @@ export function HowItWorks() {
                 )}
               </div>
               <div className="pt-2">
-                <h3 className="text-base md:text-lg font-bold text-nikah-text mb-1">{step.title}</h3>
-                <p className="text-sm md:text-base text-nikah-muted font-light leading-relaxed">{step.description}</p>
+                <h3 className="text-lg md:text-xl font-semibold text-nikah-text mb-1">{step.title}</h3>
+                <p className="text-base md:text-lg text-nikah-muted font-light leading-relaxed">{step.description}</p>
               </div>
             </div>
           ))}

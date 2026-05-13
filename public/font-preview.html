@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Font Preview — BudgetNikah</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,700;0,800;1,400&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:     #FAF5F5;
+    --pink:   #E8C0CC;
+    --mauve:  #C07888;
+    --deep:   #6B3545;
+    --text:   #261520;
+    --muted:  #9A7888;
+    --border: #EDE4E6;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    padding: 40px 20px;
+  }
+
+  h1 {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mauve);
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .subtitle {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(107,53,69,0.08);
+  }
+
+  .card-header {
+    background: var(--deep);
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-header span {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    color: white;
+  }
+  .card-header .tag {
+    font-size: 9px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  .card-body {
+    padding: 24px 22px 20px;
+  }
+
+  .eyebrow {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--mauve);
+    margin-bottom: 10px;
+  }
+
+  .card-body h2 {
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .card-body p {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 16px;
+  }
+
+  .score-badge {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .score-num {
+    font-size: 48px;
+    font-weight: 800;
+    color: var(--deep);
+    line-height: 1;
+  }
+  .score-label {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--mauve);
+    text-transform: uppercase;
+  }
+
+  .btn {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    display: block;
+    width: 100%;
+    background: var(--deep);
+    color: white;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 12px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 16px 0;
+  }
+
+  .meta {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+  }
+
+  /* Font-specific */
+  .f-cormorant h2, .f-cormorant .score-num { font-family: 'Cormorant Garamond', serif; }
+  .f-cormorant p                           { font-family: 'Cormorant Garamond', serif; font-size: 14px; }
+  .f-playfair h2, .f-playfair .score-num  { font-family: 'Playfair Display', serif; }
+  .f-playfair p                            { font-family: 'Playfair Display', serif; font-size: 14px; }
+  .f-lora h2, .f-lora .score-num          { font-family: 'Lora', serif; }
+  .f-lora p                               { font-family: 'Lora', serif; }
+  .f-dm h2, .f-dm .score-num             { font-family: 'DM Serif Display', serif; }
+  .f-dm p                                { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 12px; }
+  .f-jakarta h2, .f-jakarta .score-num   { font-family: 'Plus Jakarta Sans', sans-serif; }
+  .f-jakarta p                           { font-family: 'Plus Jakarta Sans', sans-serif; }
+</style>
+</head>
+<body>
+
+<h1>Font Preview — BudgetNikah</h1>
+<p class="subtitle">UI tetap Plus Jakarta Sans · hanya heading & body yang berubah · buka di browser untuk melihat render aslinya</p>
+
+<div class="grid">
+
+  <!-- 1. Cormorant Garamond -->
+  <div class="card f-cormorant">
+    <div class="card-header">
+      <span>Cormorant Garamond</span>
+      <span class="tag">Serif Mewah</span>
+    </div>
+    <div class="card-body">
+      <div class="eyebrow">Wedding Readiness Score</div>
+      <div class="score-badge">
+        <span class="score-num">73</span>
+        <span class="score-label">/ 100</span>
+      </div>
+      <h2>Cek Apakah Rencana Weddingmu Sudah Realistis.</h2>
+      <hr class="divider">
+      <p>Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.</p>
+      <button class="btn">Cek Sekarang — Gratis →</button>
+      <p class="meta" style="margin-top:10px">Tanpa login · Selesai 2 menit</p>
+    </div>
+  </div>
+
+  <!-- 2. Playfair Display -->
+  <div class="card f-playfair">
+    <div class="card-header">
+      <span>Playfair Display</span>
+      <span class="tag">Serif Editorial</span>
+    </div>
+    <div class="card-body">
+      <div class="eyebrow">Wedding Readiness Score</div>
+      <div class="score-badge">
+        <span class="score-num">73</span>
+        <span class="score-label">/ 100</span>
+      </div>
+      <h2>Cek Apakah Rencana Weddingmu Sudah Realistis.</h2>
+      <hr class="divider">
+      <p>Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.</p>
+      <button class="btn">Cek Sekarang — Gratis →</button>
+      <p class="meta" style="margin-top:10px">Tanpa login · Selesai 2 menit</p>
+    </div>
+  </div>
+
+  <!-- 3. Lora -->
+  <div class="card f-lora">
+    <div class="card-header">
+      <span>Lora</span>
+      <span class="tag">Serif Hangat</span>
+    </div>
+    <div class="card-body">
+      <div class="eyebrow">Wedding Readiness Score</div>
+      <div class="score-badge">
+        <span class="score-num">73</span>
+        <span class="score-label">/ 100</span>
+      </div>
+      <h2>Cek Apakah Rencana Weddingmu Sudah Realistis.</h2>
+      <hr class="divider">
+      <p>Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.</p>
+      <button class="btn">Cek Sekarang — Gratis →</button>
+      <p class="meta" style="margin-top:10px">Tanpa login · Selesai 2 menit</p>
+    </div>
+  </div>
+
+  <!-- 4. DM Serif Display -->
+  <div class="card f-dm">
+    <div class="card-header">
+      <span>DM Serif Display</span>
+      <span class="tag">Serif Modern</span>
+    </div>
+    <div class="card-body">
+      <div class="eyebrow">Wedding Readiness Score</div>
+      <div class="score-badge">
+        <span class="score-num">73</span>
+        <span class="score-label">/ 100</span>
+      </div>
+      <h2>Cek Apakah Rencana Weddingmu Sudah Realistis.</h2>
+      <hr class="divider">
+      <p>Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.</p>
+      <button class="btn">Cek Sekarang — Gratis →</button>
+      <p class="meta" style="margin-top:10px">Tanpa login · Selesai 2 menit</p>
+    </div>
+  </div>
+
+  <!-- 5. Plus Jakarta Sans (current) -->
+  <div class="card f-jakarta" style="border-color: var(--mauve)">
+    <div class="card-header" style="background: var(--mauve)">
+      <span>Plus Jakarta Sans</span>
+      <span class="tag">Saat ini</span>
+    </div>
+    <div class="card-body">
+      <div class="eyebrow">Wedding Readiness Score</div>
+      <div class="score-badge">
+        <span class="score-num">73</span>
+        <span class="score-label">/ 100</span>
+      </div>
+      <h2>Cek Apakah Rencana Weddingmu Sudah Realistis.</h2>
+      <hr class="divider">
+      <p>Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.</p>
+      <button class="btn">Cek Sekarang — Gratis →</button>
+      <p class="meta" style="margin-top:10px">Tanpa login · Selesai 2 menit</p>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
