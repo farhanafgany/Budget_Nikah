@@ -3,6 +3,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===== BudgetNikah brand tokens ===== */
+
+/* Fraunces italic accent — applied globally to em inside headings */
+h1 em, h2 em, h3 em, h4 em {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--nikah-deep, #6B3545);
+}
+
+:root {
+  --nikah-bg:     #FAF5F5;
+  --nikah-pink:   #E8C0CC;
+  --nikah-mauve:  #C07888;
+  --nikah-deep:   #6B3545;
+  --nikah-gold:   #C8A860;
+  --nikah-text:   #261520;
+  --nikah-muted:  #9A7888;
+  --nikah-border: #EDE4E6;
+  --nikah-card:   #FFFFFF;
+
+  /* Density tokens — cozy default */
+  --d-pad-page:    32px;
+  --d-pad-card:    28px;
+  --d-radius:      26px;
+  --d-radius-sm:   18px;
+  --d-gap-section: 112px;
+  --d-gap-card:    22px;
+  --d-gap-row:     18px;
+  --d-row-pad:     14px;
+  --d-h1:          56px;
+  --d-h2:          42px;
+  --d-h3:          20px;
+  --d-body:        18px;
+  --d-small:       15px;
+  --d-eyebrow:     12px;
+}
+
 @layer base {
   * {
     box-sizing: border-box;
@@ -77,5 +115,20 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 80px;
+  }
+  html,
+  body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }

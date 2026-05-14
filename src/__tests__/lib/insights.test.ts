@@ -17,27 +17,27 @@ describe('generateInsights', () => {
     expect(insights.length).toBeLessThanOrEqual(5)
   })
 
-  it('shows catering_dominant insight when catering > 45%', () => {
+  it('shows katering warn when catering > 45%', () => {
     const input = { ...base, weddingStyle: 'traditional' }
     const allocation = calculateAllocation(input)
     const insights = generateInsights({ ...input, allocation, score: 60 })
-    expect(insights.some(i => i.type === 'catering_dominant')).toBe(true)
+    expect(insights.some(i => i.kind === 'warn' && i.title.toLowerCase().includes('katering'))).toBe(true)
   })
 
-  it('shows luxury_budget_mismatch when luxury + low budget', () => {
+  it('shows luxury warn when luxury + low budget', () => {
     const input = { ...base, weddingStyle: 'luxury', totalBudget: 50_000_000 }
     const allocation = calculateAllocation(input)
     const insights = generateInsights({ ...input, allocation, score: 30 })
-    expect(insights.some(i => i.type === 'luxury_budget_mismatch')).toBe(true)
+    expect(insights.some(i => i.kind === 'warn' && i.title.toLowerCase().includes('luxury'))).toBe(true)
   })
 
-  it('each insight has message, type, and icon', () => {
+  it('each insight has kind, title, and body', () => {
     const allocation = calculateAllocation(base)
     const insights = generateInsights({ ...base, allocation, score: 65 })
     insights.forEach(i => {
-      expect(i).toHaveProperty('message')
-      expect(i).toHaveProperty('type')
-      expect(i).toHaveProperty('icon')
+      expect(i).toHaveProperty('kind')
+      expect(i).toHaveProperty('title')
+      expect(i).toHaveProperty('body')
     })
   })
 })

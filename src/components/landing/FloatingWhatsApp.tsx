@@ -2,7 +2,7 @@ export function FloatingWhatsApp() {
   const waNumber  = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
   const waMessage = encodeURIComponent(
     process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE ??
-    'Halo, saya ingin membeli akses BudgetNikah. Mohon konfirmasi.'
+    'Halo, saya ingin tanya lebih lanjut tentang BudgetNikah.'
   )
 
   if (!waNumber) return null

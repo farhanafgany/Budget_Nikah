@@ -1,7 +1,5 @@
 'use client'
-import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
 
 const PHONE_STATS = [
   { val: '4,6jt',  lbl: 'nabung/bln' },
@@ -10,54 +8,60 @@ const PHONE_STATS = [
 ]
 
 function PhoneMockup() {
-  const [loaded, setLoaded] = useState(false)
-  const [error, setError]   = useState(false)
-
   return (
-    <div className="inline-block">
-      <div className="bg-nikah-text rounded-[32px] p-1.5 shadow-[0_24px_80px_rgba(107,53,69,0.45),0_4px_20px_rgba(107,53,69,0.2)]">
-        <div className="bg-nikah-bg rounded-[28px] overflow-hidden w-[240px] md:w-[320px]">
+    <div className="inline-flex flex-col max-[860px]:justify-self-center" style={{ transform: 'rotate(-2deg)' }}>
+      <div
+        className="bg-nikah-text"
+        style={{
+          borderRadius: 38,
+          padding: 8,
+          boxShadow: '0 30px 80px rgba(107,53,69,0.32), 0 0 0 1px rgba(107,53,69,0.08)',
+        }}
+      >
+        <div className="bg-nikah-bg overflow-hidden w-[280px]" style={{ borderRadius: 30 }}>
 
           {/* Status bar */}
-          <div className="bg-nikah-deep px-3 py-2 flex items-center justify-between">
-            <span className="text-white text-[8px] font-bold">BudgetNikah</span>
-            <span className="text-white/50 text-[7px]" aria-hidden="true">9:41</span>
+          <div className="bg-nikah-deep flex items-center justify-between text-white" style={{ padding: '8px 14px' }}>
+            <span className="text-[10px] font-extrabold">BudgetNikah</span>
+            <span className="text-[9px] opacity-50" aria-hidden="true">9:41</span>
           </div>
 
           {/* Score area */}
-          <div className="relative h-[280px] md:h-[380px] bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE]">
-            {!error && (
-              <Image
-                src="/images/preview-result.png"
-                alt="Screenshot hasil analisis BudgetNikah"
-                fill
-                className={`object-cover object-top transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
-                onLoad={() => setLoaded(true)}
-                onError={() => setError(true)}
-              />
-            )}
-            {(!loaded || error) && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <div className="text-[60px] text-nikah-deep leading-none">73</div>
-                <div className="text-[7px] font-bold tracking-widest text-nikah-mauve uppercase mt-1 mb-1.5">
-                  Wedding Readiness Score
-                </div>
-                <span className="inline-block text-[8px] bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full">
-                  Healthy
-                </span>
-              </div>
-            )}
+          <div className="text-center bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE]" style={{ padding: '24px 16px 18px' }}>
+            <div
+              className="text-[96px] text-nikah-deep leading-none"
+              style={{
+                fontFamily: 'var(--font-fraunces, Georgia, serif)',
+                fontWeight: 500,
+                letterSpacing: '-0.03em',
+              }}
+            >
+              73
+            </div>
+            <div
+              className="font-extrabold text-nikah-mauve uppercase"
+              style={{ fontSize: 8, letterSpacing: '0.2em', margin: '6px 0 8px' }}
+            >
+              Wedding Readiness
+            </div>
+            <span
+              className="inline-block bg-[#DFF3E2] text-[#2F7A3F] font-extrabold rounded-full"
+              style={{ fontSize: 9, padding: '3px 9px', letterSpacing: '0.04em' }}
+            >
+              Healthy
+            </span>
           </div>
 
           {/* Stat row */}
-          <div className="flex border-t border-nikah-border">
+          <div className="grid grid-cols-3 border-t border-nikah-border">
             {PHONE_STATS.map((s, i) => (
               <div
                 key={s.lbl}
-                className={`flex-1 px-1 py-2 text-center ${i < 2 ? 'border-r border-nikah-border' : ''}`}
+                className={`text-center ${i < 2 ? 'border-r border-nikah-border' : ''}`}
+                style={{ padding: '10px 6px' }}
               >
-                <div className="text-[10px] font-extrabold text-nikah-deep leading-none">{s.val}</div>
-                <div className="text-[6px] text-nikah-muted mt-0.5">{s.lbl}</div>
+                <div className="font-extrabold text-nikah-deep leading-none" style={{ fontSize: 12 }}>{s.val}</div>
+                <div className="text-nikah-muted" style={{ fontSize: 8, marginTop: 2 }}>{s.lbl}</div>
               </div>
             ))}
           </div>
@@ -72,47 +76,69 @@ export function HeroSection() {
   return (
     <section
       aria-label="Hero"
-      className="relative overflow-hidden bg-gradient-to-b from-[#F5E8EC] via-[#EDD6DE] to-nikah-bg pt-32 pb-24 px-6"
+      className="relative overflow-hidden"
+      style={{
+        padding: 'calc(var(--d-gap-section) + 24px) var(--d-pad-page) var(--d-gap-section)',
+        background: 'radial-gradient(ellipse at 30% 0%, #F5E8EC 0%, transparent 55%), radial-gradient(ellipse at 100% 100%, #EDD6DE 0%, transparent 60%), #FAF5F5',
+      }}
     >
-      {/* Decorative blobs */}
-      <div
-        className="pointer-events-none absolute -top-24 -left-24 w-72 h-72 rounded-full bg-[#EDD6DE]/50 blur-3xl"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none absolute -bottom-16 -right-16 w-64 h-64 rounded-full bg-[#E8C0CC]/40 blur-3xl"
-        aria-hidden="true"
-      />
 
-      <div className="relative z-10 max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-10 md:gap-16">
+      <div
+        className="relative z-10 max-w-[1080px] mx-auto grid grid-cols-[1.05fr_0.95fr] items-center max-[860px]:grid-cols-1 max-[860px]:text-center min-w-0"
+        style={{ gap: 'clamp(34px, 8vw, 60px)' }}
+      >
 
         {/* Kiri: copy + CTA */}
-        <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
-          <p className="text-[10px] font-bold uppercase tracking-widest text-nikah-mauve mb-4">
+        <div className="min-w-0">
+          <span className="text-xs font-bold uppercase text-nikah-mauve" style={{ letterSpacing: '0.16em' }}>
             Wedding Financial Planner · Indonesia
-          </p>
+          </span>
 
-          <h1 className="font-extrabold tracking-tight text-[36px] md:text-[46px] text-nikah-text leading-tight mb-6">
-            Cek Apakah Rencana Weddingmu Sudah Realistis.
+          <h1
+            className="font-extrabold text-nikah-text leading-[1.04] max-[860px]:text-balance"
+            style={{
+              fontSize: 'clamp(36px, 10.5vw, var(--d-h1))',
+              letterSpacing: '-0.025em',
+              margin: '16px 0 18px',
+              overflowWrap: 'break-word',
+            }}
+          >
+            Jangan Tebak-Tebak Soal{' '}
+            <em className="md:whitespace-nowrap">Budget Nikahmu.</em>
           </h1>
 
-          <p className="text-lg md:text-xl text-nikah-muted font-light leading-relaxed mb-10 max-w-sm">
-            Dapat Wedding Readiness Score, estimasi budget riil, dan rencana nabung — dalam 2 menit.
+          <p
+            className="text-nikah-muted font-light max-w-[440px] max-[860px]:mx-auto"
+            style={{ fontSize: 'var(--d-body)', lineHeight: 1.55, margin: '0 0 28px' }}
+          >
+            Tahu persis berapa yang kamu butuhkan — dan apakah kamu sudah cukup siap. Selesai dalam 2 menit, tanpa login.
           </p>
 
-          <Link
-            href="/onboarding"
-            className="block w-full md:w-auto bg-nikah-deep text-white font-bold py-5 px-10 rounded-full text-base text-center shadow-[0_8px_30px_rgba(107,53,69,0.4)] hover:shadow-[0_12px_40px_rgba(107,53,69,0.5)] hover:opacity-95 active:scale-95 transition-all mb-3"
-          >
-            Cek Sekarang — Gratis →
-          </Link>
-          <p className="text-xs text-nikah-muted">Tanpa login · Selesai 2 menit</p>
+          <div className="flex flex-col items-start max-[860px]:items-center" style={{ gap: 10 }}>
+            <Link
+              href="/onboarding"
+              className="inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full hover:opacity-90 active:scale-95 transition-all"
+              style={{
+                gap: 6,
+                padding: '18px 32px',
+                fontSize: 15,
+                boxShadow: '0 6px 16px rgba(107,53,69,0.22)',
+              }}
+            >
+              Cek Sekarang — Gratis →
+            </Link>
+            <div className="inline-flex items-center gap-[14px] text-xs text-nikah-muted" style={{ marginTop: 4 }}>
+              <span>Tanpa login</span>
+              <span className="w-1 h-1 rounded-full bg-nikah-mauve inline-block flex-shrink-0" aria-hidden="true" />
+              <span>Selesai 2 menit</span>
+              <span className="w-1 h-1 rounded-full bg-nikah-mauve inline-block flex-shrink-0" aria-hidden="true" />
+              <span>Gratis</span>
+            </div>
+          </div>
         </div>
 
         {/* Kanan: phone mockup */}
-        <div className="flex-shrink-0 flex justify-center">
-          <PhoneMockup />
-        </div>
+        <PhoneMockup />
 
       </div>
 

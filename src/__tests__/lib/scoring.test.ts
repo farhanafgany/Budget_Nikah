@@ -42,10 +42,10 @@ describe('calculateScore', () => {
     expect(label).toBe('High Risk')
   })
 
-  it('Tier A city scores higher than Tier C for same inputs', () => {
-    const tierA = calculateScore(makeInput({ weddingCity: 'Jakarta' }))
-    const tierC = calculateScore(makeInput({ weddingCity: 'Purwokerto' }))
-    expect(tierA.score).toBeGreaterThan(tierC.score)
+  it('Tier A city scores lower than Tier C for the same tight budget', () => {
+    const tierA = calculateScore(makeInput({ totalBudget: 50_000_000, guestCount: 300, weddingCity: 'Jakarta' }))
+    const tierC = calculateScore(makeInput({ totalBudget: 50_000_000, guestCount: 300, weddingCity: 'Purwokerto' }))
+    expect(tierA.score).toBeLessThan(tierC.score)
   })
 })
 

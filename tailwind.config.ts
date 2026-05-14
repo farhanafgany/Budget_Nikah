@@ -56,7 +56,8 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       fontFamily: {
-        jakarta: ['var(--font-jakarta)', 'sans-serif'],
+        jakarta:  ['var(--font-jakarta)', 'sans-serif'],
+        fraunces: ['var(--font-fraunces)', 'Georgia', 'serif'],
       },
     },
   },

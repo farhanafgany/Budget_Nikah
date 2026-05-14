@@ -18,27 +18,43 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="cara-kerja" className="px-6 py-20 bg-white">
-      <div className="max-w-xl mx-auto">
-        <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve text-center mb-2">
+    <section id="cara-kerja" className="px-6 md:px-8 py-20 md:py-28 bg-nikah-bg">
+      <div className="max-w-[1080px] mx-auto">
+        <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve text-center mb-2" style={{ letterSpacing: '0.16em' }}>
           Cara Kerja
         </p>
-        <h2 className="font-extrabold tracking-tight text-3xl md:text-4xl text-nikah-text text-center mb-12">
-          Mulai dalam 3 langkah
+        <h2 className="font-extrabold tracking-tight text-[34px] md:text-[42px] text-nikah-text text-center mb-12 leading-tight" style={{ letterSpacing: '-0.02em' } as React.CSSProperties}>
+          Mulai dalam <em>3 langkah</em>
         </h2>
-        <div className="space-y-8">
+
+        <div className="max-w-[660px] mx-auto">
           {STEPS.map((step, i) => (
             <div key={step.number} className="flex gap-5 items-start">
-              <div className="flex flex-col items-center flex-shrink-0">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-[#F5E8EC] to-[#EDD6DE] flex items-center justify-center shadow-sm border border-[#E8C0CC]">
-                  <span className="text-lg font-extrabold text-nikah-deep">{step.number}</span>
+              {/* Left column: circle + connector */}
+              <div className={`flex flex-col items-center flex-shrink-0 self-stretch ${i < STEPS.length - 1 ? '' : ''}`}>
+                <div
+                  className="rounded-full bg-gradient-to-br from-[#F5E8EC] to-[#EDD6DE] flex items-center justify-center border border-[#E8C0CC] flex-shrink-0"
+                  style={{ width: 52, height: 52 }}
+                >
+                  <span
+                    className="text-nikah-deep"
+                    style={{ fontFamily: 'var(--font-fraunces, Georgia, serif)', fontWeight: 600, fontSize: 22 }}
+                  >
+                    {step.number}
+                  </span>
                 </div>
                 {i < STEPS.length - 1 && (
-                  <div className="w-px h-8 bg-gradient-to-b from-[#E8C0CC] to-transparent mt-2" aria-hidden="true" />
+                  <div
+                    className="flex-1 mt-2"
+                    style={{ width: 2, background: 'linear-gradient(180deg, #E8C0CC, transparent)', minHeight: 24 }}
+                    aria-hidden="true"
+                  />
                 )}
               </div>
-              <div className="pt-2">
-                <h3 className="text-lg md:text-xl font-semibold text-nikah-text mb-1">{step.title}</h3>
+
+              {/* Right column: text */}
+              <div className={`pt-2 ${i < STEPS.length - 1 ? 'pb-8' : ''}`}>
+                <h3 className="text-lg md:text-xl font-bold text-nikah-text mb-1">{step.title}</h3>
                 <p className="text-base md:text-lg text-nikah-muted font-light leading-relaxed">{step.description}</p>
               </div>
             </div>

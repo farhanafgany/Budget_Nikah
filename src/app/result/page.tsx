@@ -1,55 +1,86 @@
 'use client'
-import { useEffect, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
-import dynamic from 'next/dynamic'
+import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { useSimulationStore } from '@/stores/simulationStore'
 import { calculateAllocation } from '@/lib/allocation'
-import { calculateScore, calculatePressureLevel } from '@/lib/scoring'
+import { calculateScore } from '@/lib/scoring'
 import { generateInsights } from '@/lib/insights'
+import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
+import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { ScoreHero }          from '@/components/result/ScoreHero'
-import { PressureCard }       from '@/components/result/PressureCard'
 import { InsightCards }       from '@/components/result/InsightCards'
 import { SimulationControls } from '@/components/result/SimulationControls'
 import { PremiumTease }       from '@/components/result/PremiumTease'
+import AllocationChart        from '@/components/result/AllocationChart'
+import { BrandLogo }          from '@/components/ui/BrandLogo'
+import { createClient }       from '@/lib/supabase/client'
 
-const AllocationChart = dynamic(() => import('@/components/result/AllocationChart'), {
-  ssr: false,
-  loading: () => (
-    <div className="bg-white rounded-2xl p-5 border border-nikah-border animate-pulse">
-      <div className="h-3 w-24 bg-nikah-border rounded mb-4" />
-      <div className="h-48 bg-nikah-bg rounded-xl" />
-    </div>
-  ),
-})
+function ResultNavbar({ isSignedIn }: { isSignedIn: boolean }) {
+  const saveHref = '/auth/login?next=/result/saved'
+
+  return (
+    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
+      <div className="max-w-[1080px] mx-auto px-8 h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center">
+          <BrandLogo size="sm" />
+        </Link>
+        <Link
+          href={isSignedIn ? '/dashboard' : saveHref}
+          className="inline-flex items-center justify-center rounded-full border border-nikah-deep px-4 py-2 text-xs font-bold text-nikah-deep transition-colors hover:bg-nikah-bg"
+        >
+          {isSignedIn ? 'Dashboard →' : 'Simpan & Kelola →'}
+        </Link>
+      </div>
+    </header>
+  )
+}
 
 export default function ResultPage() {
   const router = useRouter()
   const onboarding = useOnboardingStore()
   const sim = useSimulationStore()
+  const [mounted, setMounted] = useState(false)
+  const [isSignedIn, setIsSignedIn] = useState(false)
+  const isComplete = onboarding.isComplete()
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    if (!onboarding.isComplete()) {
+    setMounted(true)
+    const supabase = createClient()
+
+    supabase.auth.getSession().then(({ data }) => {
+      setIsSignedIn(Boolean(data.session?.user))
+    })
+
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsSignedIn(Boolean(session?.user))
+    })
+
+    return () => listener.subscription.unsubscribe()
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+
+    if (!isComplete) {
       router.replace('/onboarding')
     } else {
       sim.init(onboarding.guestCount, onboarding.weddingStyle)
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [mounted, isComplete, onboarding.guestCount, onboarding.weddingStyle, router, sim.init])
 
-  const { allocation, scoreResult, pressureLevel, insights } = useMemo(() => {
+  const { allocation, scoreResult, insights } = useMemo(() => {
     const alloc = calculateAllocation({
       totalBudget: onboarding.totalBudget,
-      guestCount: sim.guestCount,
-      weddingStyle: sim.weddingStyle,
+      guestCount: sim.guestCount || onboarding.guestCount,
+      weddingStyle: sim.weddingStyle || onboarding.weddingStyle,
       planningPriority: onboarding.planningPriority,
     })
     const sr = calculateScore({
       totalBudget: onboarding.totalBudget,
-      guestCount: sim.guestCount,
-      weddingStyle: sim.weddingStyle,
+      guestCount: sim.guestCount || onboarding.guestCount,
+      weddingStyle: sim.weddingStyle || onboarding.weddingStyle,
       planningPriority: onboarding.planningPriority,
       weddingCity: onboarding.weddingCity,
       allocation: alloc,
@@ -57,11 +88,10 @@ export default function ResultPage() {
     return {
       allocation: alloc,
       scoreResult: sr,
-      pressureLevel: calculatePressureLevel(sr.score),
       insights: generateInsights({
         totalBudget: onboarding.totalBudget,
-        guestCount: sim.guestCount,
-        weddingStyle: sim.weddingStyle,
+        guestCount: sim.guestCount || onboarding.guestCount,
+        weddingStyle: sim.weddingStyle || onboarding.weddingStyle,
         planningPriority: onboarding.planningPriority,
         weddingCity: onboarding.weddingCity,
         allocation: alloc,
@@ -69,35 +99,47 @@ export default function ResultPage() {
         weddingDate: onboarding.weddingDate,
       }),
     }
-  }, [onboarding.totalBudget, onboarding.planningPriority, onboarding.weddingCity,
+  }, [onboarding.totalBudget, onboarding.guestCount, onboarding.weddingStyle, onboarding.planningPriority, onboarding.weddingCity,
       onboarding.weddingDate, sim.guestCount, sim.weddingStyle])
 
-  if (!onboarding.isComplete()) return null
+  if (!mounted || !isComplete) return null
+
+  const months = monthsUntilDate(onboarding.weddingDate)
+  const monthlySavings = calculateMonthlySavings(onboarding.totalBudget, 0, months)
 
   return (
-    <main className="min-h-screen bg-nikah-bg pb-32">
-      <div className="max-w-md mx-auto px-4 py-6 space-y-4">
+    <main className="min-h-screen bg-nikah-bg" style={{ paddingBottom: 60 }}>
+      <ResultNavbar isSignedIn={isSignedIn} />
+      <div className="max-w-[1080px] mx-auto px-6 pt-9">
+
         <ScoreHero
           score={scoreResult.score}
           label={scoreResult.label}
           totalBudget={onboarding.totalBudget}
           weddingDate={onboarding.weddingDate}
         />
-        <PressureCard pressureLevel={pressureLevel} allocation={allocation} />
-        <AllocationChart allocation={allocation} />
-        <InsightCards insights={insights} />
-        <SimulationControls />
-        <PremiumTease />
-      </div>
 
-      {/* Sticky save CTA */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/90 backdrop-blur border-t border-nikah-border">
-        <Link
-          href="/auth/login"
-          className="block w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm text-center"
-        >
-          Simpan Hasil Ini →
-        </Link>
+        {/* Two-column grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-5 mt-5">
+
+          {/* Left: allocation + insights */}
+          <div className="flex flex-col gap-5">
+            <AllocationChart allocation={allocation} />
+            <InsightCards insights={insights} />
+          </div>
+
+          {/* Right: simulation + premium */}
+          <div className="flex flex-col gap-5">
+            <SimulationControls />
+            <PremiumTease
+              totalBudget={onboarding.totalBudget}
+              monthlySavings={monthlySavings}
+              checklistCount={CHECKLIST_ITEMS.length}
+              isSignedIn={isSignedIn}
+            />
+          </div>
+        </div>
+
       </div>
     </main>
   )

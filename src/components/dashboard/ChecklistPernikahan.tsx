@@ -2,6 +2,7 @@
 import { useState, useTransition } from 'react'
 import { CHECKLIST_ITEMS, type ChecklistTimeline } from '@/lib/checklistItems'
 import { toggleChecklistItem } from '@/app/dashboard/actions'
+import { ClipboardList } from 'lucide-react'
 
 const TIMELINE_LABELS: Record<ChecklistTimeline, string> = {
   12: '12 Bulan Sebelum',
@@ -14,18 +15,19 @@ const TIMELINE_LABELS: Record<ChecklistTimeline, string> = {
 const TIMELINES: ChecklistTimeline[] = [12, 6, 3, 1, 0]
 
 interface Props {
-  isPremium: boolean
   checkedIds: string[]
 }
 
-export function ChecklistPernikahan({ isPremium, checkedIds }: Props) {
+export function ChecklistPernikahan({ checkedIds }: Props) {
   const [localChecked, setLocalChecked] = useState<string[]>(checkedIds)
+  const [active, setActive] = useState<ChecklistTimeline>(12)
   const [, startTransition] = useTransition()
 
   const totalDone = localChecked.length
+  const activeItems = CHECKLIST_ITEMS.filter(i => i.monthsBefore === active)
+  const activeDone = activeItems.filter(i => localChecked.includes(i.id)).length
 
   function handleToggle(id: string) {
-    if (!isPremium) return
     const wasChecked = localChecked.includes(id)
     const newChecked = wasChecked
       ? localChecked.filter(i => i !== id)
@@ -37,66 +39,102 @@ export function ChecklistPernikahan({ isPremium, checkedIds }: Props) {
   }
 
   return (
-    <div className="bg-white rounded-2xl p-5 border border-nikah-border shadow-sm">
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve">
-          <span aria-hidden="true">✅</span> Checklist Pernikahan
-        </p>
+    <div className="bg-white border border-nikah-border shadow-sm" style={{ borderRadius: 'var(--d-radius)', padding: 'var(--d-pad-card)' }}>
+      <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
+        <span className="inline-flex items-center" style={{ gap: 8 }}>
+          <span
+            className="inline-flex items-center justify-center text-nikah-deep"
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: 'linear-gradient(135deg, #F5E8EC, #EDD6DE)',
+            }}
+          >
+            <ClipboardList size={16} strokeWidth={1.8} />
+          </span>
+          <span className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-nikah-mauve">
+            Checklist Pernikahan
+          </span>
+        </span>
         <span className="text-xs font-bold text-nikah-text">
           {totalDone}/{CHECKLIST_ITEMS.length}
         </span>
       </div>
 
-      <div className="space-y-5">
-        {TIMELINES.map(timeline => {
-          const items = CHECKLIST_ITEMS.filter(i => i.monthsBefore === timeline)
-          const groupDone = items.filter(i => localChecked.includes(i.id)).length
+      <div
+        role="tablist"
+        className="flex bg-nikah-bg rounded-full overflow-x-auto [&::-webkit-scrollbar]:hidden"
+        style={{
+          gap: 4,
+          padding: 4,
+          marginBottom: 14,
+          WebkitOverflowScrolling: 'touch',
+          scrollbarWidth: 'none',
+        }}
+      >
+        {TIMELINES.map(timeline => (
+          <button
+            key={timeline}
+            type="button"
+            role="tab"
+            aria-pressed={active === timeline}
+            onClick={() => setActive(timeline)}
+            className={active === timeline ? 'bg-nikah-deep text-white' : 'text-nikah-muted'}
+            style={{
+              flex: '1 0 auto',
+              padding: '8px 14px',
+              border: 0,
+              borderRadius: 999,
+              fontSize: 12,
+              fontWeight: 700,
+              whiteSpace: 'nowrap',
+              transition: 'all 0.15s',
+            }}
+          >
+            {timeline === 0 ? 'H-1 minggu' : `${timeline} bln`}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between" style={{ margin: '14px 0 4px' }}>
+        <h4 className="font-extrabold text-nikah-text" style={{ fontSize: 12, margin: 0 }}>{TIMELINE_LABELS[active]}</h4>
+        <span className="text-nikah-muted" style={{ fontSize: 11 }}>{activeDone}/{activeItems.length}</span>
+      </div>
+
+      <div className="grid" style={{ gap: 2 }}>
+        {activeItems.map(item => {
+          const checked = localChecked.includes(item.id)
           return (
-            <div key={timeline}>
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-xs font-bold text-nikah-text">{TIMELINE_LABELS[timeline]}</p>
-                <span className="text-[11px] text-nikah-muted">{groupDone}/{items.length}</span>
-              </div>
-              <div className="space-y-1.5">
-                {items.map(item => {
-                  const checked = localChecked.includes(item.id)
-                  return (
-                    <button
-                      key={item.id}
-                      onClick={() => handleToggle(item.id)}
-                      disabled={!isPremium}
-                      className={`w-full flex items-center gap-3 text-left p-2.5 rounded-xl transition-colors ${
-                        isPremium ? 'hover:bg-nikah-bg' : 'cursor-default'
-                      }`}
-                    >
-                      <div className={`w-5 h-5 rounded flex-shrink-0 border-2 flex items-center justify-center transition-colors ${
-                        checked
-                          ? 'bg-nikah-deep border-nikah-deep'
-                          : 'border-nikah-border bg-white'
-                      }`}>
-                        {checked && (
-                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </div>
-                      <span className={`text-sm ${checked ? 'line-through text-nikah-muted' : 'text-nikah-text'}`}>
-                        {item.label}
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
+            <button
+              key={item.id}
+              onClick={() => handleToggle(item.id)}
+              data-checked={checked}
+              className="w-full flex items-center text-left border-0 bg-transparent transition-colors hover:bg-nikah-bg"
+              style={{ gap: 12, padding: 'var(--d-row-pad) 10px', borderRadius: 10 }}
+            >
+              <span
+                data-checked={checked}
+                className={`flex-shrink-0 inline-flex items-center justify-center border-2 transition-all ${
+                  checked
+                    ? 'bg-nikah-deep border-nikah-deep'
+                    : 'border-nikah-border bg-white'
+                }`}
+                style={{ width: 20, height: 20, borderRadius: 6 }}
+              >
+                {checked && (
+                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </span>
+              <span className={`flex-1 ${checked ? 'line-through text-nikah-muted' : 'text-nikah-text'}`} style={{ fontSize: 14 }}>
+                {item.label}
+              </span>
+            </button>
           )
         })}
       </div>
-
-      {!isPremium && (
-        <p className="text-xs text-nikah-muted text-center mt-4 pt-4 border-t border-nikah-border">
-          Beli akses untuk mulai mencentang persiapan kamu
-        </p>
-      )}
     </div>
   )
 }

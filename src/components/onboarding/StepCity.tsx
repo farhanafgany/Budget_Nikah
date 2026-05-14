@@ -1,9 +1,7 @@
 'use client'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { StepWrapper } from './StepWrapper'
-import { TIER_A_CITIES, TIER_B_CITIES } from '@/lib/cityTiers'
-
-const OTHER_CITIES = ['Makassar', 'Semarang', 'Palembang', 'Balikpapan', 'Pontianak', 'Manado', 'Denpasar', 'Pekanbaru', 'Lainnya']
+import { TIER_A_CITIES, TIER_B_CITIES, TIER_C_CITIES } from '@/lib/cityTiers'
 
 export function StepCity() {
   const { weddingCity, setField, nextStep, prevStep } = useOnboardingStore()
@@ -30,7 +28,7 @@ export function StepCity() {
             {TIER_B_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
           </optgroup>
           <optgroup label="Kota Lainnya">
-            {OTHER_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
+            {TIER_C_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
           </optgroup>
         </select>
       </div>

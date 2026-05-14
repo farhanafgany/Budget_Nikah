@@ -1,18 +1,50 @@
 import type { Insight } from '@/lib/insights'
+import { Lightbulb } from 'lucide-react'
+
+const DOT_COLOR: Record<string, string> = {
+  good: '#4CAF82',
+  warn: '#E0A235',
+  info: 'var(--nikah-mauve)',
+}
 
 export function InsightCards({ insights }: { insights: Insight[] }) {
   return (
-    <div className="space-y-3">
-      <h3 className="text-xs font-bold uppercase tracking-widest text-nikah-mauve">Smart Insights</h3>
-      {insights.map((insight, i) => (
-        <div
-          key={`${insight.type}-${i}`}
-          className="bg-white rounded-2xl p-4 border border-nikah-border flex gap-3 items-start shadow-sm"
-        >
-          <span className="text-xl flex-shrink-0" aria-hidden="true">{insight.icon}</span>
-          <p className="text-sm text-nikah-text leading-relaxed">{insight.message}</p>
-        </div>
-      ))}
+    <div className="bg-white rounded-[20px] border border-nikah-border shadow-sm" style={{ padding: 28 }}>
+      <div className="flex items-center justify-between gap-3" style={{ marginBottom: 12 }}>
+        <span className="inline-flex items-center gap-2">
+          <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-nikah-bg text-nikah-deep">
+            <Lightbulb size={15} strokeWidth={1.8} />
+          </span>
+          <span className="text-xs font-bold uppercase tracking-widest text-nikah-mauve">
+            Smart Insights
+          </span>
+        </span>
+      </div>
+      <div style={{ display: 'grid', gap: 10, marginTop: 12 }}>
+        {insights.map((it, i) => (
+          <div
+            key={i}
+            style={{
+              display: 'flex', gap: 12, alignItems: 'flex-start',
+              padding: 12, background: 'var(--nikah-bg)', borderRadius: 12,
+              fontSize: 13, lineHeight: 1.45,
+            }}
+          >
+            <span
+              style={{
+                width: 8, height: 8, borderRadius: '50%',
+                background: DOT_COLOR[it.kind] ?? 'var(--nikah-mauve)',
+                marginTop: 6, flexShrink: 0, display: 'block',
+              }}
+            />
+            <div>
+              <strong style={{ color: 'var(--nikah-text)', fontWeight: 700 }}>{it.title}</strong>
+              {' '}
+              <span style={{ color: 'var(--nikah-muted)', fontWeight: 300 }}>{it.body}</span>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

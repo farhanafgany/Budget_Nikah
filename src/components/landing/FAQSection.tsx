@@ -12,7 +12,7 @@ const FAQS = [
   },
   {
     q: 'Bagaimana setelah saya bayar?',
-    a: 'Hubungi kami via WhatsApp dengan bukti pembayaran. Akses akan diaktifkan dalam 1×24 jam.',
+    a: 'Setelah pembayaran berhasil, ikuti instruksi dari halaman pembayaran untuk membuka akses. WhatsApp tetap tersedia jika kamu butuh bantuan.',
   },
   {
     q: 'Apakah ada biaya langganan?',
@@ -21,18 +21,18 @@ const FAQS = [
 ]
 
 export function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+  const [openIndex, setOpenIndex] = useState<number | null>(0)
 
   return (
-    <section className="px-6 py-20 bg-white">
-      <div className="max-w-xl mx-auto">
+    <section className="px-6 md:px-8 pt-20 pb-16 md:pt-28 md:pb-20 bg-nikah-bg">
+      <div className="max-w-[660px] mx-auto">
         <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve text-center mb-2">FAQ</p>
-        <h2 className="font-extrabold tracking-tight text-3xl md:text-4xl text-nikah-text text-center mb-10">
-          Pertanyaan yang Sering Ditanyakan
+        <h2 className="font-extrabold tracking-tight text-[34px] md:text-[42px] text-nikah-text text-center mb-10 leading-tight" style={{ letterSpacing: '-0.02em' } as React.CSSProperties}>
+          Pertanyaan yang <em>Sering Ditanyakan</em>
         </h2>
         <div className="space-y-2">
           {FAQS.map((faq, i) => (
-            <div key={i} className="border border-nikah-border rounded-2xl overflow-hidden">
+            <div key={i} className="border border-nikah-border rounded-2xl overflow-hidden bg-white">
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
                 className="w-full flex items-center justify-between px-5 py-4 text-left"
@@ -40,15 +40,16 @@ export function FAQSection() {
                 aria-controls={`faq-answer-${i}`}
               >
                 <span className="text-base font-bold text-nikah-text pr-4">{faq.q}</span>
-                <span
-                  className={`text-nikah-mauve flex-shrink-0 transition-transform duration-200 ${openIndex === i ? 'rotate-180' : ''}`}
+                <svg
+                  className={`w-4 h-4 text-nikah-mauve flex-shrink-0 transition-transform duration-200 ${openIndex === i ? 'rotate-180' : ''}`}
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
                   aria-hidden="true"
                 >
-                  ▾
-                </span>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
               </button>
               {openIndex === i && (
-                <div id={`faq-answer-${i}`} className="px-5 pb-4 text-base md:text-lg text-nikah-muted font-light leading-relaxed">
+                <div id={`faq-answer-${i}`} className="px-5 pb-4 text-base text-nikah-muted font-light leading-relaxed">
                   {faq.a}
                 </div>
               )}

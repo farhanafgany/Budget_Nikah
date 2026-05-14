@@ -1,16 +1,14 @@
 import Link from 'next/link'
+import { BrandLogo } from '@/components/ui/BrandLogo'
 
 export function Navbar() {
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
-      <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div className="max-w-[1080px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-3">
 
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#F5E8EC] to-[#C07888] flex items-center justify-center">
-            <span className="text-white text-xs font-extrabold">B</span>
-          </div>
-          <span className="text-sm font-extrabold text-nikah-text tracking-tight">BudgetNikah</span>
+        <Link href="/">
+          <BrandLogo size="md" />
         </Link>
 
         {/* Nav links — desktop */}
@@ -23,9 +21,10 @@ export function Navbar() {
         {/* CTA */}
         <a
           href="#harga"
-          className="bg-nikah-deep text-white text-xs md:text-sm font-bold px-4 py-2 md:px-5 md:py-2.5 rounded-full hover:opacity-90 active:scale-95 transition-all shadow-sm"
+          className="bg-nikah-deep text-white text-xs md:text-sm font-bold px-3 py-2 md:px-5 md:py-2.5 rounded-full hover:opacity-90 active:scale-95 transition-all shadow-sm whitespace-nowrap"
         >
-          Beli Sekarang
+          <span className="md:hidden">Akses</span>
+          <span className="hidden md:inline">Dapatkan Akses</span>
         </a>
 
       </div>

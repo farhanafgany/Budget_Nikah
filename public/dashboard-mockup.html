@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Mockup — BudgetNikah</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #FAF5F5; color: #261520; }
+:root {
+  --bg: #FAF5F5; --pink: #E8C0CC; --mauve: #C07888;
+  --deep: #6B3545; --text: #261520; --muted: #9A7888;
+  --border: #EDE4E6; --white: #FFFFFF;
+}
+
+/* Navbar */
+.navbar {
+  position: sticky; top: 0; z-index: 40;
+  background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.navbar-brand { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 14px; text-decoration: none; color: var(--text); }
+.navbar-dot { width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #F5E8EC, #C07888); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 800; }
+.navbar-right { display: flex; align-items: center; gap: 12px; }
+.navbar-email { font-size: 12px; color: var(--muted); }
+.layout-switcher { display: flex; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.layout-btn { display: flex; align-items: center; justify-content: center; width: 36px; height: 28px; border: none; background: none; cursor: pointer; color: var(--muted); transition: all 0.15s; }
+.layout-btn.active { background: var(--deep); color: white; }
+.layout-btn svg { width: 15px; height: 15px; }
+.navbar-logout { font-size: 12px; font-weight: 600; color: var(--muted); border: 1px solid var(--border); border-radius: 999px; padding: 5px 12px; background: none; cursor: pointer; }
+
+/* Shared cards & components */
+.card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+.card-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: var(--mauve); margin-bottom: 10px; }
+.badge-green { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #d1fae5; color: #065f46; }
+.progress-wrap { background: var(--border); border-radius: 999px; height: 8px; margin: 10px 0; }
+.progress-bar { background: var(--deep); border-radius: 999px; height: 8px; width: 28%; }
+.checklist-group { margin-bottom: 16px; }
+.checklist-group:last-child { margin-bottom: 0; }
+.group-header { font-size: 11px; font-weight: 700; color: var(--text); margin-bottom: 6px; display: flex; justify-content: space-between; }
+.group-header span { color: var(--muted); font-weight: 400; }
+.c-item { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 10px; font-size: 13px; cursor: pointer; }
+.c-item:hover { background: var(--bg); }
+.chk { width: 18px; height: 18px; border-radius: 4px; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; }
+.chk.done { background: var(--deep); border-color: var(--deep); color: white; }
+.c-done { text-decoration: line-through; color: var(--muted); }
+.c-more { font-size: 11px; color: var(--muted); padding: 4px 8px; }
+.s-item { display: flex; align-items: center; gap: 10px; padding: 7px 8px; border-radius: 10px; font-size: 13px; cursor: pointer; }
+.s-item:hover { background: var(--bg); }
+.budget-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; font-size: 13px; border-bottom: 1px solid var(--border); }
+.budget-row:last-child { border: none; }
+.tabungan-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px; }
+.t-input-row { display: flex; gap: 8px; margin-top: 12px; }
+.t-input-row input { flex: 1; border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 13px; color: var(--text); outline: none; }
+.t-input-row input:focus { border-color: var(--mauve); }
+.t-save { background: var(--deep); color: white; font-weight: 700; padding: 8px 16px; border-radius: 10px; border: none; font-size: 13px; cursor: pointer; }
+.sim-btn { display: block; width: 100%; background: var(--deep); color: white; font-weight: 700; padding: 13px; border-radius: 999px; text-align: center; font-size: 13px; border: none; cursor: pointer; }
+
+/* ===== LAYOUT B ===== */
+#layout-b { display: block; }
+#layout-b .wrap { max-width: 1200px; margin: 0 auto; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+#layout-b .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+#layout-b .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 20px; }
+#layout-b .bottom-row { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; align-items: start; }
+#layout-b .bottom-right { display: flex; flex-direction: column; gap: 16px; }
+
+/* ===== LAYOUT C ===== */
+#layout-c { display: none; }
+#layout-c .wrap { max-width: 1200px; margin: 0 auto; padding: 24px; display: grid; grid-template-columns: 1fr 2fr 1fr; gap: 20px; align-items: start; }
+#layout-c .col { display: flex; flex-direction: column; gap: 14px; }
+#layout-c .col-sticky { position: sticky; top: 68px; }
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="#" class="navbar-brand">
+    <div class="navbar-dot">B</div>
+    BudgetNikah
+  </a>
+  <div class="navbar-right">
+    <span class="navbar-email">farhan@gmail.com</span>
+    <div class="layout-switcher">
+      <button class="layout-btn active" id="btn-b" onclick="setLayout('b')" title="Layout Grid">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="1" y="1" width="14" height="3.5" rx="1"/>
+          <rect x="1" y="6.25" width="14" height="3.5" rx="1"/>
+          <rect x="1" y="11.5" width="14" height="3.5" rx="1"/>
+        </svg>
+      </button>
+      <button class="layout-btn" id="btn-c" onclick="setLayout('c')" title="Layout 3 Kolom">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6">
+          <rect x="1" y="1" width="4" height="14" rx="1"/>
+          <rect x="6" y="1" width="4" height="14" rx="1"/>
+          <rect x="11" y="1" width="4" height="14" rx="1"/>
+        </svg>
+      </button>
+    </div>
+    <button class="navbar-logout">Keluar</button>
+  </div>
+</nav>
+
+<!-- ===================== LAYOUT B ===================== -->
+<div id="layout-b">
+  <div class="wrap">
+    <div>
+      <p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--mauve);margin-bottom:2px;">Dashboard</p>
+      <h1 style="font-size:22px;font-weight:800;">Farhan &amp; Afgany</h1>
+    </div>
+    <div class="stat-row">
+      <div class="stat-card">
+        <p class="card-label">Kesiapan Wedding</p>
+        <div style="font-size:46px;font-weight:800;color:var(--deep);line-height:1;">73</div>
+        <div class="badge-green" style="margin-top:8px;">Healthy</div>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px;">Wedding Readiness Score</p>
+      </div>
+      <div class="stat-card">
+        <p class="card-label">Hitung Mundur</p>
+        <div style="font-size:46px;font-weight:800;color:var(--deep);line-height:1;">247</div>
+        <p style="font-size:11px;color:var(--muted);margin-top:8px;">hari menuju hari H</p>
+      </div>
+      <div class="stat-card">
+        <p class="card-label">Tekanan Budget</p>
+        <div style="font-size:28px;font-weight:800;color:#c2410c;line-height:1;margin-top:8px;">Medium</div>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px;">level tekanan saat ini</p>
+      </div>
+    </div>
+    <div class="card">
+      <p class="card-label">Tabungan Nikah</p>
+      <div class="tabungan-row">
+        <div>
+          <div style="font-size:26px;font-weight:800;color:var(--deep);">Rp 34.000.000</div>
+          <div style="font-size:11px;color:var(--muted);">dari Rp 120.000.000</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:16px;font-weight:700;color:var(--mauve);">Rp 4.600.000/bln</div>
+          <div style="font-size:11px;color:var(--muted);">selama 18 bln lagi</div>
+        </div>
+      </div>
+      <div class="progress-wrap"><div class="progress-bar"></div></div>
+      <div class="t-input-row">
+        <input type="text" placeholder="Update tabungan kamu..." />
+        <button class="t-save">Simpan</button>
+      </div>
+    </div>
+    <div class="bottom-row">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <p class="card-label" style="margin:0;">Checklist Pernikahan</p>
+          <span style="font-size:11px;font-weight:700;color:var(--text);">18 / 52</span>
+        </div>
+        <div class="checklist-group">
+          <div class="group-header">12 Bulan Sebelum <span>4/8</span></div>
+          <div class="c-item"><div class="chk done">✓</div><span class="c-done">Tentukan tanggal pernikahan</span></div>
+          <div class="c-item"><div class="chk done">✓</div><span class="c-done">Buat anggaran kasar</span></div>
+          <div class="c-item"><div class="chk"></div><span>Survey dan booking venue</span></div>
+          <div class="c-item"><div class="chk"></div><span>Buat daftar tamu awal</span></div>
+          <div class="c-more">+ 4 item lainnya...</div>
+        </div>
+        <div class="checklist-group">
+          <div class="group-header">6 Bulan Sebelum <span>2/10</span></div>
+          <div class="c-item"><div class="chk done">✓</div><span class="c-done">Konfirmasi booking venue</span></div>
+          <div class="c-item"><div class="chk"></div><span>Pilih dan booking katering</span></div>
+          <div class="c-item"><div class="chk"></div><span>Pilih fotografer & videografer</span></div>
+          <div class="c-item"><div class="chk"></div><span>Fitting baju pengantin</span></div>
+          <div class="c-more">+ 6 item lainnya...</div>
+        </div>
+        <div class="checklist-group">
+          <div class="group-header">3 Bulan Sebelum <span>0/12</span></div>
+          <div class="c-item"><div class="chk"></div><span>Cetak dan kirim undangan</span></div>
+          <div class="c-item"><div class="chk"></div><span>Konfirmasi jumlah tamu akhir</span></div>
+          <div class="c-more">+ 10 item lainnya...</div>
+        </div>
+        <div class="checklist-group">
+          <div class="group-header">1 Bulan Sebelum <span>0/10</span></div>
+          <div class="c-more">+ 10 item lainnya...</div>
+        </div>
+        <div class="checklist-group">
+          <div class="group-header">1 Minggu Sebelum <span>0/8</span></div>
+          <div class="c-more">+ 8 item lainnya...</div>
+        </div>
+      </div>
+      <div class="bottom-right">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+            <p class="card-label" style="margin:0;">Seserahan</p>
+            <span style="font-size:11px;font-weight:700;color:var(--text);">6 / 20 disiapkan</span>
+          </div>
+          <div class="s-item"><div class="chk done">✓</div><span>💍</span><span class="c-done">Cincin</span></div>
+          <div class="s-item"><div class="chk done">✓</div><span>👗</span><span class="c-done">Baju</span></div>
+          <div class="s-item"><div class="chk done">✓</div><span>🧴</span><span class="c-done">Parfum</span></div>
+          <div class="s-item"><div class="chk"></div><span>👠</span><span>Sepatu</span></div>
+          <div class="s-item"><div class="chk"></div><span>👜</span><span>Tas</span></div>
+          <div class="s-item"><div class="chk"></div><span>💄</span><span>Kosmetik</span></div>
+          <div class="s-item"><div class="chk"></div><span>📿</span><span>Perhiasan</span></div>
+          <div class="c-more">+ 13 item lainnya...</div>
+        </div>
+        <div class="card">
+          <p class="card-label">Ringkasan Budget</p>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;">Total: <strong style="color:var(--text);">Rp 120.000.000</strong></p>
+          <div class="budget-row"><span>Catering</span><div><span style="font-weight:700;color:var(--deep);">35%</span> <span style="font-size:11px;color:var(--muted);">Rp 42jt</span></div></div>
+          <div class="budget-row"><span>Venue</span><div><span style="font-weight:700;color:var(--deep);">25%</span> <span style="font-size:11px;color:var(--muted);">Rp 30jt</span></div></div>
+          <div class="budget-row"><span>Dekorasi</span><div><span style="font-weight:700;color:var(--deep);">15%</span> <span style="font-size:11px;color:var(--muted);">Rp 18jt</span></div></div>
+        </div>
+        <button class="sim-btn">🎛️ Buka Simulasi →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== LAYOUT C ===================== -->
+<div id="layout-c">
+  <div class="wrap">
+
+    <!-- Kolom kiri -->
+    <div class="col col-sticky">
+      <div>
+        <p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:var(--mauve);margin-bottom:2px;">Dashboard</p>
+        <h1 style="font-size:22px;font-weight:800;">Farhan &amp; Afgany</h1>
+      </div>
+      <div class="card">
+        <p class="card-label">Kesiapan Wedding</p>
+        <div style="font-size:46px;font-weight:800;color:var(--deep);line-height:1;">73</div>
+        <div class="badge-green" style="margin-top:8px;">Healthy</div>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px;">Wedding Readiness Score</p>
+      </div>
+      <div class="card">
+        <p class="card-label">Hitung Mundur</p>
+        <div style="font-size:46px;font-weight:800;color:var(--deep);line-height:1;">247</div>
+        <p style="font-size:11px;color:var(--muted);margin-top:8px;">hari menuju hari H</p>
+      </div>
+      <div class="card">
+        <p class="card-label">Tekanan Budget</p>
+        <div style="font-size:28px;font-weight:800;color:#c2410c;line-height:1;margin-top:8px;">Medium</div>
+        <p style="font-size:11px;color:var(--muted);margin-top:6px;">level tekanan saat ini</p>
+      </div>
+      <div class="card">
+        <p class="card-label">Ringkasan Budget</p>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:10px;">Total: <strong style="color:var(--text);">Rp 120.000.000</strong></p>
+        <div class="budget-row"><span>Catering</span><div><span style="font-weight:700;color:var(--deep);">35%</span> <span style="font-size:11px;color:var(--muted);">Rp 42jt</span></div></div>
+        <div class="budget-row"><span>Venue</span><div><span style="font-weight:700;color:var(--deep);">25%</span> <span style="font-size:11px;color:var(--muted);">Rp 30jt</span></div></div>
+        <div class="budget-row"><span>Dekorasi</span><div><span style="font-weight:700;color:var(--deep);">15%</span> <span style="font-size:11px;color:var(--muted);">Rp 18jt</span></div></div>
+      </div>
+      <button class="sim-btn">🎛️ Simulasi →</button>
+    </div>
+
+    <!-- Kolom tengah: Tabungan + Checklist -->
+    <div class="col">
+      <div style="visibility:hidden;pointer-events:none;">
+        <p style="font-size:10px;margin-bottom:2px;">Dashboard</p>
+        <h1 style="font-size:22px;font-weight:800;">Farhan &amp; Afgany</h1>
+      </div>
+      <div class="card">
+        <p class="card-label">Tabungan Nikah</p>
+        <div class="tabungan-row">
+          <div>
+            <div style="font-size:26px;font-weight:800;color:var(--deep);">Rp 34.000.000</div>
+            <div style="font-size:11px;color:var(--muted);">dari Rp 120.000.000</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:16px;font-weight:700;color:var(--mauve);">Rp 4.600.000/bln</div>
+            <div style="font-size:11px;color:var(--muted);">selama 18 bln lagi</div>
+          </div>
+        </div>
+        <div class="progress-wrap"><div class="progress-bar"></div></div>
+        <div class="t-input-row">
+          <input type="text" placeholder="Update tabungan..." />
+          <button class="t-save">Simpan</button>
+        </div>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <p class="card-label" style="margin:0;">Checklist Pernikahan</p>
+          <span style="font-size:11px;font-weight:700;color:var(--text);">18 / 52</span>
+        </div>
+        <div class="checklist-group">
+          <div class="group-header">12 Bulan Sebelum <span>4/8</span></div>
+          <div class="c-item"><div class="chk done">✓</div><span class="c-done">Tentukan tanggal pernikahan</span></div>
+          <div class="c-item"><div class="chk done">✓</div><span class="c-done">Buat anggaran kasar</span></div>
+          <div class="c-item"><div class="chk"></div><span>Survey dan booking venue</span></div>
+          <div class="c-item"><div class="chk"></div><span>Buat daftar tamu awal</span></div>
+          <div class="c-more">+ 4 item lainnya...</div>
+        </div>
+        <div class="checklist-group">
+          <div class="group-header">6 Bulan Sebelum <span>2/10</span></div>
+          <div class="c-item"><div class="chk done">✓</div><span class="c-done">Konfirmasi booking venue</span></div>
+          <div class="c-item"><div class="chk"></div><span>Pilih dan booking katering</span></div>
+          <div class="c-item"><div class="chk"></div><span>Pilih fotografer & videografer</span></div>
+          <div class="c-more">+ 7 item lainnya...</div>
+        </div>
+        <div class="checklist-group">
+          <div class="group-header">3 Bulan Sebelum <span>0/12</span></div>
+          <div class="c-item"><div class="chk"></div><span>Cetak dan kirim undangan</span></div>
+          <div class="c-more">+ 11 item lainnya...</div>
+        </div>
+        <div class="checklist-group">
+          <div class="group-header">1 Bulan Sebelum <span>0/10</span></div>
+          <div class="c-more">+ 10 item lainnya...</div>
+        </div>
+        <div class="checklist-group">
+          <div class="group-header">1 Minggu Sebelum <span>0/8</span></div>
+          <div class="c-more">+ 8 item lainnya...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Kolom kanan: Seserahan -->
+    <div class="col col-sticky">
+      <div style="visibility:hidden;pointer-events:none;">
+        <p style="font-size:10px;margin-bottom:2px;">Dashboard</p>
+        <h1 style="font-size:22px;font-weight:800;">Farhan &amp; Afgany</h1>
+      </div>
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+          <p class="card-label" style="margin:0;">Seserahan</p>
+          <span style="font-size:11px;font-weight:700;color:var(--text);">6 / 20</span>
+        </div>
+        <div class="s-item"><div class="chk done">✓</div><span>💍</span><span class="c-done">Cincin</span></div>
+        <div class="s-item"><div class="chk done">✓</div><span>👗</span><span class="c-done">Baju</span></div>
+        <div class="s-item"><div class="chk done">✓</div><span>🧴</span><span class="c-done">Parfum</span></div>
+        <div class="s-item"><div class="chk"></div><span>👠</span><span>Sepatu</span></div>
+        <div class="s-item"><div class="chk"></div><span>👜</span><span>Tas</span></div>
+        <div class="s-item"><div class="chk"></div><span>🧣</span><span>Kerudung</span></div>
+        <div class="s-item"><div class="chk"></div><span>💄</span><span>Kosmetik</span></div>
+        <div class="s-item"><div class="chk"></div><span>📿</span><span>Perhiasan</span></div>
+        <div class="s-item"><div class="chk"></div><span>🕌</span><span>Al-Qur'an</span></div>
+        <div class="s-item"><div class="chk"></div><span>💸</span><span>Uang seserahan</span></div>
+        <div class="s-item"><div class="chk"></div><span>🛍️</span><span>Perlengkapan sholat</span></div>
+        <div class="s-item"><div class="chk"></div><span>🧺</span><span>Perlengkapan mandi</span></div>
+        <div class="s-item"><div class="chk"></div><span>🍫</span><span>Makanan & minuman</span></div>
+        <div class="c-more">+ 7 item lainnya...</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function setLayout(l) {
+  document.getElementById('layout-b').style.display = l === 'b' ? 'block' : 'none';
+  document.getElementById('layout-c').style.display = l === 'c' ? 'block' : 'none';
+  document.getElementById('btn-b').classList.toggle('active', l === 'b');
+  document.getElementById('btn-c').classList.toggle('active', l === 'c');
+  localStorage.setItem('dash-layout', l);
+}
+const saved = localStorage.getItem('dash-layout') || 'b';
+setLayout(saved);
+</script>
+</body>
+</html>
