@@ -1,7 +1,7 @@
 'use client'
 import { useState, useTransition } from 'react'
 import { CHECKLIST_ITEMS, type ChecklistTimeline } from '@/lib/checklistItems'
-import { toggleChecklistItem } from '@/app/dashboard/actions'
+import { updateChecklistItems } from '@/app/dashboard/actions'
 import { ClipboardList } from 'lucide-react'
 
 const TIMELINE_LABELS: Record<ChecklistTimeline, string> = {
@@ -21,7 +21,8 @@ interface Props {
 export function ChecklistPernikahan({ checkedIds }: Props) {
   const [localChecked, setLocalChecked] = useState<string[]>(checkedIds)
   const [active, setActive] = useState<ChecklistTimeline>(12)
-  const [, startTransition] = useTransition()
+  const [error, setError] = useState('')
+  const [isPending, startTransition] = useTransition()
 
   const totalDone = localChecked.length
   const activeItems = CHECKLIST_ITEMS.filter(i => i.monthsBefore === active)
@@ -33,8 +34,13 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
       ? localChecked.filter(i => i !== id)
       : [...localChecked, id]
     setLocalChecked(newChecked)
+    setError('')
     startTransition(async () => {
-      await toggleChecklistItem(id, !wasChecked, localChecked)
+      const result = await updateChecklistItems(newChecked)
+      if (result.error) {
+        setLocalChecked(localChecked)
+        setError('Checklist belum tersimpan. Coba centang ulang.')
+      }
     })
   }
 
@@ -58,9 +64,11 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
           </span>
         </span>
         <span className="text-xs font-bold text-nikah-text">
-          {totalDone}/{CHECKLIST_ITEMS.length}
+          {isPending ? 'Menyimpan...' : `${totalDone}/${CHECKLIST_ITEMS.length}`}
         </span>
       </div>
+
+      {error && <p className="text-xs text-red-600" style={{ margin: '0 0 10px' }}>{error}</p>}
 
       <div
         role="tablist"

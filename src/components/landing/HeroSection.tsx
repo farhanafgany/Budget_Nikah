@@ -78,7 +78,7 @@ export function HeroSection() {
       aria-label="Hero"
       className="relative overflow-hidden"
       style={{
-        padding: 'calc(var(--d-gap-section) + 24px) var(--d-pad-page) var(--d-gap-section)',
+        padding: 'calc(var(--d-gap-section) - 18px) var(--d-pad-page) var(--d-gap-section)',
         background: 'radial-gradient(ellipse at 30% 0%, #F5E8EC 0%, transparent 55%), radial-gradient(ellipse at 100% 100%, #EDD6DE 0%, transparent 60%), #FAF5F5',
       }}
     >

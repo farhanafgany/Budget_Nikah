@@ -3,7 +3,7 @@ import { BrandLogo } from '@/components/ui/BrandLogo'
 
 export function Navbar() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
+    <header className="relative z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
       <div className="max-w-[1080px] mx-auto px-4 md:px-8 h-16 flex items-center justify-between gap-3">
 
         {/* Logo */}
@@ -19,13 +19,15 @@ export function Navbar() {
         </nav>
 
         {/* CTA */}
-        <a
-          href="#harga"
-          className="bg-nikah-deep text-white text-xs md:text-sm font-bold px-3 py-2 md:px-5 md:py-2.5 rounded-full hover:opacity-90 active:scale-95 transition-all shadow-sm whitespace-nowrap"
-        >
-          <span className="md:hidden">Akses</span>
-          <span className="hidden md:inline">Dapatkan Akses</span>
-        </a>
+        <div className="flex items-center">
+          <a
+            href="#harga"
+            className="bg-nikah-deep text-white text-xs md:text-sm font-bold px-3 py-2 md:px-5 md:py-2.5 rounded-full hover:opacity-90 active:scale-95 transition-all shadow-sm whitespace-nowrap"
+          >
+            <span className="md:hidden">Akses</span>
+            <span className="hidden md:inline">Dapatkan Akses</span>
+          </a>
+        </div>
 
       </div>
     </header>

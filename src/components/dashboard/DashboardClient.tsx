@@ -8,7 +8,7 @@ import { VendorPaymentTracker } from '@/components/dashboard/VendorPaymentTracke
 import { CurrentPriorities } from '@/components/dashboard/CurrentPriorities'
 import { formatRupiah } from '@/lib/utils'
 import type { PressureLevel } from '@/lib/scoring'
-import type { VendorPaymentInput } from '@/app/dashboard/actions'
+import type { CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/app/dashboard/actions'
 import { Gauge, SlidersHorizontal } from 'lucide-react'
 
 interface AllocEntry {
@@ -34,8 +34,11 @@ interface Props {
   guestCount: number | null
   weddingDate: string | null
   tabunganCollected: number
+  savingsHistory: SavingsHistoryInput[]
   checklistChecked: string[]
   seserahanChecked: string[]
+  customSeserahanItems: CustomSeserahanInput[]
+  hiddenSeserahanItemIds: string[]
   dashboardNote: string
   vendorPayments: VendorPaymentInput[]
 }
@@ -142,7 +145,7 @@ function formatTimeLeft(days: number | null) {
 export function DashboardClient({
   userName1, userName2, score, label, pressure, days,
   alloc, totalBudget, guestCount, weddingDate,
-  tabunganCollected, checklistChecked, seserahanChecked, dashboardNote,
+  tabunganCollected, savingsHistory, checklistChecked, seserahanChecked, customSeserahanItems, hiddenSeserahanItemIds, dashboardNote,
   vendorPayments,
 }: Props) {
   const insights = computeInsights(score, pressure, days)
@@ -263,6 +266,7 @@ export function DashboardClient({
       collected={tabunganCollected}
       target={totalBudget}
       weddingDate={weddingDate}
+      history={savingsHistory}
     />
   )
 
@@ -275,6 +279,8 @@ export function DashboardClient({
   const SeserahanCard = (
     <SeserahanList
       checkedIds={seserahanChecked}
+      customItems={customSeserahanItems}
+      hiddenDefaultIds={hiddenSeserahanItemIds}
     />
   )
 

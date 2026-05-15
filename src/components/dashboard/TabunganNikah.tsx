@@ -1,20 +1,24 @@
 'use client'
 import { useState, useTransition } from 'react'
-import { updateTabungan } from '@/app/dashboard/actions'
+import { updateTabunganWithHistory, type SavingsHistoryInput } from '@/app/dashboard/actions'
 import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
 import { formatRupiah } from '@/lib/utils'
-import { Coins } from 'lucide-react'
+import { ChevronDown, Coins } from 'lucide-react'
 
 interface Props {
   collected: number
   target: number
   weddingDate: string | null
+  history: SavingsHistoryInput[]
 }
 
-export function TabunganNikah({ collected, target, weddingDate }: Props) {
+export function TabunganNikah({ collected, target, weddingDate, history }: Props) {
   const [localCollected, setLocalCollected] = useState(collected)
+  const [localHistory, setLocalHistory] = useState<SavingsHistoryInput[]>(history)
   const [mode, setMode] = useState<'add' | 'subtract'>('add')
   const [inputRaw, setInputRaw] = useState('')
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
 
   const months   = monthsUntilDate(weddingDate)
@@ -38,9 +42,28 @@ export function TabunganNikah({ collected, target, weddingDate }: Props) {
   function handleSubmit() {
     const n = parseInt(inputRaw.replace(/\D/g, ''), 10) || 0
     const next = mode === 'add' ? localCollected + n : Math.max(0, localCollected - n)
+    const nextHistory = [
+      {
+        id: crypto.randomUUID(),
+        type: mode,
+        amount: n,
+        balanceAfter: next,
+        date: new Date().toISOString(),
+      },
+      ...localHistory,
+    ].slice(0, 20)
     setLocalCollected(next)
+    setLocalHistory(nextHistory)
     setInputRaw('')
-    startTransition(async () => { await updateTabungan(next) })
+    setError('')
+    startTransition(async () => {
+      const result = await updateTabunganWithHistory(next, nextHistory)
+      if (result.error) {
+        setLocalCollected(localCollected)
+        setLocalHistory(localHistory)
+        setError('Riwayat tabungan belum tersimpan. Coba input ulang.')
+      }
+    })
   }
 
   return (
@@ -172,6 +195,58 @@ export function TabunganNikah({ collected, target, weddingDate }: Props) {
           Mode koreksi akan mengurangi saldo terkumpul. Gunakan jika ada input yang salah sebelumnya.
         </p>
       )}
+      {error && <p className="text-xs text-red-600" style={{ marginTop: 10 }}>{error}</p>}
+
+      <div style={{ marginTop: 12 }}>
+        <button
+          type="button"
+          onClick={() => setHistoryOpen(value => !value)}
+          className="w-full inline-flex items-center justify-between text-nikah-muted font-bold hover:bg-nikah-bg hover:text-nikah-deep transition-colors"
+          style={{ border: '1px solid var(--nikah-border)', background: 'transparent', borderRadius: 999, padding: '9px 12px', fontSize: 12 }}
+        >
+          <span>Riwayat tabungan</span>
+          <span className="inline-flex items-center text-nikah-muted" style={{ gap: 6 }}>
+            {localHistory.length} input
+            <ChevronDown
+              size={15}
+              style={{
+                transform: historyOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.15s',
+              }}
+            />
+          </span>
+        </button>
+
+        {historyOpen && (
+          <div className="grid" style={{ gap: 2, marginTop: 6 }}>
+            {localHistory.length === 0 && (
+              <p className="text-xs text-nikah-muted" style={{ margin: '6px 10px 0' }}>
+                Belum ada riwayat input.
+              </p>
+            )}
+            {localHistory.slice(0, 5).map(item => (
+              <div key={item.id} className="flex items-center justify-between" style={{ gap: 10, padding: '9px 10px', borderRadius: 10 }}>
+                <div>
+                  <div className="font-bold text-nikah-text" style={{ fontSize: 12 }}>
+                    {item.type === 'add' ? 'Tambah tabungan' : 'Koreksi saldo'}
+                  </div>
+                  <div className="text-nikah-muted" style={{ fontSize: 10, marginTop: 2 }}>
+                    {new Date(item.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className={item.type === 'add' ? 'text-green-700' : 'text-red-600'} style={{ fontSize: 12, fontWeight: 800 }}>
+                    {item.type === 'add' ? '+' : '-'}{formatRupiah(item.amount)}
+                  </div>
+                  <div className="text-nikah-muted" style={{ fontSize: 10, marginTop: 2 }}>
+                    saldo {formatRupiah(item.balanceAfter)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -1,12 +1,12 @@
+import { getWhatsAppUrl } from '@/lib/contact'
+import { MidtransPaymentButton } from '@/components/payment/MidtransPaymentButton'
+
 export function PremiumCTA() {
   const waNumber  = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? ''
-  const waMessage = encodeURIComponent(
-    process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE ??
-    'Halo, saya ingin tanya lebih lanjut tentang BudgetNikah.'
+  const waUrl = getWhatsAppUrl(
+    waNumber,
+    process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE,
   )
-  const waUrl      = `https://wa.me/${waNumber}?text=${waMessage}`
-  const trakteerUrl = process.env.NEXT_PUBLIC_PAYMENT_URL ?? '#'
-  const hasPaymentUrl = trakteerUrl !== '#'
 
   return (
     <div className="bg-gradient-to-b from-[#F5E8EC] to-[#EDD6DE] rounded-2xl p-6 border border-nikah-border">
@@ -18,14 +18,13 @@ export function PremiumCTA() {
         Rp 149.000 · sekali bayar · akses seumur hidup
       </p>
       <div className="flex flex-col gap-2">
-        <a
-          href={trakteerUrl}
-          target={hasPaymentUrl ? '_blank' : undefined}
-          rel={hasPaymentUrl ? 'noopener noreferrer' : undefined}
-          className={`w-full bg-nikah-deep text-white font-bold py-3.5 rounded-full text-sm text-center ${hasPaymentUrl ? '' : 'opacity-60 pointer-events-none'}`}
+        <MidtransPaymentButton
+          isProduction={process.env.MIDTRANS_IS_PRODUCTION === 'true'}
+          className="w-full bg-nikah-deep text-white font-bold py-3.5 rounded-full text-sm text-center disabled:opacity-50"
+          style={{ border: 0 }}
         >
           Bayar Sekarang
-        </a>
+        </MidtransPaymentButton>
         {waNumber && (
           <a
             href={waUrl}

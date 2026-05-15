@@ -1,7 +1,7 @@
 import type { VendorPaymentInput } from '@/app/dashboard/actions'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
-import { Sparkles } from 'lucide-react'
+import { BellRing } from 'lucide-react'
 
 interface Props {
   days: number | null
@@ -95,7 +95,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
               background: 'linear-gradient(135deg, #F5E8EC, #EDD6DE)',
             }}
           >
-            <Sparkles size={18} strokeWidth={1.9} />
+            <BellRing size={18} strokeWidth={1.9} />
           </span>
           <span className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-nikah-deep">
             Prioritas Sekarang
@@ -110,20 +110,22 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
       </div>
 
       <p className="text-nikah-muted font-light" style={{ fontSize: 14, lineHeight: 1.5, margin: '0 0 14px' }}>
-        Mulai dari yang paling dekat: pembayaran penting dan checklist yang relevan untuk fase persiapanmu.
+        Ringkasan otomatis dari checklist dan pembayaran vendor. Ini bukan checklist baru, tapi pengingat hal yang paling perlu kamu perhatikan.
       </p>
 
-      <div className="grid" style={{ gap: 4 }}>
+      <div className="grid" style={{ gap: 6 }}>
         {items.length > 0 ? items.map(item => (
           <div
             key={item.id}
-            className="flex items-start bg-nikah-bg/70 hover:bg-nikah-bg"
-            style={{ gap: 12, padding: '14px 12px', borderRadius: 12 }}
+            className="flex items-start bg-white/72"
+            style={{ gap: 12, padding: '14px 12px', borderRadius: 12, border: '1px solid rgba(237,228,230,0.72)' }}
           >
             <span
-              className="rounded-full flex-shrink-0"
-              style={{ backgroundColor: item.color, marginTop: 6, width: 9, height: 9 }}
-            />
+              className="inline-flex items-center justify-center rounded-full flex-shrink-0"
+              style={{ backgroundColor: item.color, marginTop: 2, width: 24, height: 24, color: '#fff' }}
+            >
+              <BellRing size={12} strokeWidth={2.2} />
+            </span>
             <div className="min-w-0 flex-1">
               <div className="flex items-center" style={{ gap: 8 }}>
                 <div className="font-bold text-nikah-text" style={{ fontSize: 15, lineHeight: 1.28 }}>{item.title}</div>
@@ -131,7 +133,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
                   className="font-extrabold rounded-full bg-nikah-bg text-nikah-muted"
                   style={{ fontSize: 9, padding: '3px 7px', whiteSpace: 'nowrap' }}
                 >
-                  {item.badge}
+                  Sumber: {item.badge}
                 </span>
               </div>
               <div className="text-nikah-muted" style={{ fontSize: 11.5, marginTop: 3 }}>{item.meta}</div>

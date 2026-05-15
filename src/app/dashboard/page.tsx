@@ -4,7 +4,8 @@ import { calculatePressureLevel } from '@/lib/scoring'
 import { DashboardNavbar } from '@/components/dashboard/DashboardNavbar'
 import { DashboardClient } from '@/components/dashboard/DashboardClient'
 import { BrandLogo } from '@/components/ui/BrandLogo'
-import type { VendorPaymentInput } from '@/app/dashboard/actions'
+import { MidtransPaymentButton } from '@/components/payment/MidtransPaymentButton'
+import type { CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/app/dashboard/actions'
 
 function daysUntil(dateStr: string | null): number | null {
   if (!dateStr) return null
@@ -44,6 +45,35 @@ function normalizeVendorPayments(value: unknown): VendorPaymentInput[] {
     .filter(item => item.name)
 }
 
+function normalizeCustomSeserahanItems(value: unknown): CustomSeserahanInput[] {
+  if (!Array.isArray(value)) return []
+  return value
+    .filter((item): item is Record<string, unknown> => typeof item === 'object' && item !== null)
+    .map(item => ({
+      id: typeof item.id === 'string' ? item.id : crypto.randomUUID(),
+      label: typeof item.label === 'string' ? item.label : '',
+    }))
+    .filter(item => item.label)
+}
+
+function normalizeSavingsHistory(value: unknown): SavingsHistoryInput[] {
+  if (!Array.isArray(value)) return []
+  return value
+    .filter((item): item is Record<string, unknown> => typeof item === 'object' && item !== null)
+    .map(item => ({
+      id: typeof item.id === 'string' ? item.id : crypto.randomUUID(),
+      type: (item.type === 'subtract' ? 'subtract' : 'add') as SavingsHistoryInput['type'],
+      amount: typeof item.amount === 'number' ? item.amount : 0,
+      balanceAfter: typeof item.balanceAfter === 'number' ? item.balanceAfter : 0,
+      date: typeof item.date === 'string' ? item.date : '',
+    }))
+    .filter(item => item.amount > 0)
+}
+
+function normalizeStringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : []
+}
+
 export default async function DashboardPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -56,8 +86,6 @@ export default async function DashboardPage() {
     .single()
 
   if (!account?.is_premium) {
-    const paymentUrl = process.env.NEXT_PUBLIC_PAYMENT_URL ?? '/'
-
     return (
       <div className="min-h-screen bg-nikah-bg" style={{ paddingBottom: 60 }}>
         <DashboardNavbar userEmail={user.email ?? ''} />
@@ -85,15 +113,16 @@ export default async function DashboardPage() {
             <p className="text-nikah-muted font-light" style={{ fontSize: 14, lineHeight: 1.6, margin: '0 0 24px' }}>
               Jika kamu sudah menyelesaikan pembayaran, akses akan aktif setelah pembayaran terverifikasi.
             </p>
-            <a
-              href={paymentUrl}
-              target={paymentUrl === '/' ? undefined : '_blank'}
-              rel={paymentUrl === '/' ? undefined : 'noopener noreferrer'}
+            <MidtransPaymentButton
+              isProduction={process.env.MIDTRANS_IS_PRODUCTION === 'true'}
               className="block w-full bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition"
-              style={{ padding: '14px 22px' }}
+              style={{ padding: '14px 22px', border: 0 }}
             >
               Dapatkan Akses Sekarang →
-            </a>
+            </MidtransPaymentButton>
+            <p className="text-xs text-nikah-muted" style={{ margin: '12px 0 0', lineHeight: 1.45 }}>
+              Mode sandbox/testing aktif sampai production key Midtrans dipasang.
+            </p>
           </div>
         </main>
       </div>
@@ -144,8 +173,11 @@ export default async function DashboardPage() {
         guestCount={(profile.guest_count as number | null)}
         weddingDate={(profile.wedding_date as string | null)}
         tabunganCollected={(profile.savings_collected as number | null) ?? 0}
+        savingsHistory={normalizeSavingsHistory(profile.savings_history)}
         checklistChecked={(profile.checklist_checked as string[] | null) ?? []}
         seserahanChecked={(profile.seserahan_checked as string[] | null) ?? []}
+        customSeserahanItems={normalizeCustomSeserahanItems(profile.custom_seserahan_items)}
+        hiddenSeserahanItemIds={normalizeStringArray(profile.hidden_seserahan_item_ids)}
         dashboardNote={(profile.dashboard_note as string | null) ?? ''}
         vendorPayments={normalizeVendorPayments(profile.vendor_payments)}
       />

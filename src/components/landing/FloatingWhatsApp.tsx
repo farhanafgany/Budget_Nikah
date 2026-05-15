@@ -1,13 +1,12 @@
+import { getWhatsAppUrl } from '@/lib/contact'
+
 export function FloatingWhatsApp() {
-  const waNumber  = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
-  const waMessage = encodeURIComponent(
-    process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE ??
-    'Halo, saya ingin tanya lebih lanjut tentang BudgetNikah.'
+  const waUrl = getWhatsAppUrl(
+    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER,
+    process.env.NEXT_PUBLIC_WHATSAPP_MESSAGE,
   )
 
-  if (!waNumber) return null
-
-  const waUrl = `https://wa.me/${waNumber}?text=${waMessage}`
+  if (!waUrl) return null
 
   return (
     <a

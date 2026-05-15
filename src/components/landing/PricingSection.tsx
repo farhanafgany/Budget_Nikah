@@ -8,9 +8,6 @@ const WHAT_YOU_GET = [
 ]
 
 export function PricingSection() {
-  const paymentUrl = process.env.NEXT_PUBLIC_PAYMENT_URL ?? '#'
-  const hasPaymentUrl = paymentUrl !== '#'
-
   return (
     <section className="px-6 md:px-8 py-20 md:py-28 bg-white" id="harga">
       <div className="max-w-[1080px] mx-auto">
@@ -64,10 +61,8 @@ export function PricingSection() {
             </ul>
 
             <a
-              href={paymentUrl}
-              target={hasPaymentUrl ? '_blank' : undefined}
-              rel={hasPaymentUrl ? 'noopener noreferrer' : undefined}
-              className={`block w-full bg-white text-nikah-deep font-extrabold py-5 rounded-full text-base text-center shadow-lg transition-colors active:scale-95 ${hasPaymentUrl ? 'hover:bg-nikah-pink' : 'opacity-60 pointer-events-none'}`}
+              href="/auth/login?next=/dashboard"
+              className="block w-full bg-white text-nikah-deep font-extrabold py-5 rounded-full text-base text-center shadow-lg transition-colors active:scale-95 hover:bg-nikah-pink"
             >
               Dapatkan Akses Sekarang →
             </a>
