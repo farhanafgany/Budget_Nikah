@@ -2,7 +2,7 @@
 import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
-import { useOnboardingStore } from '@/stores/onboardingStore'
+import { clearOnboardingStore, useOnboardingStore } from '@/stores/onboardingStore'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 
 function getSafeNextPath(next: string | null) {
@@ -72,7 +72,7 @@ function FinishContent() {
           return
         }
 
-        onboarding.reset()
+        await clearOnboardingStore()
       }
 
       router.replace(nextPath)

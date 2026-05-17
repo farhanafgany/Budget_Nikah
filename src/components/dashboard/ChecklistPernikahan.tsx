@@ -48,7 +48,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
   const [active, setActive] = useState<ChecklistTimeline>(12)
   const [expanded, setExpanded] = useState(false)
   const [error, setError] = useState('')
-  const [isPending, startTransition] = useTransition()
+  const [, startTransition] = useTransition()
 
   const totalDone = localChecked.length
   const totalCount = CHECKLIST_ITEMS.length
@@ -101,13 +101,11 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
 
       <div
         role="tablist"
-        className="flex bg-nikah-bg rounded-full overflow-x-auto [&::-webkit-scrollbar]:hidden"
+        className="flex flex-wrap bg-nikah-bg rounded-[18px]"
         style={{
           gap: 4,
           padding: 4,
           marginBottom: 12,
-          WebkitOverflowScrolling: 'touch',
-          scrollbarWidth: 'none',
         }}
       >
         {TIMELINES.map(timeline => (
@@ -115,14 +113,14 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
             key={timeline}
             type="button"
             role="tab"
-            aria-pressed={active === timeline}
+            aria-selected={active === timeline}
             onClick={() => {
               setActive(timeline)
               setExpanded(false)
             }}
             className={active === timeline ? 'bg-nikah-deep text-white' : 'text-nikah-muted'}
             style={{
-              flex: '1 0 auto',
+              flex: '1 1 86px',
               padding: '7px 12px',
               border: 0,
               borderRadius: 999,

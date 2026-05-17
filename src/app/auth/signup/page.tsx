@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { AlarmClock, BriefcaseBusiness, CheckCircle2, Coins } from 'lucide-react'
-import { useOnboardingStore } from '@/stores/onboardingStore'
+import { clearOnboardingStore, useOnboardingStore } from '@/stores/onboardingStore'
 
 function getSafeNextPath(next: string | null) {
   if (!next || !next.startsWith('/') || next.startsWith('//')) return '/dashboard'
@@ -99,7 +99,7 @@ function SignupContent() {
         return
       }
 
-      onboarding.reset()
+      await clearOnboardingStore()
     }
     router.replace(nextPath)
   }

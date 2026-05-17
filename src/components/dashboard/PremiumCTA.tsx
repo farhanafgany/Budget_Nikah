@@ -15,7 +15,7 @@ export function PremiumCTA() {
       </p>
       <h2 className="text-lg font-extrabold text-nikah-text mb-1">BudgetNikah</h2>
       <p className="text-sm text-nikah-muted mb-4">
-        Rp 149.000 · sekali bayar · akses seumur hidup
+        Rp 149rb · sekali bayar · akses seumur hidup
       </p>
       <div className="flex flex-col gap-2">
         <MidtransPaymentButton

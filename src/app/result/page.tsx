@@ -6,14 +6,13 @@ import { useOnboardingStore } from '@/stores/onboardingStore'
 import { useSimulationStore } from '@/stores/simulationStore'
 import { calculateAllocation } from '@/lib/allocation'
 import { calculateScore } from '@/lib/scoring'
-import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { ScoreHero }          from '@/components/result/ScoreHero'
 import { PremiumTease }       from '@/components/result/PremiumTease'
 import { BrandLogo }          from '@/components/ui/BrandLogo'
 import { createClient }       from '@/lib/supabase/client'
 
-function ResultNavbar({ isSignedIn }: { isSignedIn: boolean }) {
+function ResultNavbar() {
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
       <div className="max-w-[1080px] mx-auto px-8 h-16 flex items-center justify-between">
@@ -35,6 +34,7 @@ export default function ResultPage() {
   const router = useRouter()
   const onboarding = useOnboardingStore()
   const sim = useSimulationStore()
+  const initSimulation = useSimulationStore(s => s.init)
   const [mounted, setMounted] = useState(false)
   const [isSignedIn, setIsSignedIn] = useState(false)
   const isComplete = onboarding.isComplete()
@@ -60,9 +60,9 @@ export default function ResultPage() {
     if (!isComplete) {
       router.replace('/onboarding')
     } else {
-      sim.init(onboarding.guestCount, onboarding.weddingStyle)
+      initSimulation(onboarding.guestCount, onboarding.weddingStyle)
     }
-  }, [mounted, isComplete, onboarding.guestCount, onboarding.weddingStyle, router, sim.init])
+  }, [mounted, isComplete, onboarding.guestCount, onboarding.weddingStyle, router, initSimulation])
 
   const { scoreResult } = useMemo(() => {
     const alloc = calculateAllocation({
@@ -83,16 +83,13 @@ export default function ResultPage() {
       scoreResult: sr,
     }
   }, [onboarding.totalBudget, onboarding.guestCount, onboarding.weddingStyle, onboarding.planningPriority, onboarding.weddingCity,
-      onboarding.weddingDate, sim.guestCount, sim.weddingStyle])
+      sim.guestCount, sim.weddingStyle])
 
   if (!mounted || !isComplete) return null
 
-  const months = monthsUntilDate(onboarding.weddingDate)
-  const monthlySavings = calculateMonthlySavings(onboarding.totalBudget, 0, months)
-
   return (
     <main className="premium-theme min-h-screen bg-nikah-bg">
-      <ResultNavbar isSignedIn={isSignedIn} />
+      <ResultNavbar />
       <div className="max-w-[1040px] mx-auto px-6" style={{ paddingTop: 58, paddingBottom: 72 }}>
 
         <ScoreHero
@@ -105,9 +102,6 @@ export default function ResultPage() {
         />
 
         <PremiumTease
-          totalBudget={onboarding.totalBudget}
-          monthlySavings={monthlySavings}
-          checklistCount={CHECKLIST_ITEMS.length}
           isSignedIn={isSignedIn}
         />
 

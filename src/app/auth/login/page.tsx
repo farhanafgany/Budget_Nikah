@@ -3,7 +3,7 @@ import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { useOnboardingStore } from '@/stores/onboardingStore'
+import { clearOnboardingStore, useOnboardingStore } from '@/stores/onboardingStore'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { AlarmClock, BriefcaseBusiness, Coins } from 'lucide-react'
 
@@ -109,7 +109,7 @@ function LoginContent() {
         return
       }
 
-      onboarding.reset()
+      await clearOnboardingStore()
     }
     router.replace(nextPath)
   }

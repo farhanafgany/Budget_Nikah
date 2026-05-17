@@ -33,8 +33,9 @@ flowchart TD
 
   L2 -->|Login email/password / Google| F["Auth Finish / Callback"]
   L2 -->|Register email/password / Google| F
-  F --> F1["Simpan onboarding ke Supabase:\nwedding_profiles + simulations"]
-  F1 --> P2
+  F --> F1["Simpan onboarding ke Supabase:\nwedding_profiles"]
+  F1 --> F2["Kosongkan localStorage onboarding"]
+  F2 --> P2
 
   L -->|Login berhasil| F
   L -->|Login gagal| E1["Error state:\nemail belum terdaftar / password salah"]
@@ -43,10 +44,12 @@ flowchart TD
   M1["API Create Transaction\n/api/payments/midtrans/create"]
   M1 --> M2{"Authenticated?"}
   M2 -->|Tidak| L2
-  M2 -->|Ya| M3["Create Midtrans Snap Transaction\norder_id unik + user_id"]
+  M2 -->|Ya| M3["Insert payments row + create Midtrans Snap Transaction\norder_id unik + user_id"]
   M3 --> M4["Open Midtrans Snap Popup"]
 
-  M4 -->|Success callback frontend| S["Success Page /premium/success"]
+  M4 -->|Success callback frontend| CFM["Confirm payment guard\n/api/payments/midtrans/confirm"]
+  CFM -->|Verify ke Midtrans\nsettlement / capture| W2
+  CFM --> S["Success Page /premium/success"]
   M4 -->|Pending| P
   M4 -->|Error / Close popup| P2
   M4 -. kemungkinan drop-off .-> D5["Drop-off: batal bayar / metode pembayaran gagal / Snap ditutup"]

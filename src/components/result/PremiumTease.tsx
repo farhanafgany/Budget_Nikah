@@ -1,9 +1,6 @@
 import Link from 'next/link'
 
 interface Props {
-  totalBudget: number
-  monthlySavings: number
-  checklistCount: number
   isSignedIn?: boolean
 }
 
@@ -42,14 +39,7 @@ const PREMIUM_FEATURES = [
   },
 ]
 
-function shortRupiah(value: number) {
-  if (value >= 1_000_000_000) return `Rp ${(value / 1_000_000_000).toFixed(1).replace('.0', '')}M`
-  if (value >= 1_000_000) return `Rp ${(value / 1_000_000).toFixed(0)}jt`
-  if (value >= 1_000) return `Rp ${(value / 1_000).toFixed(0)}rb`
-  return `Rp ${value.toLocaleString('id-ID')}`
-}
-
-export function PremiumTease({ totalBudget, monthlySavings, checklistCount, isSignedIn = false }: Props) {
+export function PremiumTease({ isSignedIn = false }: Props) {
   const saveHref = '/auth/login?next=/premium'
   const continueHref = '/premium'
 

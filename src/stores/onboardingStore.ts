@@ -34,6 +34,12 @@ const INITIAL: OnboardingData = {
   planningPriority: '',
 }
 
+const ONBOARDING_STORAGE_KEY = 'budgetnikah-onboarding'
+const EMPTY_PERSISTED_STATE = JSON.stringify({
+  state: { ...INITIAL, currentStep: 0 },
+  version: 0,
+})
+
 export const useOnboardingStore = create<OnboardingStore>()(
   persist(
     (set, get) => ({
@@ -51,3 +57,16 @@ export const useOnboardingStore = create<OnboardingStore>()(
     { name: 'budgetnikah-onboarding' }
   )
 )
+
+export async function clearOnboardingStore() {
+  useOnboardingStore.getState().reset()
+  useOnboardingStore.persist.clearStorage()
+  const resetPersistedState = () => {
+    if (typeof window !== 'undefined') {
+      window.localStorage.setItem(ONBOARDING_STORAGE_KEY, EMPTY_PERSISTED_STATE)
+    }
+  }
+  resetPersistedState()
+  await new Promise(resolve => setTimeout(resolve, 0))
+  resetPersistedState()
+}

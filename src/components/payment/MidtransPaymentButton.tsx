@@ -4,12 +4,16 @@ import Script from 'next/script'
 import { useState } from 'react'
 
 declare global {
+  interface MidtransPaymentResult {
+    order_id?: string
+  }
+
   interface Window {
     snap?: {
       pay: (
         token: string,
         options?: {
-          onSuccess?: () => void
+          onSuccess?: (result: MidtransPaymentResult) => void
           onPending?: () => void
           onError?: () => void
           onClose?: () => void
@@ -47,7 +51,7 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
       })
-      const data = await response.json() as { snap_token?: string; error?: string }
+      const data = await response.json() as { order_id?: string; snap_token?: string; error?: string }
 
       if (response.status === 401) {
         window.location.href = loginRedirectHref
@@ -67,7 +71,19 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
       }
 
       window.snap.pay(data.snap_token, {
-        onSuccess: () => window.location.replace('/premium/success'),
+        onSuccess: async (result) => {
+          const orderId = result.order_id ?? data.order_id
+
+          if (orderId) {
+            await fetch('/api/payments/midtrans/confirm', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ order_id: orderId }),
+            }).catch(() => null)
+          }
+
+          window.location.replace('/premium/success')
+        },
         onPending: () => window.location.replace('/premium'),
         onError: () => {
           setError('Pembayaran belum berhasil. Silakan coba lagi.')

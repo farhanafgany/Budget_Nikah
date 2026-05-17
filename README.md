@@ -1,36 +1,97 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BudgetNikah Claude Design V2
 
-## Getting Started
+Project eksperimen untuk membandingkan arah desain baru BudgetNikah dari Claude.
 
-First, run the development server:
+Fokus produk: mobile-first wedding planning app untuk pasangan Indonesia. Nuansanya calming, elegant, dan emotionally supportive, bukan finance dashboard atau fintech.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Status Terakhir
+
+- Landing, onboarding, result, premium, payment, dan dashboard sudah bisa dicek di localhost.
+- Harga premium diseragamkan sebagai `Rp 149rb`.
+- Model monetisasi: sekali bayar, akses seumur hidup.
+- Midtrans Snap sandbox sudah terhubung untuk flow pembayaran.
+- Aktivasi premium memakai `app_users.is_premium`.
+- Data onboarding pre-auth disimpan di localStorage, lalu disync ke `wedding_profiles` setelah login/signup dan state onboarding dikosongkan.
+- Mobile visual pass sudah dicek di viewport `390px` dan `430px`.
+
+## Flow Utama
+
+```text
+Landing → Onboarding → Result → Premium → Login/Signup → Payment Snap → Premium Success → Dashboard
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Pre-auth:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- User bisa menyelesaikan onboarding dan melihat result tanpa login.
+- Data sementara disimpan di localStorage melalui `onboardingStore`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Post-auth:
 
-## Learn More
+- Login/signup dengan `next=/premium` menyimpan hasil onboarding ke Supabase.
+- Setelah tersimpan, onboarding localStorage dikosongkan agar data lama tidak nyangkut.
 
-To learn more about Next.js, take a look at the following resources:
+Payment:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `POST /api/payments/midtrans/create` membuat row `payments` dan transaksi Midtrans Snap.
+- Snap popup dibuka dari `MidtransPaymentButton`.
+- `POST /api/payments/midtrans/webhook` tetap menjadi jalur utama update status pembayaran.
+- `POST /api/payments/midtrans/confirm` menjadi guard tambahan dari callback sukses frontend untuk mengurangi risiko webhook telat.
+- Jika status valid `settlement` atau `capture` accepted, `app_users.is_premium` diaktifkan.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Local Development
 
-## Deploy on Vercel
+```bash
+npm install
+npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Next.js akan memakai port kosong terdekat. Cek output terminal, misalnya:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```text
+Local: http://localhost:3003
+```
+
+## Environment
+
+Butuh `.env.local` dengan:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+
+MIDTRANS_SERVER_KEY=
+NEXT_PUBLIC_MIDTRANS_CLIENT_KEY=
+MIDTRANS_IS_PRODUCTION=false
+NEXT_PUBLIC_APP_URL=
+
+NEXT_PUBLIC_WHATSAPP_NUMBER=
+NEXT_PUBLIC_WHATSAPP_MESSAGE=
+```
+
+Catatan production:
+
+- Ganti Midtrans sandbox keys dengan production keys.
+- Set `MIDTRANS_IS_PRODUCTION=true`.
+- Pastikan `NEXT_PUBLIC_APP_URL` memakai domain production.
+- Daftarkan webhook URL publik:
+  `https://<domain>/api/payments/midtrans/webhook`
+
+## Verification
+
+Perintah yang terakhir hijau:
+
+```bash
+npx tsc --noEmit
+npm test -- --runInBand
+```
+
+Test terakhir: 47 tests pass.
+
+## Reference
+
+- Flow doc: `docs/budgetnikah-flow.md`
+- Payment migration: `supabase/migrations/20260515_payments.sql`
+- Premium page: `src/app/premium/page.tsx`
+- Payment button: `src/components/payment/MidtransPaymentButton.tsx`
+- Dashboard: `src/app/dashboard/page.tsx`

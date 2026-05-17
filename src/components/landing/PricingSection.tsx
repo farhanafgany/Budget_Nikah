@@ -31,7 +31,7 @@ export function PricingSection() {
             <div>
               <p className="text-[10px] font-extrabold uppercase tracking-widest text-nikah-mauve mb-3">Akses Seumur Hidup</p>
               <div className="text-nikah-deep mb-1" style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 46, fontWeight: 500, letterSpacing: '-0.02em', lineHeight: 1 }}>
-                Rp 149.000
+                Rp 149rb
               </div>
               <p className="text-nikah-muted text-sm font-light">Bayar sekali · Pakai sampai hari H</p>
             </div>
