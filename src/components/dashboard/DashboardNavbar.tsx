@@ -2,6 +2,7 @@
 import Link from 'next/link'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { logoutDashboard } from '@/app/dashboard/actions'
+import { Plus } from 'lucide-react'
 
 interface Props {
   userEmail: string
@@ -9,26 +10,30 @@ interface Props {
 
 export function DashboardNavbar({ userEmail }: Props) {
   return (
-    <header
-      className="sticky top-0 z-30 border-b border-nikah-border"
-      style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(12px)' }}
-    >
+    <header className="border-b border-nikah-border bg-white">
       <div
-        className="max-w-[1080px] mx-auto flex items-center justify-between"
-        style={{ padding: '0 var(--d-pad-page)', height: 64 }}
+        className="max-w-[1200px] mx-auto flex items-center justify-between"
+        style={{ padding: '0 var(--d-pad-page)', height: 72 }}
       >
         <Link href="/" className="flex items-center">
           <BrandLogo size="sm" />
         </Link>
-        <div className="flex items-center text-nikah-muted" style={{ gap: 12, fontSize: 12 }}>
-          {/* Avatar circle */}
+        <div className="flex items-center text-nikah-muted" style={{ gap: 12, fontSize: 13 }}>
+          <a
+            href="#dashboard-actions"
+            className="hidden sm:inline-flex items-center rounded-full border border-nikah-border bg-white font-bold text-nikah-deep hover:bg-nikah-bg transition"
+            style={{ gap: 7, padding: '10px 16px' }}
+          >
+            <Plus size={15} strokeWidth={2} />
+            Aksi cepat
+          </a>
           <div
             className="hidden sm:flex rounded-full items-center justify-center text-white font-extrabold flex-shrink-0"
             style={{
-              width: 30,
-              height: 30,
-              fontSize: 11,
-              background: 'linear-gradient(135deg, #E8C0CC, var(--nikah-mauve))',
+              width: 34,
+              height: 34,
+              fontSize: 12,
+              background: 'var(--landing-mauve, var(--nikah-mauve))',
             }}
             aria-hidden="true"
           >
@@ -38,8 +43,8 @@ export function DashboardNavbar({ userEmail }: Props) {
           <form action={logoutDashboard}>
             <button
               type="submit"
-              className="font-bold text-nikah-deep hover:text-nikah-text transition-colors rounded-full border border-nikah-deep hover:bg-nikah-bg"
-              style={{ padding: '9px 18px', fontSize: 12 }}
+              className="font-bold text-nikah-deep hover:text-nikah-text transition-colors rounded-full border border-nikah-border hover:bg-nikah-bg"
+              style={{ padding: '9px 15px', fontSize: 12 }}
             >
               Keluar
             </button>

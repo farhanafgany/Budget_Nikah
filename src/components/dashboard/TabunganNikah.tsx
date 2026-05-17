@@ -3,7 +3,7 @@ import { useState, useTransition } from 'react'
 import { updateTabunganWithHistory, type SavingsHistoryInput } from '@/app/dashboard/actions'
 import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
 import { formatRupiah } from '@/lib/utils'
-import { ChevronDown, Coins } from 'lucide-react'
+import { ChevronDown } from 'lucide-react'
 
 interface Props {
   collected: number
@@ -71,33 +71,20 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
       className="bg-white border shadow-sm"
       style={{
         borderRadius: 'var(--d-radius)',
-        padding: 'var(--d-pad-card)',
+        padding: 24,
         borderColor: 'rgba(192,120,136,0.26)',
-        boxShadow: '0 12px 30px rgba(107,53,69,0.06)',
+        boxShadow: '0 10px 26px rgba(107,53,69,0.05)',
       }}
     >
-      <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
-        <span className="inline-flex items-center" style={{ gap: 8 }}>
-          <span
-            className="inline-flex items-center justify-center text-nikah-deep"
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: 8,
-              background: 'linear-gradient(135deg, #F5E8EC, #EDD6DE)',
-            }}
-          >
-            <Coins size={16} strokeWidth={1.8} />
-          </span>
-          <span className="text-[10px] font-extrabold uppercase tracking-[0.14em] text-nikah-mauve">
-            Tabungan Nikah
-          </span>
+      <div className="flex items-start justify-between" style={{ marginBottom: 14 }}>
+        <span className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-nikah-mauve">
+          Tabungan Nikah
         </span>
         <span
-          className="text-xs font-extrabold rounded-full"
-          style={{ color: 'var(--nikah-deep)', background: 'var(--nikah-bg)', padding: '5px 10px' }}
+          className="text-nikah-mauve"
+          style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontSize: 24, lineHeight: 1 }}
         >
-          {progress}% terkumpul
+          {progress}%
         </span>
       </div>
 
@@ -105,7 +92,7 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
         <div>
           <div
             className="text-nikah-deep"
-            style={{ fontFamily: 'var(--font-fraunces, Georgia, serif)', fontWeight: 500, fontSize: 26, lineHeight: 1 }}
+            style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 32, lineHeight: 1 }}
           >
             {formatRupiah(localCollected)}
           </div>
@@ -123,10 +110,10 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 8, margin: '4px 0 14px' }}>
+      <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 6, margin: '6px 0 14px' }}>
         <div
           className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${progress}%`, background: 'linear-gradient(90deg, var(--nikah-mauve), var(--nikah-deep))' }}
+          style={{ width: `${progress}%`, background: 'linear-gradient(90deg, var(--landing-mauve, var(--nikah-mauve)), var(--landing-deep, var(--nikah-deep)))' }}
         />
       </div>
       <div className="flex justify-between text-nikah-muted" style={{ fontSize: 11, marginBottom: 12 }}>
@@ -183,7 +170,7 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
             borderRadius: 999,
             padding: '14px 26px',
             fontSize: 14,
-            boxShadow: '0 6px 16px rgba(107,53,69,0.22)',
+            boxShadow: '0 6px 16px rgba(110,38,56,0.18)',
             transition: 'transform 0.12s ease, opacity 0.12s ease, background 0.12s ease',
           }}
         >
@@ -202,7 +189,7 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
           type="button"
           onClick={() => setHistoryOpen(value => !value)}
           className="w-full inline-flex items-center justify-between text-nikah-muted font-bold hover:bg-nikah-bg hover:text-nikah-deep transition-colors"
-          style={{ border: '1px solid var(--nikah-border)', background: 'transparent', borderRadius: 999, padding: '9px 12px', fontSize: 12 }}
+          style={{ border: '1px solid var(--landing-border, var(--nikah-border))', background: 'transparent', borderRadius: 999, padding: '9px 12px', fontSize: 12 }}
         >
           <span>Riwayat tabungan</span>
           <span className="inline-flex items-center text-nikah-muted" style={{ gap: 6 }}>

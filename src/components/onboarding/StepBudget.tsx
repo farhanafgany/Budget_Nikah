@@ -29,12 +29,12 @@ export function StepBudget() {
             inputMode="numeric"
             value={totalBudget > 0 ? formatRupiah(totalBudget) : ''}
             onChange={e => setField('totalBudget', parseRupiah(e.target.value))}
-            placeholder="150.000.000"
+            placeholder="50.000.000"
             className="w-full bg-white border border-nikah-border rounded-xl pl-10 pr-4 py-3 text-sm text-nikah-text placeholder:text-nikah-muted focus:outline-none focus:border-nikah-mauve transition"
           />
         </div>
         <p className="text-nikah-muted text-xs mt-2">
-          Contoh: 80jt untuk intimate, 150–200jt untuk 300 tamu, 300jt+ untuk luxury
+          Isi sesuai angka yang kalian siapkan sekarang. Nanti masih bisa disimulasikan lagi.
         </p>
       </div>
     </StepWrapper>

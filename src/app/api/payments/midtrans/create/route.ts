@@ -63,7 +63,7 @@ export async function POST() {
         email: user.email,
       },
       callbacks: {
-        finish: `${appUrl}/dashboard`,
+        finish: `${appUrl}/premium/success`,
       },
     }
 

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Plus_Jakarta_Sans, Fraunces } from 'next/font/google'
+import { Plus_Jakarta_Sans, Fraunces, Playfair_Display } from 'next/font/google'
 import './globals.css'
 
 const jakarta = Plus_Jakarta_Sans({
@@ -14,6 +14,13 @@ const fraunces = Fraunces({
   axes: ['opsz'],
   style: ['normal', 'italic'],
   variable: '--font-fraunces',
+  display: 'swap',
+})
+
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  style: ['normal', 'italic'],
+  variable: '--font-playfair',
   display: 'swap',
 })
 
@@ -39,7 +46,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id">
-      <body className={`${jakarta.variable} ${fraunces.variable} font-jakarta bg-nikah-bg text-nikah-text antialiased`}>
+      <body className={`${jakarta.variable} ${fraunces.variable} ${playfair.variable} font-jakarta bg-nikah-bg text-nikah-text antialiased`}>
         {children}
       </body>
     </html>

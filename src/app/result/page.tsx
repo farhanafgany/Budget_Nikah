@@ -6,20 +6,14 @@ import { useOnboardingStore } from '@/stores/onboardingStore'
 import { useSimulationStore } from '@/stores/simulationStore'
 import { calculateAllocation } from '@/lib/allocation'
 import { calculateScore } from '@/lib/scoring'
-import { generateInsights } from '@/lib/insights'
 import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { ScoreHero }          from '@/components/result/ScoreHero'
-import { InsightCards }       from '@/components/result/InsightCards'
-import { SimulationControls } from '@/components/result/SimulationControls'
 import { PremiumTease }       from '@/components/result/PremiumTease'
-import AllocationChart        from '@/components/result/AllocationChart'
 import { BrandLogo }          from '@/components/ui/BrandLogo'
 import { createClient }       from '@/lib/supabase/client'
 
 function ResultNavbar({ isSignedIn }: { isSignedIn: boolean }) {
-  const saveHref = '/auth/login?next=/result/saved'
-
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
       <div className="max-w-[1080px] mx-auto px-8 h-16 flex items-center justify-between">
@@ -27,10 +21,10 @@ function ResultNavbar({ isSignedIn }: { isSignedIn: boolean }) {
           <BrandLogo size="sm" />
         </Link>
         <Link
-          href={isSignedIn ? '/dashboard' : saveHref}
+          href="/premium"
           className="inline-flex items-center justify-center rounded-full border border-nikah-deep px-4 py-2 text-xs font-bold text-nikah-deep transition-colors hover:bg-nikah-bg"
         >
-          {isSignedIn ? 'Dashboard →' : 'Simpan & Kelola →'}
+          Buka rencana →
         </Link>
       </div>
     </header>
@@ -70,7 +64,7 @@ export default function ResultPage() {
     }
   }, [mounted, isComplete, onboarding.guestCount, onboarding.weddingStyle, router, sim.init])
 
-  const { allocation, scoreResult, insights } = useMemo(() => {
+  const { scoreResult } = useMemo(() => {
     const alloc = calculateAllocation({
       totalBudget: onboarding.totalBudget,
       guestCount: sim.guestCount || onboarding.guestCount,
@@ -86,18 +80,7 @@ export default function ResultPage() {
       allocation: alloc,
     })
     return {
-      allocation: alloc,
       scoreResult: sr,
-      insights: generateInsights({
-        totalBudget: onboarding.totalBudget,
-        guestCount: sim.guestCount || onboarding.guestCount,
-        weddingStyle: sim.weddingStyle || onboarding.weddingStyle,
-        planningPriority: onboarding.planningPriority,
-        weddingCity: onboarding.weddingCity,
-        allocation: alloc,
-        score: sr.score,
-        weddingDate: onboarding.weddingDate,
-      }),
     }
   }, [onboarding.totalBudget, onboarding.guestCount, onboarding.weddingStyle, onboarding.planningPriority, onboarding.weddingCity,
       onboarding.weddingDate, sim.guestCount, sim.weddingStyle])
@@ -108,37 +91,25 @@ export default function ResultPage() {
   const monthlySavings = calculateMonthlySavings(onboarding.totalBudget, 0, months)
 
   return (
-    <main className="min-h-screen bg-nikah-bg" style={{ paddingBottom: 60 }}>
+    <main className="premium-theme min-h-screen bg-nikah-bg">
       <ResultNavbar isSignedIn={isSignedIn} />
-      <div className="max-w-[1080px] mx-auto px-6 pt-9">
+      <div className="max-w-[1040px] mx-auto px-6" style={{ paddingTop: 58, paddingBottom: 72 }}>
 
         <ScoreHero
           score={scoreResult.score}
           label={scoreResult.label}
           totalBudget={onboarding.totalBudget}
+          guestCount={sim.guestCount || onboarding.guestCount}
           weddingDate={onboarding.weddingDate}
+          checklistCount={CHECKLIST_ITEMS.length}
         />
 
-        {/* Two-column grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-5 mt-5">
-
-          {/* Left: allocation + insights */}
-          <div className="flex flex-col gap-5">
-            <AllocationChart allocation={allocation} />
-            <InsightCards insights={insights} />
-          </div>
-
-          {/* Right: simulation + premium */}
-          <div className="flex flex-col gap-5">
-            <SimulationControls />
-            <PremiumTease
-              totalBudget={onboarding.totalBudget}
-              monthlySavings={monthlySavings}
-              checklistCount={CHECKLIST_ITEMS.length}
-              isSignedIn={isSignedIn}
-            />
-          </div>
-        </div>
+        <PremiumTease
+          totalBudget={onboarding.totalBudget}
+          monthlySavings={monthlySavings}
+          checklistCount={CHECKLIST_ITEMS.length}
+          isSignedIn={isSignedIn}
+        />
 
       </div>
     </main>

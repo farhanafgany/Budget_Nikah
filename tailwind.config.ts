@@ -58,6 +58,7 @@ const config: Config = {
       fontFamily: {
         jakarta:  ['var(--font-jakarta)', 'sans-serif'],
         fraunces: ['var(--font-fraunces)', 'Georgia', 'serif'],
+        playfair: ['var(--font-playfair)', 'Cormorant Garamond', 'Georgia', 'serif'],
       },
     },
   },

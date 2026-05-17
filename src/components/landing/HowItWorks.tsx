@@ -20,43 +20,31 @@ export function HowItWorks() {
   return (
     <section id="cara-kerja" className="px-6 md:px-8 py-20 md:py-28 bg-nikah-bg">
       <div className="max-w-[1080px] mx-auto">
-        <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve text-center mb-2" style={{ letterSpacing: '0.16em' }}>
+        <p className="text-xs font-extrabold uppercase tracking-widest text-nikah-mauve text-center mb-3" style={{ letterSpacing: '0.16em' }}>
           Cara Kerja
         </p>
-        <h2 className="font-extrabold tracking-tight text-[34px] md:text-[42px] text-nikah-text text-center mb-12 leading-tight" style={{ letterSpacing: '-0.02em' } as React.CSSProperties}>
+        <h2
+          className="text-[34px] md:text-[44px] text-nikah-text text-center mb-11 leading-tight"
+          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, letterSpacing: '-0.02em' } as React.CSSProperties}
+        >
           Mulai dalam <em>3 langkah</em>
         </h2>
 
-        <div className="max-w-[660px] mx-auto">
-          {STEPS.map((step, i) => (
-            <div key={step.number} className="flex gap-5 items-start">
-              {/* Left column: circle + connector */}
-              <div className={`flex flex-col items-center flex-shrink-0 self-stretch ${i < STEPS.length - 1 ? '' : ''}`}>
-                <div
-                  className="rounded-full bg-gradient-to-br from-[#F5E8EC] to-[#EDD6DE] flex items-center justify-center border border-[#E8C0CC] flex-shrink-0"
-                  style={{ width: 52, height: 52 }}
-                >
-                  <span
-                    className="text-nikah-deep"
-                    style={{ fontFamily: 'var(--font-fraunces, Georgia, serif)', fontWeight: 600, fontSize: 22 }}
-                  >
-                    {step.number}
-                  </span>
-                </div>
-                {i < STEPS.length - 1 && (
-                  <div
-                    className="flex-1 mt-2"
-                    style={{ width: 2, background: 'linear-gradient(180deg, #E8C0CC, transparent)', minHeight: 24 }}
-                    aria-hidden="true"
-                  />
-                )}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 max-w-[860px] mx-auto">
+          {STEPS.map(step => (
+            <div
+              key={step.number}
+              className="bg-white border border-nikah-border rounded-[20px]"
+              style={{ padding: '32px 30px', boxShadow: '0 4px 16px rgba(90,30,42,0.035)' }}
+            >
+              <div
+                className="text-nikah-mauve mb-5"
+                style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 600, fontSize: 32, lineHeight: 1 }}
+              >
+                {step.number}.
               </div>
-
-              {/* Right column: text */}
-              <div className={`pt-2 ${i < STEPS.length - 1 ? 'pb-8' : ''}`}>
-                <h3 className="text-lg md:text-xl font-bold text-nikah-text mb-1">{step.title}</h3>
-                <p className="text-base md:text-lg text-nikah-muted font-light leading-relaxed">{step.description}</p>
-              </div>
+              <h3 className="text-base font-extrabold text-nikah-text mb-2">{step.title}</h3>
+              <p className="text-sm text-nikah-muted font-light leading-relaxed">{step.description}</p>
             </div>
           ))}
         </div>

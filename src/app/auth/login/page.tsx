@@ -51,6 +51,18 @@ function LoginContent() {
   const nextPath = getSafeNextPath(searchParams.get('next'))
   const signupHref = `/auth/signup?next=${encodeURIComponent(nextPath)}`
   const onboarding = useOnboardingStore()
+  const isPremiumContinuation = nextPath === '/premium'
+  const authEyebrow = isPremiumContinuation ? 'Simpan sebelum pembayaran' : 'Simpan hasil perencanaan kalian'
+  const authTitle = isPremiumContinuation
+    ? 'Simpan hasil kalian sebelum lanjut pembayaran.'
+    : 'Lanjutkan persiapan pernikahan dengan lebih tenang.'
+  const authCopy = isPremiumContinuation
+    ? 'Masuk untuk menyimpan hasil simulasi, lalu lanjut ke pembayaran premium tanpa mulai dari awal.'
+    : 'Masuk untuk menyimpan hasil simulasi dan melanjutkan persiapan pernikahan di satu tempat.'
+  const formTitle = isPremiumContinuation ? 'Masuk untuk lanjut pembayaran' : 'Simpan hasil perencanaan kalian'
+  const formCopy = isPremiumContinuation
+    ? 'Hasil kalian akan disimpan dulu, lalu kalian kembali ke halaman premium.'
+    : 'Masuk untuk menyimpan hasil simulasi dan melanjutkan persiapan.'
 
   async function syncAndRedirect(userId: string) {
     if (onboarding.isComplete()) {
@@ -127,17 +139,20 @@ function LoginContent() {
 
   return (
     <main
-      className="min-h-screen bg-nikah-bg px-4 py-8 flex items-center justify-center"
+      className="premium-theme min-h-screen bg-nikah-bg px-4 py-8 flex items-center justify-center"
       style={{
-        background: 'radial-gradient(ellipse at 20% 0%, #F5E8EC 0%, transparent 52%), radial-gradient(ellipse at 100% 100%, #EDD6DE 0%, transparent 58%), var(--nikah-bg)',
+        background: 'var(--landing-bg, var(--nikah-bg))',
       }}
     >
-      <div className="w-full max-w-[940px] min-w-0 grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] bg-white border border-nikah-border shadow-sm overflow-hidden" style={{ borderRadius: 'var(--d-radius)' }}>
-        <section className="min-w-0 bg-gradient-to-br from-[#F5E8EC] to-[#EDD6DE] p-6 sm:p-8 lg:p-10 flex flex-col justify-between">
+      <div
+        className="w-full max-w-[940px] min-w-0 grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] bg-white border border-nikah-border overflow-hidden"
+        style={{ borderRadius: 'var(--d-radius)', boxShadow: '0 24px 70px rgba(110,38,56,0.08)' }}
+      >
+        <section className="min-w-0 p-6 sm:p-8 lg:p-10 flex flex-col justify-between" style={{ background: 'var(--landing-band, #EFE4DE)' }}>
           <div className="min-w-0">
             <BrandLogo size="lg" />
             <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve" style={{ margin: '34px 0 10px' }}>
-              Dashboard pernikahanmu
+              {authEyebrow}
             </p>
             <h1
               className="text-nikah-text"
@@ -151,10 +166,10 @@ function LoginContent() {
                 overflowWrap: 'break-word',
               }}
             >
-              Lanjutkan rencana nikahmu dengan lebih tenang.
+              {authTitle}
             </h1>
             <p className="text-nikah-muted font-light" style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>
-              Masuk untuk membuka kembali tabungan, prioritas, vendor, checklist, dan catatan yang sudah kamu simpan.
+              {authCopy}
             </p>
           </div>
 
@@ -164,7 +179,7 @@ function LoginContent() {
               { Icon: BriefcaseBusiness, title: 'Pembayaran Vendor', body: 'DP, sisa bayar, dan jatuh tempo.' },
               { Icon: Coins, title: 'Tabungan Nikah', body: 'Progress dan target bulanan.' },
             ].map(item => (
-              <div key={item.title} className="flex items-start bg-white/60" style={{ gap: 12, padding: 12, borderRadius: 14 }}>
+              <div key={item.title} className="flex items-start bg-white border border-nikah-border" style={{ gap: 12, padding: 12, borderRadius: 14 }}>
                 <span className="inline-flex items-center justify-center bg-white text-nikah-deep" style={{ width: 30, height: 30, borderRadius: 10, flexShrink: 0 }}>
                   <item.Icon size={16} strokeWidth={1.9} />
                 </span>
@@ -183,8 +198,8 @@ function LoginContent() {
               <BrandLogo size="md" />
             </div>
             <p className="text-center text-xs font-bold uppercase tracking-widest text-nikah-mauve" style={{ marginBottom: 8 }}>Masuk ke akun</p>
-            <h2 className="text-2xl font-extrabold text-nikah-text text-center mb-1">Selamat datang kembali</h2>
-            <p className="text-nikah-muted text-sm text-center mb-7 font-light">Data dashboard kamu tetap tersimpan.</p>
+            <h2 className="text-2xl font-extrabold text-nikah-text text-center mb-1">{formTitle}</h2>
+            <p className="text-nikah-muted text-sm text-center mb-7 font-light">{formCopy}</p>
 
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-4" role="alert">

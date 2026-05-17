@@ -6,10 +6,10 @@ export function FinalCTA() {
       <div
         className="max-w-[540px] mx-auto text-center text-white relative overflow-hidden"
         style={{
-          background: 'var(--nikah-deep)',
+          background: 'linear-gradient(160deg, var(--landing-deep, var(--nikah-deep)) 0%, var(--landing-deep-dark, #3D1419) 100%)',
           borderRadius: 28,
-          padding: '40px 32px',
-          boxShadow: '0 24px 60px rgba(107,53,69,0.28)',
+          padding: '44px 34px',
+          boxShadow: '0 18px 48px rgba(90,30,42,0.22)',
         }}
       >
         {/* Decorative circles */}
@@ -22,7 +22,7 @@ export function FinalCTA() {
           </p>
           <h2
             className="text-white leading-snug mb-3"
-            style={{ fontFamily: 'var(--font-fraunces, Georgia, serif)', fontStyle: 'italic', fontWeight: 500, fontSize: 32, lineHeight: 1.15 }}
+            style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 36, lineHeight: 1.08 }}
           >
             Mulai Cek Wedding Plan Kamu
           </h2>

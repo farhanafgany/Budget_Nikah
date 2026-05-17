@@ -26,16 +26,19 @@ export function FAQSection() {
   return (
     <section className="px-6 md:px-8 pt-20 pb-16 md:pt-28 md:pb-20 bg-nikah-bg">
       <div className="max-w-[660px] mx-auto">
-        <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve text-center mb-2">FAQ</p>
-        <h2 className="font-extrabold tracking-tight text-[34px] md:text-[42px] text-nikah-text text-center mb-10 leading-tight" style={{ letterSpacing: '-0.02em' } as React.CSSProperties}>
+        <p className="text-xs font-extrabold uppercase tracking-widest text-nikah-mauve text-center mb-3">FAQ</p>
+        <h2
+          className="text-[34px] md:text-[44px] text-nikah-text text-center mb-11 leading-tight"
+          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, letterSpacing: '-0.02em' } as React.CSSProperties}
+        >
           Pertanyaan yang <em>Sering Ditanyakan</em>
         </h2>
-        <div className="space-y-2">
+        <div>
           {FAQS.map((faq, i) => (
-            <div key={i} className="border border-nikah-border rounded-2xl overflow-hidden bg-white">
+            <div key={i} className="border-b border-nikah-border overflow-hidden">
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between px-5 py-4 text-left"
+                className="w-full flex items-center justify-between py-5 text-left"
                 aria-expanded={openIndex === i}
                 aria-controls={`faq-answer-${i}`}
               >
@@ -49,7 +52,7 @@ export function FAQSection() {
                 </svg>
               </button>
               {openIndex === i && (
-                <div id={`faq-answer-${i}`} className="px-5 pb-4 text-base text-nikah-muted font-light leading-relaxed">
+                <div id={`faq-answer-${i}`} className="pb-5 text-[15px] text-nikah-muted font-light leading-relaxed">
                   {faq.a}
                 </div>
               )}

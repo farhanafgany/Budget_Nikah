@@ -3,8 +3,6 @@ import { createClient } from '@/lib/supabase/server'
 import { calculatePressureLevel } from '@/lib/scoring'
 import { DashboardNavbar } from '@/components/dashboard/DashboardNavbar'
 import { DashboardClient } from '@/components/dashboard/DashboardClient'
-import { BrandLogo } from '@/components/ui/BrandLogo'
-import { MidtransPaymentButton } from '@/components/payment/MidtransPaymentButton'
 import type { CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/app/dashboard/actions'
 
 function daysUntil(dateStr: string | null): number | null {
@@ -86,47 +84,7 @@ export default async function DashboardPage() {
     .single()
 
   if (!account?.is_premium) {
-    return (
-      <div className="min-h-screen bg-nikah-bg" style={{ paddingBottom: 60 }}>
-        <DashboardNavbar userEmail={user.email ?? ''} />
-        <main className="px-6 py-12">
-          <div className="max-w-[440px] mx-auto bg-white border border-nikah-border shadow-sm text-center" style={{ borderRadius: 'var(--d-radius)', padding: '34px 28px' }}>
-            <div className="flex justify-center" style={{ marginBottom: 22 }}>
-              <BrandLogo size="md" />
-            </div>
-            <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve" style={{ marginBottom: 8 }}>
-              Akses premium belum aktif
-            </p>
-            <h1
-              className="text-nikah-text"
-              style={{
-                fontFamily: 'var(--font-fraunces, Georgia, serif)',
-                fontStyle: 'italic',
-                fontWeight: 500,
-                fontSize: 30,
-                lineHeight: 1.12,
-                margin: '0 0 10px',
-              }}
-            >
-              Dashboard kamu sudah siap, tinggal aktifkan akses.
-            </h1>
-            <p className="text-nikah-muted font-light" style={{ fontSize: 14, lineHeight: 1.6, margin: '0 0 24px' }}>
-              Jika kamu sudah menyelesaikan pembayaran, akses akan aktif setelah pembayaran terverifikasi.
-            </p>
-            <MidtransPaymentButton
-              isProduction={process.env.MIDTRANS_IS_PRODUCTION === 'true'}
-              className="block w-full bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition"
-              style={{ padding: '14px 22px', border: 0 }}
-            >
-              Dapatkan Akses Sekarang →
-            </MidtransPaymentButton>
-            <p className="text-xs text-nikah-muted" style={{ margin: '12px 0 0', lineHeight: 1.45 }}>
-              Mode sandbox/testing aktif sampai production key Midtrans dipasang.
-            </p>
-          </div>
-        </main>
-      </div>
-    )
+    redirect('/premium')
   }
 
   const { data: profile } = await supabase
@@ -137,7 +95,7 @@ export default async function DashboardPage() {
 
   if (!profile) {
     return (
-      <div className="min-h-screen bg-nikah-bg flex items-center justify-center px-6">
+      <div className="dashboard-theme min-h-screen bg-nikah-bg flex items-center justify-center px-6">
         <div className="max-w-sm w-full text-center bg-white rounded-3xl p-8 shadow-sm border border-nikah-border">
           <div className="text-4xl mb-4" aria-hidden="true">💍</div>
           <h2 className="text-xl font-extrabold text-nikah-text mb-2">Belum ada data</h2>
@@ -159,7 +117,7 @@ export default async function DashboardPage() {
   const alloc      = profile.allocation_result as Record<string, AllocEntry> | null
 
   return (
-    <div className="min-h-screen bg-nikah-bg" style={{ paddingBottom: 60 }}>
+    <div className="dashboard-theme min-h-screen bg-nikah-bg" style={{ paddingBottom: 60 }}>
       <DashboardNavbar userEmail={user.email ?? ''} />
       <DashboardClient
         userName1={(profile.partner_one_name as string | null) ?? 'Kamu'}

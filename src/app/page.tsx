@@ -1,6 +1,6 @@
 import { Navbar }             from '@/components/landing/Navbar'
 import { HeroSection }        from '@/components/landing/HeroSection'
-import { PainCards }          from '@/components/landing/PainCards'
+import { TrustMetrics }       from '@/components/landing/TrustMetrics'
 import { FeatureShowcase }    from '@/components/landing/FeatureShowcase'
 import { SimulationPreview }  from '@/components/landing/SimulationPreview'
 import { HowItWorks }         from '@/components/landing/HowItWorks'
@@ -13,21 +13,21 @@ import { SmoothSectionScroll } from '@/components/landing/SmoothSectionScroll'
 
 export default function LandingPage() {
   return (
-    <>
+    <div className="landing-theme">
       <SmoothSectionScroll />
       <Navbar />
       <main className="pb-20 md:pb-0">
         <HeroSection />
-        <PainCards />
+        <TrustMetrics />
+        <HowItWorks />
         <FeatureShowcase />
         <SimulationPreview />
-        <HowItWorks />
         <PricingSection />
         <FAQSection />
         <FinalCTA />
         <Footer />
       </main>
       <FloatingWhatsApp />
-    </>
+    </div>
   )
 }

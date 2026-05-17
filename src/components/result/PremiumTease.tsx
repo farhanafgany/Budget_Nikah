@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import { AlarmClock, BriefcaseBusiness, Coins, Sparkles } from 'lucide-react'
 
 interface Props {
   totalBudget: number
@@ -8,111 +7,199 @@ interface Props {
   isSignedIn?: boolean
 }
 
-const PREVIEW_ITEMS = [
+const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
+
+const PREMIUM_FEATURES = [
   {
-    Icon: Coins,
-    title: 'Tracking tabungan',
-    body: 'Pantau target bulanan dan progress sampai hari H.',
+    icon: '📋',
+    title: 'Checklist Pernikahan',
+    body: 'Item tersusun dari 12 bulan hingga H-1 minggu. Ceklis sambil jalan.',
   },
   {
-    Icon: AlarmClock,
-    title: 'Prioritas sekarang',
-    body: 'Lihat tugas dan deadline paling dekat tanpa mikir ulang.',
+    icon: '💰',
+    title: 'Tabungan Nikah',
+    body: 'Pantau saldo tabungan vs target. Riwayat input tersimpan.',
   },
   {
-    Icon: BriefcaseBusiness,
-    title: 'Pembayaran vendor',
-    body: 'Catat DP, sisa bayar, dan jatuh tempo pelunasan.',
+    icon: '🧾',
+    title: 'Pembayaran Vendor',
+    body: 'DP, termin, sisa tagihan, dan jatuh tempo dalam satu tabel.',
+  },
+  {
+    icon: '🔔',
+    title: 'Prioritas Sekarang',
+    body: 'Gabungan checklist + vendor terdekat. Tahu harus mulai dari mana.',
+  },
+  {
+    icon: '💎',
+    title: 'Seserahan Custom',
+    body: 'Atur daftar seserahan sesuai kebiasaan keluarga kalian.',
+  },
+  {
+    icon: '📝',
+    title: 'Catatan Persiapan',
+    body: 'Simpan keputusan, ide, dan detail vendor agar tidak tercecer.',
   },
 ]
 
+function shortRupiah(value: number) {
+  if (value >= 1_000_000_000) return `Rp ${(value / 1_000_000_000).toFixed(1).replace('.0', '')}M`
+  if (value >= 1_000_000) return `Rp ${(value / 1_000_000).toFixed(0)}jt`
+  if (value >= 1_000) return `Rp ${(value / 1_000).toFixed(0)}rb`
+  return `Rp ${value.toLocaleString('id-ID')}`
+}
+
 export function PremiumTease({ totalBudget, monthlySavings, checklistCount, isSignedIn = false }: Props) {
-  const saveHref = '/auth/login?next=/result/saved'
+  const saveHref = '/auth/login?next=/premium'
+  const continueHref = '/premium'
 
   return (
-    <div
-      style={{
-        background: 'linear-gradient(135deg, #F5E8EC 0%, #EDD6DE 100%)',
-        borderRadius: 'var(--d-radius, 26px)',
-        padding: 'var(--d-pad-card, 28px)',
-        border: '1px solid var(--nikah-border)',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      <span style={{ position: 'absolute', top: 16, right: 16, opacity: 0.6 }} aria-hidden="true">
-        <Sparkles size={20} strokeWidth={1.8} />
-      </span>
-
-      <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve" style={{ marginBottom: 6 }}>
-        {isSignedIn ? 'Kelola Dashboard' : 'Simpan & Kelola'}
-      </p>
-      <h3
+    <section style={{ marginTop: 36 }}>
+      <div
+        className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] bg-nikah-deep text-white"
         style={{
-          fontFamily: 'var(--font-fraunces, Georgia, serif)',
-          fontStyle: 'italic',
-          fontWeight: 500,
-          fontSize: 22,
-          margin: '6px 0 4px',
-          color: 'var(--nikah-text)',
+          borderRadius: 24,
+          padding: '32px 36px',
+          gap: 24,
+          alignItems: 'center',
+          background: 'linear-gradient(160deg, var(--landing-deep, #5A1E2A) 0%, var(--landing-deep-dark, #3D1419) 100%)',
+          boxShadow: '0 18px 48px rgba(90,30,42,0.18)',
         }}
       >
-        Pakai BudgetNikah sampai hari H.
-      </h3>
-      <p style={{ fontSize: 13, color: 'var(--nikah-muted)', margin: '0 0 14px', lineHeight: 1.5 }}>
-        {isSignedIn
-          ? 'Hasil kamu sudah terhubung ke akun. Lanjutkan ke dashboard untuk mengatur tabungan, vendor, checklist, dan catatan.'
-          : 'Hasil ini baru awal. Akun hanya dibutuhkan untuk menyimpan dashboard; cek awal dan simulasi tetap bisa kamu coba gratis.'}
-      </p>
-
-      <div className="grid" style={{ gap: 8, marginBottom: 14 }}>
-        <div className="grid grid-cols-3" style={{ gap: 8 }}>
-          {[
-            { label: 'Budget', value: totalBudget >= 1_000_000 ? `Rp ${(totalBudget / 1_000_000).toFixed(0)}jt` : `Rp ${totalBudget.toLocaleString('id-ID')}` },
-            { label: 'Nabung/bln', value: monthlySavings >= 1_000_000 ? `Rp ${(monthlySavings / 1_000_000).toFixed(1)}jt` : `Rp ${monthlySavings.toLocaleString('id-ID')}` },
-            { label: 'Checklist', value: `${checklistCount}+` },
-          ].map(item => (
-            <div key={item.label} className="bg-white/55" style={{ borderRadius: 12, padding: '10px 8px' }}>
-              <div className="font-extrabold text-nikah-deep" style={{ fontSize: 13, lineHeight: 1.1 }}>{item.value}</div>
-              <div className="text-nikah-muted" style={{ fontSize: 10, marginTop: 3 }}>{item.label}</div>
-            </div>
-          ))}
+        <div>
+          <h2
+            style={{
+              fontFamily: SERIF,
+              fontStyle: 'italic',
+              fontWeight: 500,
+              fontSize: 'clamp(28px, 3.7vw, 38px)',
+              lineHeight: 1.08,
+              margin: 0,
+            }}
+          >
+            Lanjutkan persiapan dengan lebih tenang.
+          </h2>
+          <p style={{ color: 'rgba(255,255,255,0.76)', margin: '12px 0 0', fontSize: 15, lineHeight: 1.55, maxWidth: 640 }}>
+            Rp 149rb · sekali bayar · akses sampai hari H · garansi 7 hari uang kembali
+          </p>
         </div>
 
-        {PREVIEW_ITEMS.map(item => (
-          <div key={item.title} className="flex items-start bg-white/55" style={{ gap: 10, padding: 10, borderRadius: 12 }}>
-            <span className="inline-flex items-center justify-center text-nikah-deep bg-white" style={{ width: 24, height: 24, borderRadius: 8, flexShrink: 0 }}>
-              <item.Icon size={14} strokeWidth={1.9} />
-            </span>
-            <div>
-              <div className="font-bold text-nikah-text" style={{ fontSize: 13, lineHeight: 1.25 }}>{item.title}</div>
-              <div className="text-nikah-muted font-light" style={{ fontSize: 12, lineHeight: 1.35, marginTop: 2 }}>{item.body}</div>
+        <div className="flex flex-wrap justify-end" style={{ gap: 12 }}>
+          <Link
+            href={continueHref}
+            className="inline-flex items-center justify-center font-extrabold transition hover:brightness-105 active:scale-[0.99]"
+            style={{
+              minWidth: 286,
+              borderRadius: 999,
+              padding: '18px 30px',
+              color: '#4A1822',
+              background: 'linear-gradient(180deg, #E8D7A8 0%, #C9A961 100%)',
+              boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.34)',
+            }}
+          >
+            Buka rencana — Rp 149rb ›
+          </Link>
+        </div>
+      </div>
+
+      <div className="text-center" style={{ marginTop: 72, marginBottom: 28 }}>
+        <p className="text-xs font-extrabold uppercase text-nikah-mauve" style={{ letterSpacing: '0.18em', margin: '0 0 14px' }}>
+          Setelah kalian buka
+        </p>
+        <h2
+          className="text-nikah-deep"
+          style={{
+            fontFamily: SERIF,
+            fontStyle: 'italic',
+            fontWeight: 500,
+            fontSize: 'clamp(32px, 4.4vw, 48px)',
+            lineHeight: 1.08,
+            margin: 0,
+          }}
+        >
+          Semua persiapan kalian dalam satu tempat.
+        </h2>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 18 }}>
+        {PREMIUM_FEATURES.map(item => (
+          <div
+            key={item.title}
+            className="bg-white border border-nikah-border"
+            style={{
+              borderRadius: 20,
+              padding: '26px 24px',
+              minHeight: 144,
+              position: 'relative',
+              overflow: 'hidden',
+              boxShadow: '0 1px 2px rgba(90,30,42,0.035)',
+            }}
+          >
+            <div
+              aria-hidden="true"
+              className="inline-flex items-center justify-center"
+              style={{ width: 42, height: 42, borderRadius: 14, background: 'var(--landing-pink, #F5E2E2)', fontSize: 22, marginBottom: 20 }}
+            >
+              {item.icon}
             </div>
+            <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 17, lineHeight: 1.25, margin: '0 0 9px' }}>
+              {item.title}
+            </h3>
+            <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.55, margin: 0 }}>
+              {item.body}
+            </p>
+            {item.title === 'Prioritas Sekarang' ? (
+              <div
+                aria-hidden="true"
+                style={{
+                  position: 'absolute',
+                  left: 24,
+                  right: 24,
+                  bottom: 18,
+                  height: 30,
+                  borderRadius: 12,
+                  background: 'linear-gradient(180deg, rgba(251,246,241,0.38), rgba(251,246,241,0.96))',
+                  backdropFilter: 'blur(2px)',
+                  pointerEvents: 'none',
+                }}
+              />
+            ) : null}
           </div>
         ))}
       </div>
 
-      <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
-        <Link
-          href={isSignedIn ? '/dashboard' : saveHref}
-          className="font-bold text-sm text-center hover:opacity-90 transition"
-          style={{ flex: 1, minWidth: 130, background: 'var(--nikah-deep)', color: '#fff', padding: '14px 26px', borderRadius: 999 }}
+      <div className="text-center" style={{ marginTop: 64 }}>
+        <h2
+          className="text-nikah-deep"
+          style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 'clamp(29px, 3.8vw, 40px)', lineHeight: 1.1, margin: '0 0 14px' }}
         >
-          {isSignedIn ? 'Buka Dashboard →' : 'Simpan & Kelola →'}
-        </Link>
-        <Link
-          href="/?scroll=harga"
-          className="font-bold text-sm text-center transition hover:bg-white/50"
-          style={{ flex: 1, minWidth: 130, border: '1.5px solid var(--nikah-deep)', color: 'var(--nikah-deep)', padding: '14px 26px', borderRadius: 999 }}
-        >
-          Lihat Harga
-        </Link>
+          Mau lanjut sekarang atau simpan dulu?
+        </h2>
+        <p className="text-nikah-muted" style={{ fontSize: 16, lineHeight: 1.55, margin: '0 auto 24px', maxWidth: 680 }}>
+          Kalau belum siap bayar sekarang, kalian bisa menyimpan hasil ini dulu lewat akun agar tidak perlu mulai dari awal.
+        </p>
+        <div className="flex flex-wrap justify-center" style={{ gap: 12 }}>
+          {!isSignedIn ? (
+            <Link
+              href={saveHref}
+              className="inline-flex items-center justify-center border border-nikah-border text-nikah-deep font-bold rounded-full transition hover:bg-white"
+              style={{ minWidth: 230, padding: '17px 28px' }}
+            >
+              Simpan hasil dulu
+            </Link>
+          ) : null}
+          <Link
+            href={continueHref}
+            className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full transition hover:opacity-90"
+            style={{ minWidth: 230, padding: '17px 28px' }}
+          >
+            Buka rencana — Rp 149rb
+          </Link>
+        </div>
+        <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.5, margin: '18px 0 0' }}>
+          ✓ Tanpa subscription · ✓ Garansi 7 hari refund · ✓ Pembayaran via Midtrans Snap
+        </p>
       </div>
-      <p className="text-xs text-nikah-muted" style={{ margin: '12px 0 0', lineHeight: 1.45 }}>
-        {isSignedIn
-          ? 'Akses premium tetap sekali bayar, tidak ada subscription.'
-          : 'Data baru tersimpan setelah kamu membuat akun. Sekali bayar, tidak ada subscription.'}
-      </p>
-    </div>
+    </section>
   )
 }

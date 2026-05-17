@@ -132,3 +132,179 @@ h1 em, h2 em, h3 em, h4 em {
     scroll-behavior: auto;
   }
 }
+
+/* Claude Design inspired landing palette.
+   Scoped to the landing experiment so the dashboard can stay functional while we compare. */
+.landing-theme {
+  --landing-bg: #F5EDE8;
+  --landing-band: #EFE3D9;
+  --landing-card: #FBF6F1;
+  --landing-card-elev: #FFFFFF;
+  --landing-border: #E8DACF;
+  --landing-border-soft: #F0E4DA;
+  --landing-deep: #5A1E2A;
+  --landing-deep-dark: #3D1419;
+  --landing-text: #2A1A1F;
+  --landing-muted: #A38B89;
+  --landing-secondary: #6E5359;
+  --landing-mauve: #B98789;
+  --landing-rose-text: #C16E73;
+  --landing-pink: #F5E2E2;
+  --landing-gold: #C9A961;
+  --landing-shadow: 0 4px 16px rgba(90, 30, 42, 0.06);
+  --landing-shadow-lg: 0 12px 40px rgba(90, 30, 42, 0.10);
+  color: var(--landing-text);
+  background: var(--landing-bg);
+}
+
+.landing-theme h1 em,
+.landing-theme h2 em,
+.landing-theme h3 em,
+.landing-theme h4 em {
+  font-family: var(--font-playfair), "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-weight: 500;
+  color: var(--landing-deep, #5A1E2A);
+}
+
+.landing-theme .bg-nikah-bg {
+  background-color: var(--landing-bg);
+}
+
+.landing-theme .bg-white,
+.landing-theme .bg-white\/90 {
+  background-color: var(--landing-card-elev, #FFFFFF);
+}
+
+.landing-theme .border-nikah-border {
+  border-color: var(--landing-border);
+}
+
+.landing-theme .bg-nikah-deep {
+  background-color: var(--landing-deep);
+}
+
+.landing-theme .text-nikah-deep {
+  color: var(--landing-deep);
+}
+
+.landing-theme .text-nikah-text {
+  color: var(--landing-text);
+}
+
+.landing-theme .text-nikah-muted {
+  color: var(--landing-muted);
+}
+
+.landing-theme .text-nikah-mauve {
+  color: var(--landing-mauve);
+}
+
+.landing-theme .text-nikah-pink {
+  color: var(--landing-pink);
+}
+
+.landing-theme .bg-nikah-pink {
+  background-color: var(--landing-pink);
+}
+
+.landing-theme .hover\:bg-nikah-bg:hover {
+  background-color: var(--landing-bg);
+}
+
+.landing-theme .hover\:bg-nikah-pink:hover {
+  background-color: var(--landing-pink);
+}
+
+.landing-theme .bg-nikah-text {
+  background-color: var(--landing-text);
+}
+
+.premium-theme,
+.dashboard-theme {
+  --landing-bg: #F5EDE8;
+  --landing-band: #EFE3D9;
+  --landing-card: #FBF6F1;
+  --landing-card-elev: #FFFFFF;
+  --landing-border: #E8DACF;
+  --landing-border-soft: #F0E4DA;
+  --landing-deep: #5A1E2A;
+  --landing-deep-dark: #3D1419;
+  --landing-text: #2A1A1F;
+  --landing-muted: #A38B89;
+  --landing-secondary: #6E5359;
+  --landing-mauve: #B98789;
+  --landing-rose-text: #C16E73;
+  --landing-pink: #F5E2E2;
+  --landing-gold: #C9A961;
+  --landing-shadow: 0 4px 16px rgba(90, 30, 42, 0.06);
+  --landing-shadow-lg: 0 12px 40px rgba(90, 30, 42, 0.10);
+  color: var(--landing-text);
+  background: var(--landing-bg);
+}
+
+.premium-theme .bg-nikah-bg,
+.dashboard-theme .bg-nikah-bg {
+  background-color: var(--landing-bg);
+}
+
+.premium-theme .bg-white,
+.premium-theme .bg-white\/90,
+.dashboard-theme .bg-white,
+.dashboard-theme .bg-white\/90 {
+  background-color: var(--landing-card-elev, #FFFFFF);
+}
+
+.premium-theme .border-nikah-border,
+.dashboard-theme .border-nikah-border {
+  border-color: var(--landing-border);
+}
+
+.premium-theme .bg-nikah-deep,
+.dashboard-theme .bg-nikah-deep {
+  background-color: var(--landing-deep);
+}
+
+.premium-theme .text-nikah-deep,
+.dashboard-theme .text-nikah-deep {
+  color: var(--landing-deep);
+}
+
+.premium-theme .text-nikah-text,
+.dashboard-theme .text-nikah-text {
+  color: var(--landing-text);
+}
+
+.premium-theme .text-nikah-muted,
+.dashboard-theme .text-nikah-muted {
+  color: var(--landing-muted);
+}
+
+.premium-theme .text-nikah-mauve,
+.dashboard-theme .text-nikah-mauve {
+  color: var(--landing-mauve);
+}
+
+.premium-theme .text-nikah-pink,
+.dashboard-theme .text-nikah-pink {
+  color: var(--landing-pink);
+}
+
+.premium-theme .bg-nikah-pink,
+.dashboard-theme .bg-nikah-pink {
+  background-color: var(--landing-pink);
+}
+
+.premium-theme .hover\:bg-nikah-bg:hover,
+.dashboard-theme .hover\:bg-nikah-bg:hover {
+  background-color: var(--landing-bg);
+}
+
+.premium-theme .hover\:bg-nikah-pink:hover,
+.dashboard-theme .hover\:bg-nikah-pink:hover {
+  background-color: var(--landing-pink);
+}
+
+.dashboard-theme .shadow-sm {
+  box-shadow: 0 14px 34px rgba(110,38,56,0.045);
+}

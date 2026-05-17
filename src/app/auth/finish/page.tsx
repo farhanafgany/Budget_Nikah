@@ -87,12 +87,12 @@ function FinishContent() {
 
   return (
     <main
-      className="min-h-screen bg-nikah-bg px-4 py-8 flex items-center justify-center"
+      className="premium-theme min-h-screen bg-nikah-bg px-4 py-8 flex items-center justify-center"
       style={{
-        background: 'radial-gradient(ellipse at 20% 0%, #F5E8EC 0%, transparent 52%), radial-gradient(ellipse at 100% 100%, #EDD6DE 0%, transparent 58%), var(--nikah-bg)',
+        background: 'var(--landing-bg, var(--nikah-bg))',
       }}
     >
-      <section className="w-full max-w-[380px] bg-white border border-nikah-border shadow-sm text-center" style={{ borderRadius: 'var(--d-radius)', padding: '34px 28px' }}>
+      <section className="w-full max-w-[380px] bg-white border border-nikah-border text-center" style={{ borderRadius: 'var(--d-radius)', padding: '34px 28px', boxShadow: '0 24px 70px rgba(110,38,56,0.08)' }}>
         <div className="flex justify-center" style={{ marginBottom: 22 }}>
           <BrandLogo size="md" />
         </div>

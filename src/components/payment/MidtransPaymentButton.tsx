@@ -27,7 +27,7 @@ interface Props {
   children?: React.ReactNode
 }
 
-export function MidtransPaymentButton({ isProduction = false, loginRedirectHref = '/auth/login?next=/dashboard', className, style, children }: Props) {
+export function MidtransPaymentButton({ isProduction = false, loginRedirectHref = '/auth/login?next=/premium', className, style, children }: Props) {
   const [loading, setLoading] = useState(false)
   const [scriptReady, setScriptReady] = useState(false)
   const [error, setError] = useState('')
@@ -67,8 +67,8 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
       }
 
       window.snap.pay(data.snap_token, {
-        onSuccess: () => window.location.replace('/dashboard'),
-        onPending: () => window.location.replace('/dashboard'),
+        onSuccess: () => window.location.replace('/premium/success'),
+        onPending: () => window.location.replace('/premium'),
         onError: () => {
           setError('Pembayaran belum berhasil. Silakan coba lagi.')
           setLoading(false)
