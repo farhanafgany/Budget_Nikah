@@ -53,3 +53,18 @@ describe('TrustMetrics', () => {
     expect(screen.getByText(/Kenapa BudgetNikah berbeda/i)).toBeInTheDocument()
   })
 })
+
+import { HowItWorks } from '../HowItWorks'
+
+describe('HowItWorks', () => {
+  it('menampilkan badge Gratis di langkah 1 dan 2', () => {
+    render(<HowItWorks />)
+    const gratisBadges = screen.getAllByText('✓ Gratis')
+    expect(gratisBadges).toHaveLength(2)
+  })
+
+  it('menampilkan badge Premium di langkah 3', () => {
+    render(<HowItWorks />)
+    expect(screen.getByText(/Fitur Premium · Rp 149rb/)).toBeInTheDocument()
+  })
+})

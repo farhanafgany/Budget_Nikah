@@ -3,16 +3,19 @@ const STEPS = [
     number: '1',
     title: 'Isi profil wedding',
     description: 'Input nama, kota, tanggal, budget, dan jumlah tamu. Selesai dalam 2 menit.',
+    badge: 'free' as const,
   },
   {
     number: '2',
     title: 'Lihat hasil analisis',
     description: 'Dapatkan Wedding Readiness Score dan alokasi budget riil per kategori dalam Rupiah.',
+    badge: 'free' as const,
   },
   {
     number: '3',
-    title: 'Rencanakan bersama',
-    description: 'Gunakan Checklist, Tabungan Nikah, dan Seserahan untuk tetap on track sampai hari H.',
+    title: 'Rencanakan sampai hari H',
+    description: 'Buka dashboard lengkap: Checklist 50+ item, Tabungan Nikah, dan Vendor Tracker untuk tetap on track sampai hari H.',
+    badge: 'premium' as const,
   },
 ]
 
@@ -45,6 +48,22 @@ export function HowItWorks() {
               </div>
               <h3 className="text-base font-extrabold text-nikah-text mb-2">{step.title}</h3>
               <p className="text-sm text-nikah-muted font-light leading-relaxed">{step.description}</p>
+              {step.badge === 'free' && (
+                <span
+                  className="inline-flex items-center gap-1 mt-3 text-[10px] font-extrabold uppercase tracking-wide rounded-full px-2.5 py-1"
+                  style={{ background: '#EEF7EE', border: '1px solid #C8E6C9', color: '#2F7A3F' }}
+                >
+                  ✓ Gratis
+                </span>
+              )}
+              {step.badge === 'premium' && (
+                <span
+                  className="inline-flex items-center gap-1 mt-3 text-[10px] font-extrabold uppercase tracking-wide rounded-full px-2.5 py-1"
+                  style={{ background: '#FBF2EC', border: '1px solid #E8D0C0', color: '#8B4513' }}
+                >
+                  🔓 Fitur Premium · Rp 149rb
+                </span>
+              )}
             </div>
           ))}
         </div>
