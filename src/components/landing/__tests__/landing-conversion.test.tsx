@@ -136,4 +136,9 @@ describe('SocialProof', () => {
     const cta = screen.getByRole('link', { name: /Coba Gratis Dulu/i })
     expect(cta).toHaveAttribute('href', '/onboarding')
   })
+
+  it('menampilkan eyebrow Baru Launching', () => {
+    render(<SocialProof />)
+    expect(screen.getByText(/Baru Launching/i)).toBeInTheDocument()
+  })
 })

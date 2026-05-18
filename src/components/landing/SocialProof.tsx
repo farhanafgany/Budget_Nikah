@@ -13,7 +13,7 @@ export function SocialProof() {
         >
           Jadilah pasangan pertama yang tahu.
         </h2>
-        <p className="text-[17px] text-nikah-muted font-light leading-relaxed mb-8" style={{ maxWidth: 520, margin: '0 auto 32px' }}>
+        <p className="text-[17px] text-nikah-muted font-light leading-relaxed" style={{ maxWidth: 520, margin: '0 auto 32px' }}>
           BudgetNikah baru saja hadir. Kami membangunnya karena spreadsheet terasa terlalu kering, tapi aplikasi lain tidak berbicara dalam konteks Indonesia. Kalau kamu sudah sampai di sini — selamat datang, kita mulai dari tempat yang sama.
         </p>
         <p className="text-xs text-nikah-muted font-light mb-8" style={{ letterSpacing: '0.04em' }}>
