@@ -15,7 +15,7 @@ function ResultPreview() {
 
   return (
     <div className="hidden lg:block w-full max-w-[519px]">
-      <div className="relative" style={{ minHeight: 314 }}>
+      <div className="relative" style={{ minHeight: 340 }}>
         <div
           className="border border-nikah-border"
           style={{
@@ -122,7 +122,7 @@ function ResultPreview() {
           className="absolute flex items-center bg-white"
           style={{
             right: -16,
-            top: 256.5,
+            top: 286,
             width: 181,
             height: 54,
             gap: 10,
