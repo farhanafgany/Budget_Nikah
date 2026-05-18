@@ -1,31 +1,33 @@
+import Link from 'next/link'
+
 const FEATURES = [
   {
-    eyebrow: 'Fitur Utama',
+    tier: 'free' as const,
     title: 'Wedding Readiness Score',
     desc: 'Skor deterministik 0–100 yang menjelaskan kenapa segitu — bukan angka random.',
   },
   {
-    eyebrow: 'Dashboard Paid',
+    tier: 'paid' as const,
     title: 'Prioritas Sekarang',
     desc: 'Gabungan deadline vendor dan checklist terdekat, jadi kamu tahu harus mulai dari mana.',
   },
   {
-    eyebrow: 'Vendor',
+    tier: 'paid' as const,
     title: 'Pembayaran Vendor',
     desc: 'Pantau DP, sisa bayar, dan deadline pelunasan dalam satu tempat.',
   },
   {
-    eyebrow: 'Tabungan',
+    tier: 'paid' as const,
     title: 'Target Nabung Bulanan',
     desc: 'Tahu nominal yang perlu disiapkan tiap bulan agar siap di hari H.',
   },
   {
-    eyebrow: 'Checklist',
+    tier: 'paid' as const,
     title: 'Checklist + Catatan',
     desc: 'Timeline 50+ item dan tempat mencatat keputusan penting.',
   },
   {
-    eyebrow: 'Seserahan',
+    tier: 'paid' as const,
     title: 'Seserahan Custom',
     desc: 'Atur daftar seserahan sesuai kebutuhan dan kebiasaan keluarga kalian.',
   },
@@ -52,14 +54,34 @@ export function FeatureShowcase() {
               className="bg-white border border-nikah-border rounded-[18px] hover:-translate-y-0.5 transition-all duration-200"
               style={{ padding: '26px 24px', boxShadow: '0 1px 2px rgba(90,30,42,0.035)' }}
             >
-              <p className="inline-flex rounded-full px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider text-nikah-mauve mb-5" style={{ background: 'var(--landing-pink, #FBECEF)' }}>
-                {f.eyebrow}
-              </p>
+              {f.tier === 'free' ? (
+                <span
+                  className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide mb-4"
+                  style={{ background: '#EEF7EE', border: '1px solid #C8E6C9', color: '#2F7A3F' }}
+                >
+                  ✓ Gratis
+                </span>
+              ) : (
+                <span
+                  className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide mb-4"
+                  style={{ background: 'var(--landing-pink, #FBECEF)', border: '1px solid #E8D0C0', color: '#7D3F5A' }}
+                >
+                  🔓 Premium
+                </span>
+              )}
               <h3 className="text-base font-extrabold text-nikah-text mb-2">{f.title}</h3>
               <p className="text-sm text-nikah-muted leading-relaxed font-light">{f.desc}</p>
             </div>
           ))}
         </div>
+
+        <p className="text-center mt-10 text-sm text-nikah-muted font-light">
+          Wedding Readiness Score bisa{' '}
+          <Link href="/onboarding" className="font-semibold text-nikah-deep hover:underline">
+            dicoba sekarang
+          </Link>
+          {' '}— gratis, tanpa daftar.
+        </p>
       </div>
     </section>
   )

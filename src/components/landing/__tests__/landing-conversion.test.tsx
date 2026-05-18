@@ -68,3 +68,24 @@ describe('HowItWorks', () => {
     expect(screen.getByText(/Fitur Premium · Rp 149rb/)).toBeInTheDocument()
   })
 })
+
+import { FeatureShowcase } from '../FeatureShowcase'
+
+describe('FeatureShowcase', () => {
+  it('Wedding Readiness Score adalah satu-satunya fitur gratis', () => {
+    render(<FeatureShowcase />)
+    const gratisBadges = screen.getAllByText('✓ Gratis')
+    expect(gratisBadges).toHaveLength(1)
+  })
+
+  it('fitur premium minimal 5 badge', () => {
+    render(<FeatureShowcase />)
+    const premiumBadges = screen.getAllByText('🔓 Premium')
+    expect(premiumBadges.length).toBeGreaterThanOrEqual(5)
+  })
+
+  it('menampilkan micro-CTA untuk coba gratis', () => {
+    render(<FeatureShowcase />)
+    expect(screen.getByText(/dicoba sekarang/i)).toBeInTheDocument()
+  })
+})
