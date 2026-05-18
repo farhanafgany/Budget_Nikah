@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 interface ScenarioCardProps {
   label: string
   guests: string
@@ -107,7 +109,10 @@ export function SimulationPreview() {
           Simulasi mengubah segalanya
         </h2>
         <p className="text-center text-nikah-muted font-light" style={{ fontSize: 17, lineHeight: 1.5, margin: '0 auto 56px', maxWidth: 640 }}>
-          Geser jumlah tamu dari 600 ke 350. Skornya langsung berubah.
+          Dari 600 ke 350 tamu: skornya langsung berbeda.{' '}
+          <Link href="/onboarding" className="font-semibold text-nikah-deep hover:underline">
+            Coba dengan angkamu sendiri →
+          </Link>
         </p>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center" style={{ gap: 'clamp(24px, 3.2vw, 46px)' }}>
