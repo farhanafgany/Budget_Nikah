@@ -3,6 +3,7 @@ import { HeroSection }        from '@/components/landing/HeroSection'
 import { TrustMetrics }       from '@/components/landing/TrustMetrics'
 import { FeatureShowcase }    from '@/components/landing/FeatureShowcase'
 import { SimulationPreview }  from '@/components/landing/SimulationPreview'
+import { SocialProof }        from '@/components/landing/SocialProof'
 import { HowItWorks }         from '@/components/landing/HowItWorks'
 import { PricingSection }     from '@/components/landing/PricingSection'
 import { FAQSection }         from '@/components/landing/FAQSection'
@@ -22,6 +23,7 @@ export default function LandingPage() {
         <HowItWorks />
         <FeatureShowcase />
         <SimulationPreview />
+        <SocialProof />
         <PricingSection />
         <FAQSection />
         <FinalCTA />

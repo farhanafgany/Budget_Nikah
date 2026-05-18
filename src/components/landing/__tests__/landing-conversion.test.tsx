@@ -111,3 +111,29 @@ describe('PricingSection', () => {
     expect(screen.getByText(/3 hari tanpa pertanyaan/i)).toBeInTheDocument()
   })
 })
+
+import { SocialProof } from '../SocialProof'
+
+describe('SocialProof', () => {
+  it('menampilkan heading Jadilah pasangan pertama yang tahu', () => {
+    render(<SocialProof />)
+    expect(screen.getByText(/Jadilah pasangan pertama yang tahu/i)).toBeInTheDocument()
+  })
+
+  it('copy body tidak membuat klaim kompetitif tentang aplikasi lain', () => {
+    render(<SocialProof />)
+    expect(screen.queryByText(/tidak ada alat/i)).toBeNull()
+    expect(screen.queryByText(/lebih baik dari/i)).toBeNull()
+  })
+
+  it('menampilkan guarantee strip 3 hari tanpa pertanyaan', () => {
+    render(<SocialProof />)
+    expect(screen.getByText(/3 hari tanpa pertanyaan/i)).toBeInTheDocument()
+  })
+
+  it('CTA Coba Gratis mengarah ke /onboarding', () => {
+    render(<SocialProof />)
+    const cta = screen.getByRole('link', { name: /Coba Gratis Dulu/i })
+    expect(cta).toHaveAttribute('href', '/onboarding')
+  })
+})
