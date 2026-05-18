@@ -23,3 +23,13 @@ describe('FAQSection', () => {
     expect(screen.getByText(/Langsung aktif\./)).toBeInTheDocument()
   })
 })
+
+import { Navbar } from '../Navbar'
+
+describe('Navbar', () => {
+  it('CTA mengarah langsung ke /onboarding bukan ke #harga', () => {
+    render(<Navbar />)
+    const cta = screen.getByRole('link', { name: /Mulai Gratis/i })
+    expect(cta).toHaveAttribute('href', '/onboarding')
+  })
+})

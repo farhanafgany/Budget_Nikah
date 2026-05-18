@@ -20,13 +20,12 @@ export function Navbar() {
 
         {/* CTA */}
         <div className="flex items-center">
-          <a
-            href="#harga"
+          <Link
+            href="/onboarding"
             className="bg-nikah-deep text-white text-xs md:text-sm font-bold px-3 py-2 md:px-5 md:py-2.5 rounded-full hover:opacity-90 active:scale-95 transition-all shadow-sm whitespace-nowrap"
           >
-            <span className="md:hidden">Akses</span>
-            <span className="hidden md:inline">Dapatkan Akses</span>
-          </a>
+            Mulai Gratis →
+          </Link>
         </div>
 
       </div>
