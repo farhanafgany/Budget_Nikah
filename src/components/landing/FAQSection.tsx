@@ -12,7 +12,7 @@ const FAQS = [
   },
   {
     q: 'Bagaimana setelah saya bayar?',
-    a: 'Setelah pembayaran berhasil, ikuti instruksi dari halaman pembayaran untuk membuka akses. WhatsApp tetap tersedia jika kamu butuh bantuan.',
+    a: 'Langsung aktif. Setelah pembayaran berhasil, kamu otomatis diarahkan ke dashboard — tidak ada langkah tambahan. Login dengan akun yang sama dan semua fitur langsung terbuka. WhatsApp kami tetap tersedia kalau ada pertanyaan.',
   },
   {
     q: 'Apakah ada biaya langganan?',
