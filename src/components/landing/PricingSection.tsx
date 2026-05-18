@@ -46,13 +46,13 @@ export function PricingSection() {
               >
                 Mulai Sekarang — Gratis →
               </Link>
-              <a
+              <Link
                 href="/premium"
                 className="inline-flex w-full md:w-auto items-center justify-center text-nikah-deep font-semibold text-sm text-center hover:underline"
                 style={{ padding: '8px 0' }}
               >
                 Langsung Beli Akses Premium
-              </a>
+              </Link>
             </div>
           </div>
 
