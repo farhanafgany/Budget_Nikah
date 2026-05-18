@@ -1,78 +1,196 @@
-# BudgetNikah — Project Context
+# BudgetNikah Claude Design V2 — Project Context
 
 ## Overview
 
-Mobile-first wedding planning web app untuk pasangan Indonesia. Membantu memahami apakah rencana pernikahan realistis, mensimulasikan keputusan, dan memberikan kejelasan finansial + emosional.
+Project eksperimen untuk membandingkan arah desain baru BudgetNikah dari Claude, bukan folder asli utama.
 
-**Nuansa yang diinginkan:** Calming, elegant, emotionally supportive — BUKAN finance dashboard atau fintech.
+BudgetNikah adalah mobile-first wedding planning web app untuk pasangan Indonesia. Tujuannya membantu pasangan memahami apakah rencana pernikahan mereka realistis, mensimulasikan keputusan, dan memberi kejelasan finansial + emosional.
 
-## Monetization (keputusan 2026-05-12)
+**Nuansa yang diinginkan:** calming, elegant, emotionally supportive. BUKAN finance dashboard, BUKAN fintech, dan BUKAN hard-selling agresif.
 
-- Model: **one-time purchase** (satu kali bayar, akses seumur hidup)
-- Pendekatan cara jual: landing page style "spill everything" — tunjukkan semua yang didapat sebelum beli
-- Landing page hero: pain-driven question + preview angka konkret (score, tabungan/bulan, checklist count)
-- Feature preview section: phone mockup besar yang menampilkan semua fitur sekaligus
-- **TIDAK ada vendor comparison** — terlalu berat, Katsudoto sudah ada di sana, dilutes focus
-- Payment flow: TBD (belum diputuskan — opsi gateway atau link eksternal)
+## Communication
+
+- Komunikasi dengan user dalam **Bahasa Indonesia**.
+- Kode, nama variabel, nama file tetap dalam Bahasa Inggris.
+- Jangan redesign besar-besaran tanpa konfirmasi.
+- Untuk pass desain sekarang, fokus pada flow, conversion, mobile UX, spacing, teks, tombol, dan bug visual yang jelas.
+- Kalau mau mengubah layout desktop besar atau mobile besar, konfirmasi dulu sebelum implementasi.
+
+## Current Safe Restore Point
+
+Design terakhir yang disetujui dari sesi Codex ini sudah dikembalikan ke commit:
+
+```text
+a4e194b Polish premium payment flow and mobile UX
+```
+
+Perubahan desain besar dari Claude Code yang terjadi setelah itu sudah dibackup di branch:
+
+```text
+backup/claude-misfire-20260518
+```
+
+Jangan mengambil perubahan dari backup branch itu tanpa review dan konfirmasi user.
+
+## Latest Status (2026-05-18)
+
+- Branch aktif sudah reset ke `a4e194b`.
+- Worktree bersih sebelum update instruksi ini.
+- Landing, onboarding, result, premium, payment popup, success, dan dashboard sudah pernah dicek di localhost pada sesi Codex ini.
+- Mobile visual pass sudah pernah dicek di viewport `390px` dan `430px`.
+- Verifikasi terakhir sebelum restore:
+  - `npm run build` pass
+  - `npx tsc --noEmit` pass
+  - `npm test -- --runInBand` pass, 47 tests
+- Setelah restore, dev server project ini belum tentu aktif. Jalankan `npm run dev` dan ikuti port yang muncul di terminal.
+
+## Adaptive Layout Hybrid Strategy
+
+Project ini memakai strategi **adaptive layout hybrid** antara versi desktop/web dan mobile.
+
+Aturan penting:
+
+- Desktop dan mobile boleh punya layout berbeda kalau itu membuat UX lebih baik.
+- Jangan menganggap desain desktop otomatis harus mengubah mobile.
+- Jangan menganggap desain mobile otomatis harus mengubah desktop.
+- Saat sedang memperbaiki **mobile**, jaga desktop tetap stabil kecuali user eksplisit minta keduanya.
+- Saat sedang memperbaiki **desktop**, jaga mobile tetap stabil kecuali user eksplisit minta keduanya.
+- Setiap perubahan visual harus dicek minimal di viewport mobile (`390px`/`430px`) dan desktop (`1280px`/`1440px`) kalau area tersebut terdampak.
+- Hindari refactor layout global yang menyentuh breakpoint besar tanpa alasan jelas.
+- Jika ada kebutuhan menyelaraskan desktop dan mobile, jelaskan tradeoff dan minta konfirmasi dulu.
+
+Contoh penerapan:
+
+- Sticky CTA mobile boleh tidak ada di desktop.
+- Floating WhatsApp boleh tampil di desktop/tablet dan disembunyikan di mobile.
+- Dashboard card density mobile boleh lebih stacked, desktop boleh lebih bento/grid.
+- Premium/landing hero desktop boleh lebih lapang, mobile boleh lebih ringkas.
+
+## Monetization
+
+- Model: **one-time purchase**.
+- Harga aktif: **Rp 149rb**.
+- Akses: seumur hidup.
+- Pendekatan jual: landing page style "spill everything" — tunjukkan apa yang didapat sebelum user bayar.
+- TIDAK ada vendor comparison.
+
+## Current User Flow
+
+```text
+Landing
+→ /onboarding
+→ /result
+→ /premium
+→ /auth/login atau /auth/signup
+→ Midtrans Snap payment popup
+→ /premium/success
+→ /dashboard
+```
+
+Pre-auth:
+
+- User tidak perlu login untuk onboarding dan melihat result.
+- Data onboarding disimpan di localStorage melalui `onboardingStore`.
+
+Post-auth:
+
+- Login/signup dengan `next=/premium` menyimpan hasil onboarding ke Supabase table `wedding_profiles`.
+- Setelah sync berhasil, localStorage onboarding dikosongkan melalui `clearOnboardingStore()`.
+
+Payment:
+
+- Payment memakai Midtrans Snap sandbox.
+- `POST /api/payments/midtrans/create` membuat row `payments` dan transaksi Snap.
+- `POST /api/payments/midtrans/webhook` adalah jalur utama update status pembayaran.
+- `POST /api/payments/midtrans/confirm` adalah guard tambahan dari callback sukses frontend untuk mengurangi risiko webhook telat.
+- Premium aktif via `app_users.is_premium = true`.
 
 ## Tech Stack
 
 - Next.js 14 App Router + TypeScript
 - Tailwind CSS + shadcn/ui
-- Zustand (state management)
-- Supabase (Auth + PostgreSQL)
-- ~~Recharts~~ — dihapus dari result page, diganti CSS conic-gradient
+- Zustand
+- Supabase Auth + PostgreSQL
+- Midtrans Snap
 - Jest + React Testing Library
-
-## Design Decisions (sudah disetujui user)
-
-| Keputusan | Pilihan |
-|---|---|
-| Font | Plus Jakarta Sans |
-| Warna | Dusty Mauve Pink: bg `#FAF5F5`, pink `#E8C0CC`, mauve `#C07888`, deep `#6B3545`, gold `#C8A860` |
-| Result page | Wide two-column (1.2fr 1fr, max-w-1080px) — ring 200px nested DOM (score 76px Fraunces), hero gradient `#F5E8EC→#EDD6DE→#F8E1E7`, donut CSS conic-gradient |
-| Onboarding | Satu fokus per layar (quiz-style), 7 layar |
-| Arsitektur | Hybrid SSR (landing, dashboard) + CSR (onboarding, result) |
-| Scoring/allocation | Pure functions di client, NO API calls — simulasi harus instant |
 
 ## Architecture
 
-```
-/ → Server Component (SSR, SEO)
-/onboarding → Client Component (Zustand + localStorage)
-/result → Client Component (real-time simulation)
-/dashboard → Server Component (auth-gated, Supabase)
-/auth/* → Client Component
+```text
+/                     → Server Component, landing SEO
+/onboarding           → Client Component, Zustand + localStorage
+/result               → Client Component, score/result + premium bridge
+/premium              → Server page + client-side auth/payment button
+/premium/success      → Success page after Snap
+/dashboard            → Server Component, auth + premium gated
+/auth/*               → Client Component auth flow
+/api/payments/*       → Server routes for Midtrans
 ```
 
 ## Key Files
 
-```
+```text
 src/lib/
-  cityTiers.ts        # Tier A×1.25 / B×1.00 / C×0.85
-  allocation.ts       # Budget allocation pure function
-  scoring.ts          # Readiness score pure function
-  insights.ts         # Rule-based insight engine — returns { kind, title, body }
+  cityTiers.ts
+  allocation.ts
+  scoring.ts
+  insights.ts
+  payment.ts
+  midtrans.ts
 
 src/stores/
-  onboardingStore.ts  # Zustand + localStorage persist
-  authStore.ts        # Supabase session
-  simulationStore.ts  # Slider/switcher state (NOT persisted)
+  onboardingStore.ts      # Zustand persist + clearOnboardingStore()
+  authStore.ts
+  simulationStore.ts
 
 src/components/
-  landing/            # HeroSection, Navbar, PainCards, HowItWorks, FeatureShowcase, SimulationPreview,
-                      # PricingSection, FAQSection, FinalCTA, FloatingWhatsApp, Footer
-  onboarding/         # StepWrapper + 7 step components
-  result/             # ScoreHero, AllocationChart (CSS donut), InsightCards, SimulationControls, PremiumTease
-                      # (PressureCard ada tapi tidak dirender di result page)
-  dashboard/          # DashboardClient, DashboardNavbar, TabunganNikah, ChecklistPernikahan, SeserahanList
+  landing/
+    HeroSection.tsx
+    PricingSection.tsx
+    FloatingWhatsApp.tsx  # hidden on mobile to avoid crowding sticky CTA
+  result/
+    ScoreHero.tsx
+    PremiumTease.tsx
+  payment/
+    PremiumAccessButton.tsx
+    MidtransPaymentButton.tsx
+  dashboard/
+    DashboardClient.tsx
+    ChecklistPernikahan.tsx
+    TabunganNikah.tsx
+    VendorPaymentTracker.tsx
+    SeserahanList.tsx
+
+src/app/api/payments/midtrans/
+  create/route.ts
+  webhook/route.ts
+  confirm/route.ts
 ```
+
+## Database
+
+- `wedding_profiles` — satu row per user, `UNIQUE user_id`, RLS enabled.
+- `app_users` — mirror auth user + premium status.
+- `payments` — Midtrans transaction records.
+- `simulations` — snapshot simulasi, RLS enabled, ada di schema lama tapi flow terbaru fokus sync profile.
+
+## Design Decisions
+
+| Keputusan | Pilihan |
+|---|---|
+| Font | Plus Jakarta Sans + serif display via Playfair/Cormorant fallback |
+| Warna | Dusty mauve/pink, deep burgundy, soft gold |
+| Tone | Calming, elegant, supportive |
+| Onboarding | 7 layar, satu fokus per layar |
+| Result | Score + metrics + premium bridge |
+| Dashboard | Bento/card utility dashboard, bukan fintech dashboard |
+| Pricing copy | `Rp 149rb`, sekali bayar, akses seumur hidup |
 
 ## Scoring Logic
 
-```
-allocation = calculateAllocation(input)  // FIRST
-score = calculateScore({ ...input, allocation })  // SECOND (needs emergencyFund%)
+```text
+allocation = calculateAllocation(input)
+score = calculateScore({ ...input, allocation })
 
 budgetPerGuest < 120k → -25
 luxury + budget < 100jt → -20
@@ -83,59 +201,45 @@ emergencyFund < 10% → -10
 × cityMultiplier (Tier A 1.25 / B 1.0 / C 0.85)
 clamp(0, 100)
 
-0-39: High Risk | 40-69: Moderate | 70-100: Healthy
-pressureLevel: score>=70 Low | score>=40 Medium | <40 High
+0-39: High Risk
+40-69: Moderate
+70-100: Healthy
 ```
-
-## User Flow
-
-```
-Landing → /onboarding (7 steps) → /result (score + simulation)
-→ "Simpan Hasil" → /auth/login → upsert to Supabase → /dashboard
-```
-
-Pre-auth: data di localStorage (onboardingStore persist)
-Post-auth: upsert ke wedding_profiles, clear localStorage
-
-## Database
-
-- `wedding_profiles` — satu row per user (UNIQUE user_id), RLS enabled
-- `simulations` — snapshot tiap simulasi, RLS enabled
 
 ## Important Constraints
 
-- TIDAK perlu login sebelum onboarding atau melihat result
-- Scoring TIDAK random — deterministik dan explainable
-- TIDAK gunakan AI-generated insights — rule-based only
-- TIDAK ada exact pricing — hanya estimasi range
-- Simulasi di /result harus real-time, NO loading state
+- TIDAK perlu login sebelum onboarding atau result.
+- Scoring deterministik dan explainable.
+- Insights rule-based only, bukan AI-generated.
+- Simulasi di `/result` harus real-time, tanpa loading state.
+- Jangan tambahkan vendor comparison.
+- Jangan ubah flow payment besar-besaran tanpa konfirmasi.
+- Jangan ubah besar-besaran desain desktop saat task hanya mobile, dan sebaliknya.
+- Kalau membuat perubahan visual, fokus pada bug jelas atau polish kecil.
 
-## Setup Notes
+## Recent Polish Notes
 
-- `tailwind.config.ts` maps all shadcn CSS custom properties (`--background`, `--foreground`, etc.) to Tailwind color tokens using `var(--x)` syntax — full oklch values, no alpha modifier support
-- `globals.css` does NOT import `shadcn/tailwind.css` (v4-only syntax, incompatible with Tailwind v3); keyframe animations from shadcn are available via `tw-animate-css`
-- `outline-ring` used without opacity modifier in `globals.css` (oklch vars don't support Tailwind `/opacity` modifier)
-- `shadcn` is in `devDependencies` (it's a CLI tool, not a runtime dep)
-- Geist fonts removed; font-sans removed from html element; autoprefixer added to PostCSS
+- WhatsApp floating disembunyikan di mobile agar tidak bentrok dengan sticky CTA landing.
+- Harga display diseragamkan ke `Rp 149rb`.
+- Dashboard checklist timeline tabs dibuat wrap dua baris di mobile agar tidak kepotong.
+- `PremiumAccessButton` melakukan client-side login check agar `/premium` terasa lebih cepat.
+- `MidtransPaymentButton` mencoba confirm payment di frontend success callback, lalu tetap redirect ke `/premium/success`.
+- `clearOnboardingStore()` menulis persisted onboarding state kosong agar data pre-auth tidak nyangkut setelah sync.
 
-## Implementasi Status (per 2026-05-13)
+## Docs & References
 
-### Sudah diimplementasi (match Claude Design):
-- **Landing page** — HeroSection (radial gradient, Fraunces h1), HowItWorks (step connector flex-1), PainCards, FeatureShowcase (icon+eyebrow side-by-side), SimulationPreview, PricingSection (Rp 99.000, heading di atas card), FAQSection (accordion, item 1 terbuka), FinalCTA, FloatingWhatsApp
-- **Result page** — wide two-column layout, ring nested DOM, CSS donut AllocationChart, InsightCards (dot+title+body), SimulationControls (sim-block+tip), PremiumTease (gradient card), layout tanpa PressureCard
-- **Dashboard** — DashboardClient (ScoreRing 124px, bento/two-col switcher, info banner), TabunganNikah (gradient progress bar), DashboardNavbar (avatar circle), ChecklistPernikahan, SeserahanList
-- **Insight type** — `{ kind: 'good'|'warn'|'info', title, body }` (bukan lagi `{ type, icon, message }`)
+- README terbaru: `README.md`
+- Flow doc: `docs/budgetnikah-flow.md`
+- Payment migration: `supabase/migrations/20260515_payments.sql`
+- Claude screenshots/HTML referensi ada di `~/Downloads`:
+  - `_ Landing _ Desktop _full page_.png/html`
+  - `_ Result _ Premium Bridge _ Desktop _full page_.png/html`
+  - `_ Premium Paywall.png/html`
+  - `Dashboard _ Desktop _full_.png/html`
 
-### Belum diimplementasi:
-- Payment flow (gateway atau link eksternal) — masih TBD
+## Next Suggested Work
 
-## Specs & Plans
-
-- Design spec (EN): `docs/superpowers/specs/2026-05-12-budgetnikah-design.md`
-- Design spec (ID): `docs/superpowers/specs/2026-05-12-budgetnikah-design-id.md`
-- Implementation plan (MVP v1): `docs/superpowers/plans/2026-05-12-budgetnikah-mvp.md`
-
-## Communication
-
-Komunikasi dengan user dalam **Bahasa Indonesia**.
-Kode, nama variabel, nama file tetap dalam Bahasa Inggris.
+1. Manual QA di browser asli dari landing sampai payment popup.
+2. Deploy preview dan test Midtrans sandbox dari URL publik.
+3. Final copy pass: `kamu` vs `kalian`, `subscription` vs `langganan`, `akses seumur hidup` vs `sampai hari H`.
+4. Production payment readiness: production keys, public webhook URL, pending/close/error QA.
