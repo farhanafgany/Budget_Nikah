@@ -33,3 +33,23 @@ describe('Navbar', () => {
     expect(cta).toHaveAttribute('href', '/onboarding')
   })
 })
+
+import { TrustMetrics } from '../TrustMetrics'
+
+describe('TrustMetrics', () => {
+  it('tidak menampilkan teks garansi refund (sudah dipindah ke PricingSection)', () => {
+    render(<TrustMetrics />)
+    expect(screen.queryByText(/garansi refund/i)).toBeNull()
+  })
+
+  it('menampilkan metric 12 bulan coverage', () => {
+    render(<TrustMetrics />)
+    expect(screen.getByText('12')).toBeInTheDocument()
+    expect(screen.getByText(/bulan coverage/i)).toBeInTheDocument()
+  })
+
+  it('menampilkan heading yang baru', () => {
+    render(<TrustMetrics />)
+    expect(screen.getByText(/Kenapa BudgetNikah berbeda/i)).toBeInTheDocument()
+  })
+})

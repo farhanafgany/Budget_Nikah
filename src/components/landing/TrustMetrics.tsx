@@ -10,14 +10,14 @@ const METRICS = [
     desc: 'Catering, venue, dekor, dokumentasi, MUA, dan lainnya.',
   },
   {
-    value: '0',
-    label: 'biaya tersembunyi',
-    desc: 'Sekali bayar Rp 149rb, tanpa subscription.',
+    value: '12',
+    label: 'bulan coverage',
+    desc: 'Checklist dari H-12 bulan hingga H-1 minggu sebelum hari H.',
   },
   {
-    value: '7 hari',
-    label: 'garansi refund',
-    desc: 'Tidak cocok? Hubungi kami, uang kembali penuh.',
+    value: '3',
+    label: 'tier kota',
+    desc: 'Jakarta, kota besar, kota kecil — scoring menyesuaikan lokasi.',
   },
 ]
 
@@ -26,7 +26,7 @@ export function TrustMetrics() {
     <section className="px-6 md:px-8 py-[72px] md:py-24 bg-white">
       <div className="max-w-[1080px] mx-auto">
         <p className="text-center text-xs font-extrabold uppercase tracking-widest text-nikah-mauve mb-3">
-          Cara kerja yang transparan
+          Kenapa BudgetNikah berbeda
         </p>
         <h2
           className="text-[34px] md:text-[44px] text-nikah-text text-center mb-11 leading-tight"
