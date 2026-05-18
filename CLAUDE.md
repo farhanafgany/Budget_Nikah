@@ -1,8 +1,18 @@
-# BudgetNikah Claude Design V2 — Project Context
+# BudgetNikah — Project Context
 
 ## Overview
 
-Project eksperimen untuk membandingkan arah desain baru BudgetNikah dari Claude, bukan folder asli utama.
+Ini adalah folder utama BudgetNikah yang dipakai untuk pengembangan berikutnya:
+
+```text
+/Users/m/Projects/Budget_Nikah
+```
+
+Folder/copy lama sudah diarsipkan di:
+
+```text
+/Users/m/Projects/_BudgetNikah_archive_20260518
+```
 
 BudgetNikah adalah mobile-first wedding planning web app untuk pasangan Indonesia. Tujuannya membantu pasangan memahami apakah rencana pernikahan mereka realistis, mensimulasikan keputusan, dan memberi kejelasan finansial + emosional.
 
@@ -18,10 +28,16 @@ BudgetNikah adalah mobile-first wedding planning web app untuk pasangan Indonesi
 
 ## Current Safe Restore Point
 
-Design terakhir yang disetujui dari sesi Codex ini sudah dikembalikan ke commit:
+Design terakhir yang disetujui dari sesi Codex ini pernah dikembalikan ke commit:
 
 ```text
 a4e194b Polish premium payment flow and mobile UX
+```
+
+Progress terbaru yang sudah menjadi `main`:
+
+```text
+878312a Polish landing hero preview spacing
 ```
 
 Perubahan desain besar dari Claude Code yang terjadi setelah itu sudah dibackup di branch:
@@ -34,11 +50,13 @@ Jangan mengambil perubahan dari backup branch itu tanpa review dan konfirmasi us
 
 ## Latest Status (2026-05-18)
 
-- Branch aktif sudah reset ke `a4e194b`.
-- Worktree bersih sebelum update instruksi ini.
+- Branch aktif: `main`.
+- Folder utama: `/Users/m/Projects/Budget_Nikah`.
+- Folder lama/copy sudah dipindahkan ke `/Users/m/Projects/_BudgetNikah_archive_20260518`.
+- Worktree bersih setelah project dijadikan folder utama.
 - Landing, onboarding, result, premium, payment popup, success, dan dashboard sudah pernah dicek di localhost pada sesi Codex ini.
 - Mobile visual pass sudah pernah dicek di viewport `390px` dan `430px`.
-- Verifikasi terakhir sebelum restore:
+- Verifikasi terakhir:
   - `npm run build` pass
   - `npx tsc --noEmit` pass
   - `npm test -- --runInBand` pass, 47 tests

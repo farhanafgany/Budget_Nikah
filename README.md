@@ -1,12 +1,23 @@
-# BudgetNikah Claude Design V2
+# BudgetNikah
 
-Project eksperimen untuk membandingkan arah desain baru BudgetNikah dari Claude.
+Folder utama BudgetNikah untuk pengembangan berikutnya:
+
+```text
+/Users/m/Projects/Budget_Nikah
+```
+
+Folder/copy lama sudah diarsipkan di:
+
+```text
+/Users/m/Projects/_BudgetNikah_archive_20260518
+```
 
 Fokus produk: mobile-first wedding planning app untuk pasangan Indonesia. Nuansanya calming, elegant, dan emotionally supportive, bukan finance dashboard atau fintech.
 
 ## Status Terakhir
 
 - Landing, onboarding, result, premium, payment, dan dashboard sudah bisa dicek di localhost.
+- Branch utama: `main`.
 - Harga premium diseragamkan sebagai `Rp 149rb`.
 - Model monetisasi: sekali bayar, akses seumur hidup.
 - Midtrans Snap sandbox sudah terhubung untuk flow pembayaran.
