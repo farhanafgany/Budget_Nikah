@@ -135,9 +135,9 @@ Konten section:
 
 [H2 serif italic] Jadilah pasangan pertama yang tahu.
 
-[Body] BudgetNikah baru saja hadir. Kami membangunnya karena tidak ada alat 
-perencanaan pernikahan Indonesia yang benar-benar jujur soal angka. 
-Kalau kamu sudah sampai di sini — kamu lebih siap dari kebanyakan pasangan.
+[Body] BudgetNikah baru saja hadir. Kami membangunnya karena spreadsheet 
+terasa terlalu kering, tapi aplikasi lain tidak bicara dalam konteks Indonesia. 
+Kalau kamu sudah sampai di sini — selamat datang, kita mulai dari tempat yang sama.
 
 [Trust strip] 🛡️ 3 hari tanpa pertanyaan  ·  ✓ Bayar sekali, selamanya  ·  ✓ Tanpa subscription
 
