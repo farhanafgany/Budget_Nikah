@@ -84,8 +84,9 @@ describe('FeatureShowcase', () => {
     expect(premiumBadges.length).toBeGreaterThanOrEqual(5)
   })
 
-  it('menampilkan micro-CTA untuk coba gratis', () => {
+  it('menampilkan micro-CTA untuk coba gratis dengan link ke /onboarding', () => {
     render(<FeatureShowcase />)
-    expect(screen.getByText(/dicoba sekarang/i)).toBeInTheDocument()
+    const link = screen.getByRole('link', { name: /dicoba sekarang/i })
+    expect(link).toHaveAttribute('href', '/onboarding')
   })
 })
