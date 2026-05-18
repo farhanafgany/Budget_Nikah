@@ -90,3 +90,24 @@ describe('FeatureShowcase', () => {
     expect(link).toHaveAttribute('href', '/onboarding')
   })
 })
+
+import { PricingSection } from '../PricingSection'
+
+describe('PricingSection', () => {
+  it('primary CTA mengarah ke /onboarding', () => {
+    render(<PricingSection />)
+    const primary = screen.getByRole('link', { name: /Mulai Sekarang/i })
+    expect(primary).toHaveAttribute('href', '/onboarding')
+  })
+
+  it('secondary CTA mengarah ke /premium', () => {
+    render(<PricingSection />)
+    const secondary = screen.getByRole('link', { name: /Langsung Beli Akses Premium/i })
+    expect(secondary).toHaveAttribute('href', '/premium')
+  })
+
+  it('menampilkan guarantee strip 3 hari tanpa pertanyaan', () => {
+    render(<PricingSection />)
+    expect(screen.getByText(/3 hari tanpa pertanyaan/i)).toBeInTheDocument()
+  })
+})

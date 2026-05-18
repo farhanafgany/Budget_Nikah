@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 const WHAT_YOU_GET = [
   { label: 'Tahu prioritas yang harus dibereskan dulu', note: 'tugas dan deadline paling dekat' },
   { label: 'Tidak lupa DP dan pelunasan vendor',        note: 'sisa bayar dan jatuh tempo lebih jelas' },
@@ -36,13 +38,20 @@ export function PricingSection() {
               <p className="text-nikah-muted text-sm font-light">Bayar sekali · Pakai sampai hari H</p>
             </div>
 
-            <div>
-              <a
-                href="/premium"
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/onboarding"
                 className="inline-flex w-full md:w-auto items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm text-center transition-colors active:scale-95 hover:opacity-90"
                 style={{ padding: '16px 28px' }}
               >
-                Lihat Detail Premium →
+                Mulai Sekarang — Gratis →
+              </Link>
+              <a
+                href="/premium"
+                className="inline-flex w-full md:w-auto items-center justify-center text-nikah-deep font-semibold text-sm text-center hover:underline"
+                style={{ padding: '8px 0' }}
+              >
+                Langsung Beli Akses Premium
               </a>
             </div>
           </div>
@@ -64,8 +73,8 @@ export function PricingSection() {
               ))}
           </ul>
 
-          <p className="text-center text-xs text-nikah-muted mt-6">
-            Pembayaran otomatis · Tanpa subscription · Akses seumur hidup
+          <p className="text-center text-sm text-nikah-muted mt-6 font-light">
+            🛡️ 3 hari tanpa pertanyaan — tidak cocok? Uang kembali penuh.
           </p>
         </div>
         </div>
