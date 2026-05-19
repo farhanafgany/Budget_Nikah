@@ -20,8 +20,9 @@ export default function LandingPage() {
       <Navbar />
       <main className="pb-20 md:pb-0">
         <HeroSection />
-        <PainCards />
+        <div className="block md:hidden"><PainCards /></div>
         <TrustMetrics />
+        <div className="hidden md:block"><PainCards /></div>
         <HowItWorks />
         <FeatureShowcase />
         <SimulationPreview />
