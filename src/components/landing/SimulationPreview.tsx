@@ -108,12 +108,18 @@ export function SimulationPreview() {
         >
           Simulasi mengubah segalanya
         </h2>
-        <p className="text-center text-nikah-muted font-light" style={{ fontSize: 17, lineHeight: 1.5, margin: '0 auto 56px', maxWidth: 640 }}>
-          Dari 600 ke 350 tamu: skornya langsung berbeda.{' '}
-          <Link href="/onboarding" className="font-semibold text-nikah-deep hover:underline">
+        <p className="text-center text-nikah-muted font-light" style={{ fontSize: 17, lineHeight: 1.5, margin: '0 auto 32px', maxWidth: 640 }}>
+          Dari 600 ke 350 tamu: skornya langsung berbeda.
+        </p>
+        <div className="text-center" style={{ marginBottom: 56 }}>
+          <Link
+            href="/onboarding"
+            className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm transition-colors hover:opacity-90 active:scale-95"
+            style={{ padding: '15px 30px' }}
+          >
             Coba dengan angkamu sendiri →
           </Link>
-        </p>
+        </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center" style={{ gap: 'clamp(24px, 3.2vw, 46px)' }}>
           <ScenarioCard label="Sebelum" guests="600 orang" score="52" status="Moderate" />
