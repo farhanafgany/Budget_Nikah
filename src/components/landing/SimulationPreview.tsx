@@ -125,13 +125,13 @@ export function SimulationPreview() {
               height: 56,
               borderRadius: 999,
               background: 'var(--landing-deep, var(--nikah-deep))',
-              fontSize: 30,
-              lineHeight: 1,
               flexShrink: 0,
             }}
             aria-hidden="true"
           >
-            →
+            <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 11H18M18 11L12 5M18 11L12 17" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
 
           <ScenarioCard label="Sesudah" guests="350 orang" score="78" status="Healthy" />

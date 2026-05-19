@@ -230,7 +230,7 @@ export function HeroSection() {
           </div>
 
           {/* Mobile: CONTOH HASIL card inline */}
-          <div className="lg:hidden mt-8" id="contoh-hasil">
+          <div className="lg:hidden mt-8">
             <div
               className="border border-nikah-border"
               style={{
