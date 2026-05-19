@@ -19,7 +19,7 @@ export function PricingSection() {
         </p>
         <h2
           className="text-[34px] md:text-[46px] text-nikah-text text-center mb-10 leading-tight"
-          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 600, letterSpacing: '-0.025em', textWrap: 'balance' } as React.CSSProperties}
+          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, letterSpacing: '-0.025em', textWrap: 'balance' } as React.CSSProperties}
         >
           Pegangan kecil untuk keputusan nikah yang <em>besar</em>
         </h2>

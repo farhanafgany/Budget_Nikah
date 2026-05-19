@@ -30,7 +30,7 @@ export function TrustMetrics() {
         </p>
         <h2
           className="text-[28px] md:text-[44px] text-nikah-text text-center mb-7 md:mb-11 leading-tight"
-          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 600, textWrap: 'balance' } as React.CSSProperties}
+          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, textWrap: 'balance' } as React.CSSProperties}
         >
           Bukan tebak-tebakan — semua angka punya dasar.
         </h2>
