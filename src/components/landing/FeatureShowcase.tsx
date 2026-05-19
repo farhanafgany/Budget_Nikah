@@ -47,11 +47,15 @@ export function FeatureShowcase() {
           Dari cek awal sampai rencana yang bisa dijalankan.
         </h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
+        <div className="-mx-6 lg:mx-0">
+          <div
+            className="flex flex-nowrap gap-3 overflow-x-auto px-6 pb-3 snap-x snap-mandatory lg:grid lg:grid-cols-3 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}
+          >
           {FEATURES.map(f => (
             <div
               key={f.title}
-              className="bg-white border border-nikah-border rounded-[18px] hover:-translate-y-0.5 transition-all duration-200 p-4 md:p-6"
+              className="flex-shrink-0 w-[72vw] snap-start lg:w-auto bg-white border border-nikah-border rounded-[18px] hover:-translate-y-0.5 transition-all duration-200 p-4 md:p-6"
               style={{ boxShadow: '0 1px 2px rgba(90,30,42,0.035)' }}
             >
               {f.tier === 'free' ? (
@@ -73,6 +77,7 @@ export function FeatureShowcase() {
               <p className="text-sm text-nikah-muted leading-relaxed font-light">{f.desc}</p>
             </div>
           ))}
+          </div>
         </div>
 
         <p className="text-center mt-10 text-sm text-nikah-muted font-light">

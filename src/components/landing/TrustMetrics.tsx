@@ -35,11 +35,15 @@ export function TrustMetrics() {
           Bukan tebak-tebakan — semua angka punya dasar.
         </h2>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
+        <div className="-mx-6 lg:mx-0">
+          <div
+            className="flex flex-nowrap gap-3 overflow-x-auto px-6 pb-3 snap-x snap-mandatory lg:grid lg:grid-cols-4 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}
+          >
           {METRICS.map(metric => (
             <div
               key={metric.label}
-              className="border border-nikah-border rounded-[18px] p-5 md:p-6"
+              className="flex-shrink-0 w-[68vw] snap-start lg:w-auto border border-nikah-border rounded-[18px] p-5 md:p-6"
               style={{ background: 'var(--landing-band, var(--nikah-bg))', boxShadow: '0 1px 2px rgba(90,30,42,0.04)' }}
             >
               <div
@@ -52,6 +56,7 @@ export function TrustMetrics() {
               <p className="text-xs text-nikah-muted leading-relaxed font-light">{metric.desc}</p>
             </div>
           ))}
+          </div>
         </div>
       </div>
     </section>

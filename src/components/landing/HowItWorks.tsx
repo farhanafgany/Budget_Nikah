@@ -33,11 +33,15 @@ export function HowItWorks() {
           Mulai dalam <em>3 langkah</em>
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5 max-w-[860px] mx-auto">
+        <div className="-mx-6 lg:mx-auto lg:max-w-[860px]">
+          <div
+            className="flex flex-nowrap gap-4 overflow-x-auto px-6 pb-3 snap-x snap-mandatory lg:grid lg:grid-cols-3 lg:gap-5 lg:overflow-visible lg:px-0 lg:pb-0"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' } as React.CSSProperties}
+          >
           {STEPS.map(step => (
             <div
               key={step.number}
-              className="bg-white border border-nikah-border rounded-[20px] px-5 py-5 md:px-[30px] md:py-8"
+              className="flex-shrink-0 w-[78vw] snap-start lg:w-auto bg-white border border-nikah-border rounded-[20px] px-5 py-5 md:px-[30px] md:py-8"
               style={{ boxShadow: '0 4px 16px rgba(90,30,42,0.035)' }}
             >
               <div
@@ -66,6 +70,7 @@ export function HowItWorks() {
               )}
             </div>
           ))}
+          </div>
         </div>
       </div>
     </section>
