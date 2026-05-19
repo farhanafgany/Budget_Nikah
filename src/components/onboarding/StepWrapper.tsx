@@ -39,15 +39,15 @@ export function StepWrapper({ children, onNext, onBack, nextLabel = 'Lanjut →'
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-6 py-4 overflow-y-auto">
-        <div className="max-w-lg mx-auto">
+      <div className="flex-1 px-6 py-4 overflow-y-auto lg:flex lg:items-start lg:justify-center">
+        <div className="w-full max-w-lg lg:max-w-2xl lg:pt-8">
           {children}
         </div>
       </div>
 
       {/* Sticky CTA */}
       <div className="px-6 py-5 bg-nikah-bg border-t border-nikah-border">
-        <div className="max-w-lg mx-auto">
+        <div className="max-w-lg lg:max-w-2xl mx-auto">
           <button
             onClick={onNext}
             disabled={nextDisabled}

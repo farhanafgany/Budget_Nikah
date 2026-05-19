@@ -96,7 +96,7 @@ export default function PremiumPage() {
           Lanjutkan persiapan dengan lebih tenang.
         </h1>
         <p className="mx-auto text-nikah-muted" style={{ fontSize: 16.5, lineHeight: 1.62, margin: 0, maxWidth: 620 }}>
-          Satu tempat untuk menyimpan progress pernikahan kalian sampai hari H — tanpa subscription, tanpa iklan.
+          Satu tempat untuk menyimpan progress pernikahan kalian sampai hari H — tanpa langganan, tanpa iklan.
         </p>
       </section>
 

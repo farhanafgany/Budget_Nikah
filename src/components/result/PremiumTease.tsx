@@ -44,7 +44,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
   const continueHref = '/premium'
 
   return (
-    <section style={{ marginTop: 36 }}>
+    <section id="premium-details" style={{ marginTop: 36 }}>
       <div
         className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] bg-nikah-deep text-white"
         style={{
@@ -187,7 +187,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           </Link>
         </div>
         <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.5, margin: '18px 0 0' }}>
-          ✓ Tanpa subscription · ✓ Garansi 3 hari uang kembali · ✓ Pembayaran via Midtrans Snap
+          ✓ Tanpa langganan · ✓ Garansi 3 hari refund · ✓ Pembayaran via Midtrans Snap
         </p>
       </div>
     </section>
