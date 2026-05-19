@@ -96,9 +96,75 @@ function CardTitle({
   children: React.ReactNode
 }) {
   return (
-    <span className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-nikah-mauve">
+    <span className="text-[11px] font-extrabold uppercase tracking-[0.13em] text-nikah-mauve">
       {children}
     </span>
+  )
+}
+
+function MobileScoreStrip({
+  score,
+  label,
+  totalBudget,
+  guestCount,
+  timeLeftText,
+}: {
+  score: number
+  label: string
+  totalBudget: number
+  guestCount: number | null
+  timeLeftText: string | null
+}) {
+  const stats = [
+    { val: formatRupiah(totalBudget), lbl: 'Estimasi' },
+    ...(guestCount ? [{ val: String(guestCount), lbl: 'Undangan' }] : []),
+    ...(timeLeftText ? [{ val: timeLeftText.replace(' bulan', ' bln'), lbl: 'Sisa' }] : []),
+  ]
+  return (
+    <div
+      className="bg-white border border-nikah-border"
+      style={{ borderRadius: 'var(--d-radius)', padding: '16px 20px', boxShadow: '0 2px 12px rgba(90,30,42,0.05)' }}
+    >
+      <div className="flex items-center" style={{ gap: 12, marginBottom: 14 }}>
+        <div
+          style={{
+            width: 46,
+            height: 46,
+            borderRadius: '50%',
+            background: `radial-gradient(circle at center, white 55%, transparent 56%), conic-gradient(var(--nikah-deep) 0% ${score}%, #EEDCE0 ${score}% 100%)`,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
+        >
+          <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 17, color: 'var(--nikah-deep)' }}>
+            {score}
+          </span>
+        </div>
+        <div>
+          <CardTitle>Estimasi Readiness</CardTitle>
+          <span className={`inline-flex mt-1 px-2 py-0.5 rounded-full text-xs font-bold ${LABEL_COLORS[label] ?? ''}`}>
+            {label}
+          </span>
+        </div>
+      </div>
+      <div
+        className="grid text-center border-t border-nikah-border"
+        style={{ gridTemplateColumns: `repeat(${stats.length}, 1fr)`, paddingTop: 12, gap: 8 }}
+      >
+        {stats.map(s => (
+          <div key={s.lbl}>
+            <div className="text-nikah-deep" style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 16, lineHeight: 1.05 }}>
+              {s.val}
+            </div>
+            <div className="text-nikah-muted uppercase font-bold" style={{ fontSize: 10, letterSpacing: '0.12em', marginTop: 3 }}>
+              {s.lbl}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -294,7 +360,7 @@ export function DashboardClient({
             </Link>
             <Link
               href="/result"
-              className="inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition"
+              className="hidden lg:inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition"
               style={{ padding: '13px 24px' }}
             >
               Buka Simulasi
@@ -303,10 +369,20 @@ export function DashboardClient({
         </div>
       </div>
 
-      <main className="max-w-[1200px] mx-auto" style={{ padding: '0 var(--d-pad-page)' }}>
+      <main className="max-w-[1200px] mx-auto" style={{ padding: '0 var(--d-pad-page) 40px' }}>
+        <div className="lg:hidden" style={{ marginBottom: 16 }}>
+          <MobileScoreStrip
+            score={score}
+            label={label}
+            totalBudget={totalBudget}
+            guestCount={guestCount}
+            timeLeftText={timeLeftText}
+          />
+        </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr]" style={{ gap: 20, marginBottom: 20 }}>
           <CurrentPriorities days={days} checkedIds={checklistChecked} vendorPayments={vendorPayments} />
-          {OverviewCard}
+          <div className="hidden lg:block">{OverviewCard}</div>
         </div>
 
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: '0 0 14px' }}>
@@ -324,7 +400,7 @@ export function DashboardClient({
         <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_0.95fr_0.95fr]" style={{ gap: 20 }}>
           <ChecklistPernikahan checkedIds={checklistChecked} />
           <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
-          {AllocationCard}
+          <div className="hidden lg:block">{AllocationCard}</div>
         </div>
       </main>
     </>

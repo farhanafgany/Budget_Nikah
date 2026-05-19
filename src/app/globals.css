@@ -14,21 +14,32 @@ h1 em, h2 em, h3 em, h4 em {
 }
 
 :root {
-  --nikah-bg:     #FAF5F5;
-  --nikah-pink:   #E8C0CC;
-  --nikah-mauve:  #C07888;
-  --nikah-deep:   #6B3545;
-  --nikah-gold:   #C8A860;
-  --nikah-text:   #261520;
-  --nikah-muted:  #9A7888;
-  --nikah-border: #EDE4E6;
+  /* ── Colour palette ── */
+  --nikah-bg:     #F5EDE8;
+  --nikah-pink:   #EACAD3;
+  --nikah-mauve:  #B98789;
+  --nikah-deep:   #5A1E2A;
+  --nikah-gold:   #C9A961;
+  --nikah-text:   #2A1A1F;
+  --nikah-muted:  #A38B89;
+  --nikah-border: #E8DACF;
   --nikah-card:   #FFFFFF;
 
-  /* Density tokens — cozy default */
+  /* ── Shadow system — warm, brand-tinted ── */
+  --shadow-xs: 0 1px 3px rgba(90,30,42,0.07);
+  --shadow-sm: 0 2px 8px rgba(90,30,42,0.07), 0 1px 2px rgba(90,30,42,0.04);
+  --shadow-md: 0 6px 22px rgba(90,30,42,0.09), 0 2px 5px rgba(90,30,42,0.05);
+  --shadow-lg: 0 14px 42px rgba(90,30,42,0.11), 0 3px 8px rgba(90,30,42,0.05);
+  --shadow-xl: 0 26px 68px rgba(90,30,42,0.13), 0 6px 14px rgba(90,30,42,0.06);
+
+  /* ── Display serif ── */
+  --serif-display: var(--font-fraunces), Georgia, serif;
+
+  /* ── Density tokens ── */
   --d-pad-page:    32px;
   --d-pad-card:    28px;
-  --d-radius:      26px;
-  --d-radius-sm:   18px;
+  --d-radius:      22px;
+  --d-radius-sm:   14px;
   --d-gap-section: 112px;
   --d-gap-card:    22px;
   --d-gap-row:     18px;
@@ -38,7 +49,16 @@ h1 em, h2 em, h3 em, h4 em {
   --d-h3:          20px;
   --d-body:        18px;
   --d-small:       15px;
-  --d-eyebrow:     12px;
+  --d-eyebrow:     11px;
+}
+
+@media (max-width: 1023px) {
+  :root {
+    --d-pad-page:  16px;
+    --d-pad-card:  18px;
+    --d-radius:    18px;
+    --d-radius-sm: 11px;
+  }
 }
 
 @layer base {
@@ -306,5 +326,49 @@ h1 em, h2 em, h3 em, h4 em {
 }
 
 .dashboard-theme .shadow-sm {
-  box-shadow: 0 14px 34px rgba(110,38,56,0.045);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ── Global typography refinements ── */
+body {
+  font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.007em;
+}
+
+/* Slightly tighter tracking on headings for premium feel */
+h1, h2, h3 {
+  letter-spacing: -0.022em;
+}
+
+/* Eyebrow labels — consistent across all pages */
+.eyebrow {
+  font-size: var(--d-eyebrow, 11px);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--nikah-mauve);
+}
+
+/* Warm shadow utilities — use these instead of hardcoded box-shadow */
+.shadow-warm-xs { box-shadow: var(--shadow-xs); }
+.shadow-warm-sm { box-shadow: var(--shadow-sm); }
+.shadow-warm-md { box-shadow: var(--shadow-md); }
+.shadow-warm-lg { box-shadow: var(--shadow-lg); }
+.shadow-warm-xl { box-shadow: var(--shadow-xl); }
+
+/* Card surface — subtle warm gradient for elevated cards */
+.card-surface {
+  background: linear-gradient(145deg, #FFFFFF 0%, #FDFAF7 100%);
+}
+
+/* Smooth transitions on all interactive elements */
+button, a, input, textarea, select {
+  transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Number rendering — tabular for financial data */
+.num {
+  font-feature-settings: "tnum" 1, "kern" 1;
+  font-variant-numeric: tabular-nums;
 }

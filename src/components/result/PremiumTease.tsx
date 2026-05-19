@@ -112,10 +112,10 @@ export function PremiumTease({ isSignedIn = false }: Props) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 18 }}>
-        {PREMIUM_FEATURES.map(item => (
+        {PREMIUM_FEATURES.map((item, i) => (
           <div
             key={item.title}
-            className="bg-white border border-nikah-border"
+            className={`bg-white border border-nikah-border${i >= 3 ? ' hidden lg:block' : ''}`}
             style={{
               borderRadius: 20,
               padding: '26px 24px',
@@ -158,7 +158,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         ))}
       </div>
 
-      <div className="text-center" style={{ marginTop: 64 }}>
+      <div className="hidden lg:block text-center" style={{ marginTop: 64 }}>
         <h2
           className="text-nikah-deep"
           style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 'clamp(29px, 3.8vw, 40px)', lineHeight: 1.1, margin: '0 0 14px' }}
@@ -183,7 +183,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full transition hover:opacity-90"
             style={{ minWidth: 230, padding: '17px 28px' }}
           >
-            Buka rencana — Rp 149rb
+            Lanjutkan sekarang →
           </Link>
         </div>
         <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.5, margin: '18px 0 0' }}>

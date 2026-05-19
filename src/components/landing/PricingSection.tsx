@@ -61,8 +61,8 @@ export function PricingSection() {
           <ul className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '12px 24px' }}>
               {WHAT_YOU_GET.map(item => (
                 <li key={item.label} className="flex items-start gap-2.5">
-                  <div className="w-4 h-4 rounded-full bg-[#E8F4E8] flex-shrink-0 flex items-center justify-center mt-0.5" aria-hidden="true">
-                    <svg className="w-2.5 h-2.5 text-[#2F7A3F]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                  <div className="w-4 h-4 rounded-full bg-[#F5E8EC] flex-shrink-0 flex items-center justify-center mt-0.5" aria-hidden="true">
+                    <svg className="w-2.5 h-2.5 text-nikah-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                   </div>
