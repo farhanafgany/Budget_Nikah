@@ -22,7 +22,8 @@ export function FinalCTA() {
           </p>
           <h2
             className="text-white leading-snug mb-3"
-            style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 36, lineHeight: 1.08, textWrap: 'balance' } as React.CSSProperties}
+            className="text-[28px] md:text-[36px]"
+            style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, lineHeight: 1.08, textWrap: 'balance' } as React.CSSProperties}
           >
             Mulai Cek Wedding Plan Kamu
           </h2>

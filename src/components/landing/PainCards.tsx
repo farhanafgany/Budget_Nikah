@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 const PAINS = [
   {
     q: 'Takut overbudget sebelum hari H?',
@@ -43,6 +45,17 @@ export function PainCards() {
               <p className="text-sm text-nikah-muted font-light leading-relaxed">{item.note}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8 text-center max-w-[720px] mx-auto">
+          <Link
+            href="/onboarding"
+            className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm transition-colors hover:opacity-90 active:scale-95"
+            style={{ padding: '16px 32px' }}
+          >
+            Cek Kesiapan Nikahmu — Gratis →
+          </Link>
+          <p className="mt-3 text-xs text-nikah-muted font-light">Tanpa daftar · Selesai 2 menit</p>
         </div>
       </div>
     </section>
