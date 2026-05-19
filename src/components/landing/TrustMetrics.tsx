@@ -35,21 +35,23 @@ export function TrustMetrics() {
           Bukan tebak-tebakan — semua angka punya dasar.
         </h2>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 lg:gap-5">
           {METRICS.map(metric => (
             <div
               key={metric.label}
-              className="border border-nikah-border rounded-[18px] p-5 md:p-6"
+              className="border border-nikah-border rounded-[18px] p-4 lg:p-6 flex items-center gap-4 lg:block"
               style={{ background: 'var(--landing-band, var(--nikah-bg))', boxShadow: '0 1px 2px rgba(90,30,42,0.04)' }}
             >
               <div
-                className="text-nikah-deep leading-none mb-3"
-                style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 38, fontWeight: 500 }}
+                className="text-nikah-deep leading-none flex-shrink-0 lg:mb-3 w-14 lg:w-auto text-center lg:text-left"
+                style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 34, fontWeight: 500 }}
               >
                 {metric.value}
               </div>
-              <h3 className="text-sm font-extrabold text-nikah-text mb-1.5">{metric.label}</h3>
-              <p className="text-xs text-nikah-muted leading-relaxed font-light">{metric.desc}</p>
+              <div>
+                <h3 className="text-sm font-extrabold text-nikah-text mb-1">{metric.label}</h3>
+                <p className="text-xs text-nikah-muted leading-relaxed font-light">{metric.desc}</p>
+              </div>
             </div>
           ))}
         </div>
