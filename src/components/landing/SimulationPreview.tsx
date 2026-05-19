@@ -90,7 +90,7 @@ function ScenarioCard({ label, guests, score, status }: ScenarioCardProps) {
 
 export function SimulationPreview() {
   return (
-    <section id="contoh-hasil" className="px-6 md:px-8 bg-nikah-bg" style={{ paddingTop: 96, paddingBottom: 112 }}>
+    <section id="contoh-hasil" className="px-6 md:px-8 pt-14 pb-14 md:pt-24 md:pb-28 bg-nikah-bg">
       <div className="max-w-[1080px] mx-auto">
         <p className="text-center text-xs font-extrabold uppercase tracking-[0.2em] text-nikah-mauve" style={{ margin: '0 0 12px' }}>
           Lihat Bedanya

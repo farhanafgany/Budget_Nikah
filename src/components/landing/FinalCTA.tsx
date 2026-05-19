@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export function FinalCTA() {
   return (
-    <section className="px-6 md:px-8 pt-0 pb-20 md:pb-28 bg-nikah-bg">
+    <section className="px-6 md:px-8 pt-0 pb-14 md:pb-28 bg-nikah-bg">
       <div
         className="max-w-[540px] mx-auto text-center text-white relative overflow-hidden"
         style={{
