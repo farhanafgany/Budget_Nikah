@@ -114,17 +114,17 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
         className="bg-white border border-nikah-border"
         style={{
           borderRadius: 24,
-          padding: '34px clamp(24px, 4vw, 42px)',
+          padding: '24px clamp(20px, 4vw, 42px) 28px',
           boxShadow: '0 4px 16px rgba(90, 30, 42, 0.05)',
           background: 'linear-gradient(160deg, #FFFCF8 0%, #F8F1EA 52%, #EFE3D9 100%)',
         }}
       >
-        <div className="grid grid-cols-1 lg:grid-cols-[118px_minmax(0,1fr)_280px] items-center" style={{ gap: 28 }}>
+        <div className="grid grid-cols-[auto_1fr] lg:grid-cols-[118px_minmax(0,1fr)_280px] items-start lg:items-center" style={{ gap: '20px 20px' }}>
           <div
             className="relative shrink-0"
             style={{
-              width: 118,
-              height: 118,
+              width: 96,
+              height: 96,
               borderRadius: 999,
               background: `conic-gradient(#5A1E2A ${scorePct}%, #EEDDE2 ${scorePct}% 100%)`,
               display: 'grid',
@@ -135,13 +135,13 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           >
             <div
               className="bg-white"
-              style={{ width: 90, height: 90, borderRadius: 999, display: 'grid', placeItems: 'center' }}
+              style={{ width: 72, height: 72, borderRadius: 999, display: 'grid', placeItems: 'center' }}
             >
               <div className="text-center">
-                <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 36, lineHeight: 1, color: '#3D1419' }}>
+                <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 28, lineHeight: 1, color: '#3D1419' }}>
                   {score}
                 </div>
-                <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.16em', marginTop: 5 }}>
+                <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9, letterSpacing: '0.14em', marginTop: 4 }}>
                   Score
                 </div>
               </div>
@@ -151,29 +151,32 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           <div>
             <span
               className="inline-flex items-center rounded-full font-bold"
-              style={{ gap: 7, padding: '7px 12px', fontSize: 12, background: status.background, color: status.color }}
+              style={{ gap: 7, padding: '6px 11px', fontSize: 12, background: status.background, color: status.color }}
             >
-              <span aria-hidden="true" style={{ width: 8, height: 8, borderRadius: 999, background: status.dot }} />
+              <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: 999, background: status.dot }} />
               {label}
               <span className="sr-only">Skor readiness {score}</span>
             </span>
+            {/* Mobile: compact metric summary inline */}
+            <p className="lg:hidden text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: '8px 0 0' }}>
+              Estimasi <strong className="text-nikah-text">{shortRupiah(totalBudget)}</strong> · {guestCount.toLocaleString('id-ID')} undangan · {months} bln lagi
+            </p>
+            {/* Desktop: title + copy */}
             <h2
-              className="text-nikah-text"
+              className="hidden lg:block text-nikah-text"
               style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 'clamp(25px, 3vw, 31px)', lineHeight: 1.14, margin: '18px 0 11px', maxWidth: 500 }}
             >
               {MAIN_COPY[label]}
             </h2>
-            <p className="text-nikah-muted" style={{ fontSize: 15.5, lineHeight: 1.58, margin: 0, maxWidth: 545 }}>
+            <p className="hidden lg:block text-nikah-muted" style={{ fontSize: 15.5, lineHeight: 1.58, margin: 0, maxWidth: 545 }}>
               {SUPPORT_COPY[label]}
             </p>
           </div>
 
+          {/* Desktop: metric columns */}
           <div
-            className="grid grid-cols-3 lg:border-l lg:border-nikah-border lg:pl-[28px]"
-            style={{
-              gap: 24,
-              minWidth: 'min(300px, 100%)',
-            }}
+            className="hidden lg:grid grid-cols-3 lg:border-l lg:border-nikah-border lg:pl-[28px]"
+            style={{ gap: 24, minWidth: 'min(300px, 100%)' }}
           >
             {[
               { label: 'Estimasi total', value: shortRupiah(totalBudget) },
@@ -190,10 +193,48 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
               </div>
             ))}
           </div>
+
+          {/* Mobile: title + copy full width */}
+          <div className="lg:hidden col-span-2 border-t border-nikah-border" style={{ paddingTop: 16 }}>
+            <h2
+              className="text-nikah-text"
+              style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 22, lineHeight: 1.2, margin: '0 0 8px' }}
+            >
+              {MAIN_COPY[label]}
+            </h2>
+            <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.55, margin: 0 }}>
+              {SUPPORT_COPY[label]}
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 18, marginTop: 24 }}>
+      {/* "Kami sudah siapkan" — unified card, replaces 3 stat tiles on mobile, hidden on desktop */}
+      <div
+        className="lg:hidden bg-white border border-nikah-border"
+        style={{ borderRadius: 20, padding: '22px 24px', marginTop: 18, boxShadow: '0 1px 4px rgba(90,30,42,0.04)' }}
+      >
+        <p className="text-nikah-text font-bold" style={{ fontSize: 14, lineHeight: 1.4, margin: '0 0 16px' }}>
+          Berdasarkan jawaban kalian, kami sudah siapkan:
+        </p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+          {[
+            { icon: '✓', value: checklistCount.toString(), desc: `checklist disesuaikan untuk H-${Math.max(1, months)} bulan` },
+            { icon: '💰', value: shortRupiah(totalBudget), desc: 'alokasi budget per kategori' },
+            { icon: '🔔', value: '4', desc: 'prioritas paling dekat minggu ini' },
+          ].map(item => (
+            <div key={item.desc} className="flex items-center" style={{ gap: 13 }}>
+              <span style={{ fontSize: 17, width: 24, flexShrink: 0, textAlign: 'center' }}>{item.icon}</span>
+              <span className="text-nikah-text" style={{ fontSize: 14, lineHeight: 1.45 }}>
+                <strong>{item.value}</strong> {item.desc}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Desktop: 3 stat cards */}
+      <div className="hidden lg:grid grid-cols-3" style={{ gap: 18, marginTop: 24 }}>
         {[
           {
             value: checklistCount.toString(),

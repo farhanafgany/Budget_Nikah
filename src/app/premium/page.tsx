@@ -16,9 +16,9 @@ const COMPARISON_ROWS = [
 ]
 
 const TRUST_ITEMS = [
-  { label: 'Pembayaran via', value: 'Midtrans Snap' },
-  { label: 'Garansi', value: '3 hari refund' },
-  { label: 'Model', value: 'Sekali bayar' },
+  { icon: '🔒', label: 'Pembayaran via', value: 'Midtrans Snap' },
+  { icon: '↩', label: 'Garansi', value: '3 hari refund' },
+  { icon: '∞', label: 'Model', value: 'Sekali bayar' },
 ]
 
 const FAQS = [
@@ -118,9 +118,19 @@ export default function PremiumPage() {
             <p className="font-extrabold uppercase" style={{ fontSize: 12, letterSpacing: '0.18em', margin: 0 }}>
               Akses Seumur Hidup
             </p>
-            <p className="hidden sm:block" style={{ fontSize: 13, margin: 0, opacity: 0.92 }}>
-              Sekali bayar · tanpa langganan
-            </p>
+            <span
+              style={{
+                background: '#E8D7A8',
+                color: '#5C3D08',
+                fontSize: 11,
+                fontWeight: 700,
+                padding: '4px 11px',
+                borderRadius: 999,
+                whiteSpace: 'nowrap',
+              }}
+            >
+              Harga peluncuran
+            </span>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]">
@@ -178,14 +188,15 @@ export default function PremiumPage() {
                 Kalian akan masuk dulu jika belum login agar hasil simulasi tersimpan sebelum pembayaran.
               </p>
 
-              <div className="grid grid-cols-3 border-t border-nikah-border" style={{ gap: 18, marginTop: 26, paddingTop: 17 }}>
+              <div className="grid grid-cols-3 border-t border-nikah-border" style={{ gap: 12, marginTop: 26, paddingTop: 17 }}>
                 {TRUST_ITEMS.map(item => (
-                  <div key={item.label}>
-                    <p className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.12em', margin: '0 0 5px' }}>
-                      {item.label}
-                    </p>
-                    <p className="text-nikah-text font-extrabold" style={{ fontSize: 12.5, lineHeight: 1.35, margin: 0 }}>
+                  <div key={item.label} className="text-center">
+                    <div style={{ fontSize: 18, marginBottom: 5 }}>{item.icon}</div>
+                    <p className="text-nikah-text font-extrabold" style={{ fontSize: 12, lineHeight: 1.3, margin: '0 0 2px' }}>
                       {item.value}
+                    </p>
+                    <p className="text-nikah-muted" style={{ fontSize: 10.5, lineHeight: 1.3, margin: 0 }}>
+                      {item.label}
                     </p>
                   </div>
                 ))}

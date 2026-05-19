@@ -267,9 +267,21 @@ export function DashboardClient({
               Hai, {userName1} &amp; {userName2}
             </h1>
             {timeLeftText && weddingDateText && (
-              <p className="text-nikah-muted" style={{ fontSize: 15.5, margin: 0 }}>
-                Hari H: <strong className="text-nikah-text">{weddingDateText}</strong> — {timeLeftText} lagi. Fokus pada yang paling dekat agar persiapan tetap terkendali.
-              </p>
+              <div
+                className="inline-flex items-center bg-white border border-nikah-border"
+                style={{ borderRadius: 999, padding: '7px 16px', gap: 9, marginTop: 2 }}
+              >
+                <span
+                  aria-hidden="true"
+                  style={{ width: 8, height: 8, borderRadius: '50%', background: '#C16E73', flexShrink: 0 }}
+                />
+                <span className="font-bold text-nikah-text" style={{ fontSize: 13.5 }}>
+                  {weddingDateText}
+                </span>
+                <span className="text-nikah-muted" style={{ fontSize: 13 }}>
+                  · {timeLeftText} lagi
+                </span>
+              </div>
             )}
           </div>
           <div id="dashboard-actions" className="flex flex-wrap items-center justify-start lg:justify-end" style={{ gap: 10 }}>
