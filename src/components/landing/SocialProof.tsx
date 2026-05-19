@@ -9,7 +9,7 @@ export function SocialProof() {
         </p>
         <h2
           className="text-[34px] md:text-[44px] text-nikah-text mb-6 leading-tight"
-          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, letterSpacing: '-0.02em' } as React.CSSProperties}
+          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 600, letterSpacing: '-0.02em' } as React.CSSProperties}
         >
           Bukan spreadsheet kering, bukan app generik.
         </h2>

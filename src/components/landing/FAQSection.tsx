@@ -29,7 +29,7 @@ export function FAQSection() {
         <p className="text-xs font-extrabold uppercase tracking-widest text-nikah-mauve text-center mb-3">FAQ</p>
         <h2
           className="text-[28px] md:text-[44px] text-nikah-text text-center mb-8 md:mb-11 leading-tight"
-          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, letterSpacing: '-0.02em' } as React.CSSProperties}
+          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 600, letterSpacing: '-0.02em' } as React.CSSProperties}
         >
           Pertanyaan yang <em>Sering Ditanyakan</em>
         </h2>
