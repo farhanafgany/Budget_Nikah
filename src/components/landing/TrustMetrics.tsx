@@ -21,6 +21,10 @@ const METRICS = [
   },
 ]
 
+const CARD_BG = 'linear-gradient(145deg, #FEF5F7 0%, #F3DDE5 100%)'
+const CARD_BORDER = '#E8C4CE'
+const CARD_NUM_COLOR = '#8B3A52'
+
 export function TrustMetrics() {
   return (
     <section className="px-6 md:px-8 py-14 md:py-24 bg-white">
@@ -39,12 +43,12 @@ export function TrustMetrics() {
           {METRICS.map(metric => (
             <div
               key={metric.label}
-              className="border border-nikah-border rounded-[18px] p-4 lg:p-6 flex items-center gap-4 lg:block"
-              style={{ background: 'var(--landing-band, var(--nikah-bg))', boxShadow: '0 1px 2px rgba(90,30,42,0.04)' }}
+              className="rounded-[18px] p-4 lg:p-6 flex items-center gap-4 lg:block"
+              style={{ background: CARD_BG, border: `1px solid ${CARD_BORDER}`, boxShadow: '0 2px 8px rgba(90,30,42,0.06)' }}
             >
               <div
-                className="text-nikah-deep leading-none flex-shrink-0 lg:mb-3 w-14 lg:w-auto text-center lg:text-left"
-                style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 34, fontWeight: 500 }}
+                className="leading-none flex-shrink-0 lg:mb-3 w-14 lg:w-auto text-center lg:text-left"
+                style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 34, fontWeight: 500, color: CARD_NUM_COLOR }}
               >
                 {metric.value}
               </div>

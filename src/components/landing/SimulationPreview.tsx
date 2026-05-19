@@ -12,11 +12,9 @@ function ScenarioCard({ label, guests, score, status }: ScenarioCardProps) {
 
   return (
     <div
-      className="border border-nikah-border"
+      className="border border-nikah-border px-5 pt-5 pb-5 md:px-[34px] md:pt-8 md:pb-[30px]"
       style={{
         borderRadius: 28,
-        padding: '32px 34px 30px',
-        minHeight: 270,
         background: isHealthy
           ? 'linear-gradient(180deg, #FFFCF8 0%, #F8F2EC 52%, #EFE2D8 100%)'
           : 'linear-gradient(180deg, #FFFCF8 0%, #F8F1EA 52%, #EFE3D9 100%)',
@@ -25,8 +23,8 @@ function ScenarioCard({ label, guests, score, status }: ScenarioCardProps) {
       }}
     >
       <p
-        className="uppercase font-extrabold text-nikah-muted"
-        style={{ fontSize: 12, letterSpacing: '0.17em', margin: '0 0 22px' }}
+        className="uppercase font-extrabold text-nikah-muted mb-3 md:mb-[22px]"
+        style={{ fontSize: 12, letterSpacing: '0.17em' }}
       >
         {label}
       </p>
@@ -39,16 +37,16 @@ function ScenarioCard({ label, guests, score, status }: ScenarioCardProps) {
         ].map(([name, value]) => (
           <div
             key={name}
-            className="grid grid-cols-[1fr_auto] items-center border-b border-nikah-border"
-            style={{ padding: '10px 0', gap: 20 }}
+            className="grid grid-cols-[1fr_auto] items-center border-b border-nikah-border py-[7px] md:py-[10px]"
+            style={{ gap: 20 }}
           >
-            <span className="text-nikah-muted" style={{ fontSize: 16 }}>{name}</span>
-            <span className="font-extrabold text-nikah-text" style={{ fontSize: 15.5 }}>{value}</span>
+            <span className="text-nikah-muted" style={{ fontSize: 15 }}>{name}</span>
+            <span className="font-extrabold text-nikah-text" style={{ fontSize: 15 }}>{value}</span>
           </div>
         ))}
       </div>
 
-      <div className="flex items-end justify-between" style={{ marginTop: 38, gap: 18 }}>
+      <div className="flex items-end justify-between mt-5 md:mt-[38px]" style={{ gap: 18 }}>
         <div
           className="text-nikah-deep"
           style={{
@@ -111,7 +109,7 @@ export function SimulationPreview() {
         <p className="text-center text-nikah-muted font-light" style={{ fontSize: 17, lineHeight: 1.5, margin: '0 auto 32px', maxWidth: 640 }}>
           Dari 600 ke 350 tamu: skornya langsung berbeda.
         </p>
-        <div className="text-center" style={{ marginBottom: 56 }}>
+        <div className="text-center mb-8 md:mb-[56px]">
           <Link
             href="/onboarding"
             className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm transition-colors hover:opacity-90 active:scale-95"
