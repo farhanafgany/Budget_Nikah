@@ -70,7 +70,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             Lanjutkan persiapan dengan lebih tenang.
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.76)', margin: '12px 0 0', fontSize: 15, lineHeight: 1.55, maxWidth: 640 }}>
-            Rp 149rb · sekali bayar · akses sampai hari H · garansi 7 hari uang kembali
+            Rp 149rb · sekali bayar · akses sampai hari H · garansi 3 hari uang kembali
           </p>
         </div>
 
@@ -163,10 +163,10 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           className="text-nikah-deep"
           style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 'clamp(29px, 3.8vw, 40px)', lineHeight: 1.1, margin: '0 0 14px' }}
         >
-          Mau lanjut sekarang atau simpan dulu?
+          Siap lanjutkan persiapan?
         </h2>
         <p className="text-nikah-muted" style={{ fontSize: 16, lineHeight: 1.55, margin: '0 auto 24px', maxWidth: 680 }}>
-          Kalau belum siap bayar sekarang, kalian bisa menyimpan hasil ini dulu lewat akun agar tidak perlu mulai dari awal.
+          Buka dashboard sekarang, atau simpan hasil dulu agar tidak perlu mulai dari awal.
         </p>
         <div className="flex flex-wrap justify-center" style={{ gap: 12 }}>
           {!isSignedIn ? (
@@ -187,7 +187,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           </Link>
         </div>
         <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.5, margin: '18px 0 0' }}>
-          ✓ Tanpa subscription · ✓ Garansi 7 hari refund · ✓ Pembayaran via Midtrans Snap
+          ✓ Tanpa subscription · ✓ Garansi 3 hari uang kembali · ✓ Pembayaran via Midtrans Snap
         </p>
       </div>
     </section>

@@ -68,6 +68,7 @@ export function PricingSection() {
                   </div>
                   <div>
                     <span className="text-sm font-semibold text-nikah-text">{item.label}</span>
+                    {item.note && <p className="text-xs text-nikah-muted font-light mt-0.5">{item.note}</p>}
                   </div>
                 </li>
               ))}
