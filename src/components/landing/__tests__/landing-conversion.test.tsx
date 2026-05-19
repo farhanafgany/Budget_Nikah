@@ -115,9 +115,9 @@ describe('PricingSection', () => {
 import { SocialProof } from '../SocialProof'
 
 describe('SocialProof', () => {
-  it('menampilkan heading Jadilah pasangan pertama yang tahu', () => {
+  it('menampilkan heading utama', () => {
     render(<SocialProof />)
-    expect(screen.getByText(/Jadilah pasangan pertama yang tahu/i)).toBeInTheDocument()
+    expect(screen.getByText(/Bukan spreadsheet kering/i)).toBeInTheDocument()
   })
 
   it('copy body tidak membuat klaim kompetitif tentang aplikasi lain', () => {
@@ -137,8 +137,8 @@ describe('SocialProof', () => {
     expect(cta).toHaveAttribute('href', '/onboarding')
   })
 
-  it('menampilkan eyebrow Baru Launching', () => {
+  it('menampilkan eyebrow konteks Indonesia', () => {
     render(<SocialProof />)
-    expect(screen.getByText(/Baru Launching/i)).toBeInTheDocument()
+    expect(screen.getByText(/Dibangun untuk konteks Indonesia/i)).toBeInTheDocument()
   })
 })

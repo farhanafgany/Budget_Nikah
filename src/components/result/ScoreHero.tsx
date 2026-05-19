@@ -20,7 +20,7 @@ const HEADLINE: Record<ReadinessLabel, string> = {
 }
 
 const MAIN_COPY: Record<ReadinessLabel, string> = {
-  Healthy: 'Beberapa prioritas utama sudah berada di jalur aman.',
+  Healthy: 'Tetap pantau detail kecil agar tidak ada yang tercecer sebelum hari H.',
   Moderate: 'Ada beberapa keputusan yang bisa dibuat lebih ringan.',
   'High Risk': 'Mulai dari bagian yang paling berdampak agar rencana terasa lebih terkendali.',
 }
@@ -202,8 +202,8 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           },
           {
             value: shortRupiah(totalBudget),
-            title: 'alokasi per kategori',
-            body: 'Catering, venue, dekor, dokumentasi',
+            title: 'budget dialokasikan',
+            body: 'Terbagi ke catering, venue, dekor, & lainnya',
           },
           {
             value: '4',

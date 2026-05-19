@@ -33,25 +33,29 @@ export function StepWrapper({ children, onNext, onBack, nextLabel = 'Lanjut →'
             ← Kembali
           </button>
         ) : <div />}
-        <span className="text-nikah-muted text-xs">
-          {stepIndex + 1} / {TOTAL_STEPS}
+        <span className="text-nikah-muted text-xs font-medium">
+          {stepIndex + 1} dari {TOTAL_STEPS} · selesai dalam 2 menit
         </span>
       </div>
 
       {/* Content */}
       <div className="flex-1 px-6 py-4 overflow-y-auto">
-        {children}
+        <div className="max-w-lg mx-auto">
+          {children}
+        </div>
       </div>
 
       {/* Sticky CTA */}
       <div className="px-6 py-5 bg-nikah-bg border-t border-nikah-border">
-        <button
-          onClick={onNext}
-          disabled={nextDisabled}
-          className="w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm disabled:opacity-40 transition"
-        >
-          {nextLabel}
-        </button>
+        <div className="max-w-lg mx-auto">
+          <button
+            onClick={onNext}
+            disabled={nextDisabled}
+            className="w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm disabled:opacity-40 transition"
+          >
+            {nextLabel}
+          </button>
+        </div>
       </div>
     </div>
   )

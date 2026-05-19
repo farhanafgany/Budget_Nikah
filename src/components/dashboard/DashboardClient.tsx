@@ -139,7 +139,7 @@ export function DashboardClient({
     : null
   const timeLeftText = formatTimeLeft(days)
   const readinessTitle = score >= 70
-    ? 'Rencana kalian sudah berada di jalur yang cukup aman.'
+    ? 'Rencana kalian sudah berada di jalur yang aman.'
     : score >= 40
       ? 'Rencana kalian cukup baik, tinggal dirapikan pelan-pelan.'
       : 'Rencana kalian masih bisa ditata dari hal yang paling dekat.'
@@ -298,7 +298,7 @@ export function DashboardClient({
         </div>
 
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: '0 0 14px' }}>
-          Uang
+          Dana &amp; Pembayaran
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 20, marginBottom: 28 }}>
           <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} />

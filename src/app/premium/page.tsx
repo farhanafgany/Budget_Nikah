@@ -17,7 +17,7 @@ const COMPARISON_ROWS = [
 
 const TRUST_ITEMS = [
   { label: 'Pembayaran via', value: 'Midtrans Snap' },
-  { label: 'Garansi', value: '7 hari refund' },
+  { label: 'Garansi', value: '3 hari refund' },
   { label: 'Model', value: 'Sekali bayar' },
 ]
 
@@ -28,7 +28,7 @@ const FAQS = [
   },
   {
     question: 'Bagaimana jika setelah membeli ternyata tidak cocok?',
-    answer: 'Garansi 7 hari uang kembali penuh. Cukup hubungi kami lewat email atau WhatsApp pembelian.',
+    answer: 'Garansi 3 hari uang kembali penuh. Cukup hubungi kami lewat email atau WhatsApp pembelian.',
   },
   {
     question: 'Apakah data saya aman?',
@@ -292,7 +292,7 @@ export default function PremiumPage() {
         <p style={{ color: 'rgba(255,255,255,0.84)', fontSize: 15.5, lineHeight: 1.68, margin: '0 auto 24px', maxWidth: 620 }}>
           Sekali bayar Rp 149rb. Tanpa langganan. Tanpa biaya tersembunyi.
           <br />
-          Kalau tidak cocok dalam 7 hari, uang kembali penuh.
+          Kalau tidak cocok dalam 3 hari, uang kembali penuh.
         </p>
         <PremiumAccessButton
           isProduction={isProduction}

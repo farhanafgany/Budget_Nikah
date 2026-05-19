@@ -22,12 +22,12 @@ export function FinalCTA() {
           </p>
           <h2
             className="text-white leading-snug mb-3"
-            style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 36, lineHeight: 1.08 }}
+            style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 36, lineHeight: 1.08, textWrap: 'balance' } as React.CSSProperties}
           >
             Mulai Cek Wedding Plan Kamu
           </h2>
           <p className="font-light mb-6 leading-relaxed" style={{ color: 'rgba(232,192,204,0.85)', fontSize: 15 }}>
-            Jawab 3 langkah singkat dan dapatkan Wedding Readiness Score kamu sekarang.
+            Selesai dalam 2 menit, tanpa login. Gratis.
           </p>
           <Link
             href="/onboarding"
