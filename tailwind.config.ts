@@ -6,14 +6,14 @@ const config: Config = {
     extend: {
       colors: {
         nikah: {
-          bg:     '#FAF5F5',
-          pink:   '#E8C0CC',
-          mauve:  '#C07888',
-          deep:   '#6B3545',
-          gold:   '#C8A860',
-          text:   '#261520',
-          muted:  '#9A7888',
-          border: '#EDE4E6',
+          bg:     '#F5EDE8',
+          pink:   '#EACAD3',
+          mauve:  '#B98789',
+          deep:   '#5A1E2A',
+          gold:   '#C9A961',
+          text:   '#2A1A1F',
+          muted:  '#A38B89',
+          border: '#E8DACF',
           card:   '#FFFFFF',
         },
         background:         'var(--background)',

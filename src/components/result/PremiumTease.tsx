@@ -46,11 +46,10 @@ export function PremiumTease({ isSignedIn = false }: Props) {
   return (
     <section id="premium-details" style={{ marginTop: 36 }}>
       <div
-        className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] bg-nikah-deep text-white"
+        className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] bg-nikah-deep text-white px-5 py-7 lg:px-9 lg:py-8"
         style={{
           borderRadius: 24,
-          padding: '32px 36px',
-          gap: 24,
+          gap: 20,
           alignItems: 'center',
           background: 'linear-gradient(160deg, var(--landing-deep, #5A1E2A) 0%, var(--landing-deep-dark, #3D1419) 100%)',
           boxShadow: '0 18px 48px rgba(90,30,42,0.18)',
@@ -62,26 +61,26 @@ export function PremiumTease({ isSignedIn = false }: Props) {
               fontFamily: SERIF,
               fontStyle: 'italic',
               fontWeight: 500,
-              fontSize: 'clamp(28px, 3.7vw, 38px)',
-              lineHeight: 1.08,
+              fontSize: 'clamp(24px, 3.7vw, 38px)',
+              lineHeight: 1.12,
               margin: 0,
             }}
           >
             Lanjutkan persiapan dengan lebih tenang.
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.76)', margin: '12px 0 0', fontSize: 15, lineHeight: 1.55, maxWidth: 640 }}>
+          <p style={{ color: 'rgba(255,255,255,0.76)', margin: '10px 0 0', fontSize: 14, lineHeight: 1.55, maxWidth: 640 }}>
             Rp 149rb · sekali bayar · akses sampai hari H · garansi 3 hari uang kembali
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-end" style={{ gap: 12 }}>
+        <div className="flex flex-wrap lg:justify-end" style={{ gap: 12 }}>
           <Link
             href={continueHref}
-            className="inline-flex items-center justify-center font-extrabold transition hover:brightness-105 active:scale-[0.99]"
+            className="flex-1 lg:flex-none inline-flex items-center justify-center font-extrabold transition hover:brightness-105 active:scale-[0.99]"
             style={{
-              minWidth: 286,
+              minWidth: 0,
               borderRadius: 999,
-              padding: '18px 30px',
+              padding: '16px 28px',
               color: '#4A1822',
               background: 'linear-gradient(180deg, #E8D7A8 0%, #C9A961 100%)',
               boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.34)',
@@ -92,8 +91,8 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         </div>
       </div>
 
-      <div className="text-center" style={{ marginTop: 72, marginBottom: 28 }}>
-        <p className="text-xs font-extrabold uppercase text-nikah-mauve" style={{ letterSpacing: '0.18em', margin: '0 0 14px' }}>
+      <div className="text-center mt-10 lg:mt-[72px] mb-6 lg:mb-7">
+        <p className="text-xs font-extrabold uppercase text-nikah-mauve" style={{ letterSpacing: '0.18em', margin: '0 0 12px' }}>
           Setelah kalian buka
         </p>
         <h2
@@ -102,8 +101,8 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             fontFamily: SERIF,
             fontStyle: 'italic',
             fontWeight: 500,
-            fontSize: 'clamp(32px, 4.4vw, 48px)',
-            lineHeight: 1.08,
+            fontSize: 'clamp(26px, 4.4vw, 48px)',
+            lineHeight: 1.1,
             margin: 0,
           }}
         >
@@ -112,53 +111,40 @@ export function PremiumTease({ isSignedIn = false }: Props) {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 18 }}>
-        {PREMIUM_FEATURES.map(item => (
+        {PREMIUM_FEATURES.map((item, i) => (
           <div
             key={item.title}
-            className="bg-white border border-nikah-border"
+            className={`bg-white border border-nikah-border${i >= 3 ? ' hidden lg:block' : ''}`}
             style={{
               borderRadius: 20,
-              padding: '26px 24px',
-              minHeight: 144,
+              padding: '20px 20px',
               position: 'relative',
               overflow: 'hidden',
               boxShadow: '0 1px 2px rgba(90,30,42,0.035)',
             }}
           >
-            <div
-              aria-hidden="true"
-              className="inline-flex items-center justify-center"
-              style={{ width: 42, height: 42, borderRadius: 14, background: 'var(--landing-pink, #F5E2E2)', fontSize: 22, marginBottom: 20 }}
-            >
-              {item.icon}
-            </div>
-            <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 17, lineHeight: 1.25, margin: '0 0 9px' }}>
-              {item.title}
-            </h3>
-            <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.55, margin: 0 }}>
-              {item.body}
-            </p>
-            {item.title === 'Prioritas Sekarang' ? (
+            <div className="flex items-start lg:block gap-3">
               <div
                 aria-hidden="true"
-                style={{
-                  position: 'absolute',
-                  left: 24,
-                  right: 24,
-                  bottom: 18,
-                  height: 30,
-                  borderRadius: 12,
-                  background: 'linear-gradient(180deg, rgba(251,246,241,0.38), rgba(251,246,241,0.96))',
-                  backdropFilter: 'blur(2px)',
-                  pointerEvents: 'none',
-                }}
-              />
-            ) : null}
+                className="flex-shrink-0 inline-flex items-center justify-center lg:mb-5"
+                style={{ width: 38, height: 38, borderRadius: 12, background: 'var(--landing-pink, #F5E2E2)', fontSize: 20 }}
+              >
+                {item.icon}
+              </div>
+              <div className="min-w-0 lg:mt-0" style={{ paddingTop: 1 }}>
+                <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 15, lineHeight: 1.25, margin: '0 0 5px' }}>
+                  {item.title}
+                </h3>
+                <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.55, margin: 0 }}>
+                  {item.body}
+                </p>
+              </div>
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="text-center" style={{ marginTop: 64 }}>
+      <div className="hidden lg:block text-center" style={{ marginTop: 64 }}>
         <h2
           className="text-nikah-deep"
           style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 'clamp(29px, 3.8vw, 40px)', lineHeight: 1.1, margin: '0 0 14px' }}
@@ -183,7 +169,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full transition hover:opacity-90"
             style={{ minWidth: 230, padding: '17px 28px' }}
           >
-            Buka rencana — Rp 149rb
+            Lanjutkan sekarang →
           </Link>
         </div>
         <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.5, margin: '18px 0 0' }}>

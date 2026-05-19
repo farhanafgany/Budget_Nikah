@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 const PAINS = [
   {
     q: 'Takut overbudget sebelum hari H?',
@@ -19,18 +21,18 @@ const PAINS = [
 
 export function PainCards() {
   return (
-    <section className="px-6 md:px-8 py-20 md:py-28 bg-white">
+    <section className="px-6 md:px-8 py-14 md:py-28 bg-white">
       <div className="max-w-[1080px] mx-auto">
         <p className="text-center text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-2">
           Kamu tidak sendirian
         </p>
         <h2
-          className="font-extrabold tracking-tight text-[34px] md:text-[42px] text-center text-nikah-text mb-3 leading-tight"
+          className="font-extrabold tracking-tight text-[28px] md:text-[42px] text-center text-nikah-text mb-3 leading-tight"
           style={{ letterSpacing: '-0.02em', textWrap: 'balance' } as React.CSSProperties}
         >
           Banyak pasangan merasakan <em>hal yang sama</em>
         </h2>
-        <p className="text-center text-nikah-muted text-base md:text-lg mb-10 md:mb-12 font-light max-w-lg mx-auto leading-relaxed">
+        <p className="text-center text-nikah-muted text-base md:text-lg mb-7 md:mb-12 font-light max-w-lg mx-auto leading-relaxed">
           Perencanaan wedding memang overwhelming — sampai kamu punya angka yang jelas.
         </p>
         <div className="flex flex-col gap-4 md:gap-[18px] max-w-[720px] mx-auto">
@@ -43,6 +45,17 @@ export function PainCards() {
               <p className="text-sm text-nikah-muted font-light leading-relaxed">{item.note}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8 text-center max-w-[720px] mx-auto">
+          <Link
+            href="/onboarding"
+            className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm transition-colors hover:opacity-90 active:scale-95"
+            style={{ padding: '16px 32px' }}
+          >
+            Cek Kesiapan Nikahmu — Gratis →
+          </Link>
+          <p className="mt-3 text-xs text-nikah-muted font-light">Tanpa daftar · Selesai 2 menit</p>
         </div>
       </div>
     </section>

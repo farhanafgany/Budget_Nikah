@@ -256,8 +256,12 @@ function LoginContent() {
             <p className="text-center text-nikah-muted text-xs mt-6">
               Belum punya akun?{' '}
               <Link href={signupHref} className="text-nikah-deep font-semibold">Daftar</Link>
-              <span className="mx-2 text-nikah-border">·</span>
-              <Link href="/" className="text-nikah-deep font-semibold">Lihat penawaran</Link>
+              {isPremiumContinuation && (
+                <>
+                  <span className="mx-2 text-nikah-border">·</span>
+                  <span>Sekali bayar · Rp 149rb · Garansi 3 hari</span>
+                </>
+              )}
             </p>
           </div>
         </section>

@@ -21,13 +21,13 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section id="cara-kerja" className="px-6 md:px-8 py-20 md:py-28 bg-nikah-bg">
+    <section id="cara-kerja" className="px-6 md:px-8 py-14 md:py-28 bg-nikah-bg">
       <div className="max-w-[1080px] mx-auto">
         <p className="text-xs font-extrabold uppercase tracking-widest text-nikah-mauve text-center mb-3" style={{ letterSpacing: '0.16em' }}>
           Cara Kerja
         </p>
         <h2
-          className="text-[34px] md:text-[44px] text-nikah-text text-center mb-11 leading-tight"
+          className="text-[28px] md:text-[44px] text-nikah-text text-center mb-8 md:mb-11 leading-tight"
           style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, letterSpacing: '-0.02em' } as React.CSSProperties}
         >
           Mulai dalam <em>3 langkah</em>
@@ -37,8 +37,8 @@ export function HowItWorks() {
           {STEPS.map(step => (
             <div
               key={step.number}
-              className="bg-white border border-nikah-border rounded-[20px]"
-              style={{ padding: '32px 30px', boxShadow: '0 4px 16px rgba(90,30,42,0.035)' }}
+              className="bg-white border border-nikah-border rounded-[20px] px-5 py-5 md:px-[30px] md:py-8"
+              style={{ boxShadow: '0 4px 16px rgba(90,30,42,0.035)' }}
             >
               <div
                 className="text-nikah-mauve mb-5"

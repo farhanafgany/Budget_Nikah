@@ -171,11 +171,9 @@ export function HeroSection() {
         <div className="min-w-0">
           <div className="inline-flex flex-wrap items-center bg-white border border-nikah-border rounded-full text-[11px] font-bold text-nikah-muted" style={{ gap: 8, padding: '7px 12px', marginBottom: 22 }}>
             <span className="text-[#B98C54]" aria-hidden="true">★</span>
-            <span className="hidden lg:inline">Cek realistis budget nikah</span>
-            <span className="lg:hidden">Wedding planner Indonesia</span>
+            <span>Cek realistis budget nikah</span>
             <span className="w-1 h-1 rounded-full bg-nikah-border" aria-hidden="true" />
-            <span className="hidden lg:inline">2 menit · tanpa daftar</span>
-            <span className="lg:hidden">Selesai 2 menit · tanpa daftar</span>
+            <span>2 menit · tanpa daftar</span>
           </div>
 
           <h1
@@ -185,7 +183,7 @@ export function HeroSection() {
             fontStyle: 'italic',
             fontWeight: 500,
               fontSize: 'clamp(50px, 5.3vw, 70px)',
-              lineHeight: '0.98',
+              lineHeight: 1.05,
               letterSpacing: '-1.2px',
               color: 'var(--landing-deep-dark, #3D1419)',
               margin: '0 0 18px',
@@ -196,16 +194,10 @@ export function HeroSection() {
           </h1>
 
           <p
-            className="hidden lg:block text-nikah-muted font-light max-w-[520px]"
+            className="text-nikah-muted font-light max-w-[520px]"
             style={{ fontSize: 17, lineHeight: 1.6, margin: '0 0 28px' }}
           >
             Dapatkan gambaran biaya, kesiapan, dan prioritas pertama tanpa harus buka spreadsheet panjang. Selesai dalam 2 menit, tanpa login.
-          </p>
-          <p
-            className="lg:hidden text-nikah-muted font-light max-w-[520px]"
-            style={{ fontSize: 17, lineHeight: 1.6, margin: '0 0 28px' }}
-          >
-            Tahu persis berapa yang kamu butuhkan — dan apakah rencanamu sudah cukup siap. Selesai dalam 2 menit, tanpa login.
           </p>
 
           <div className="flex flex-col items-start" style={{ gap: 14 }}>
@@ -233,13 +225,12 @@ export function HeroSection() {
             <div className="inline-flex flex-wrap items-center gap-[12px] text-xs text-nikah-muted">
               <span>✓ Tanpa daftar</span>
               <span>✓ Selesai 2 menit</span>
-              <span className="hidden lg:inline">✓ Tanpa kartu kredit</span>
-              <span className="lg:hidden">✓ 100% gratis</span>
+              <span>✓ Tanpa kartu kredit</span>
             </div>
           </div>
 
           {/* Mobile: CONTOH HASIL card inline */}
-          <div className="lg:hidden mt-8" id="contoh-hasil">
+          <div className="lg:hidden mt-8">
             <div
               className="border border-nikah-border"
               style={{

@@ -20,8 +20,8 @@ export default function LandingPage() {
       <Navbar />
       <main className="pb-20 md:pb-0">
         <HeroSection />
-        <TrustMetrics />
         <PainCards />
+        <TrustMetrics />
         <HowItWorks />
         <FeatureShowcase />
         <SimulationPreview />
