@@ -1,23 +1,23 @@
 const METRICS = [
   {
     value: '50+',
-    label: 'checklist item',
-    desc: 'Disusun mengikuti fase 12 bulan hingga H-1 minggu.',
+    label: 'checklist nikah',
+    desc: 'Urutan kerja dari H-12 bulan sampai minggu terakhir.',
   },
   {
     value: '6',
-    label: 'kategori budget',
-    desc: 'Catering, venue, dekor, dokumentasi, MUA, dan lainnya.',
+    label: 'kategori biaya',
+    desc: 'Catering, venue, dekor, dokumentasi, MUA, dan pos penting lain.',
   },
   {
     value: '12',
-    label: 'bulan coverage',
-    desc: 'Checklist dari H-12 bulan hingga H-1 minggu sebelum hari H.',
+    label: 'bulan timeline',
+    desc: 'Membantu pasangan melihat apa yang perlu dibereskan lebih dulu.',
   },
   {
     value: '3',
     label: 'tier kota',
-    desc: 'Jakarta, kota besar, kota kecil — scoring menyesuaikan lokasi.',
+    desc: 'Estimasi menyesuaikan Jakarta, kota besar, dan kota kecil.',
   },
 ]
 

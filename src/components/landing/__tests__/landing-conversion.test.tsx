@@ -42,10 +42,10 @@ describe('TrustMetrics', () => {
     expect(screen.queryByText(/garansi refund/i)).toBeNull()
   })
 
-  it('menampilkan metric 12 bulan coverage', () => {
+  it('menampilkan metric 12 bulan timeline', () => {
     render(<TrustMetrics />)
     expect(screen.getByText('12')).toBeInTheDocument()
-    expect(screen.getByText(/bulan coverage/i)).toBeInTheDocument()
+    expect(screen.getByText(/bulan timeline/i)).toBeInTheDocument()
   })
 
   it('menampilkan heading yang baru', () => {
@@ -80,7 +80,7 @@ describe('FeatureShowcase', () => {
 
   it('fitur premium minimal 5 badge', () => {
     render(<FeatureShowcase />)
-    const premiumBadges = screen.getAllByText('🔓 Premium')
+    const premiumBadges = screen.getAllByText('Premium')
     expect(premiumBadges.length).toBeGreaterThanOrEqual(5)
   })
 

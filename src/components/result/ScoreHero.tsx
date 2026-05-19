@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import type { ReadinessLabel } from '@/lib/scoring'
 import { monthsUntilDate } from '@/lib/savings'
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber'
@@ -104,11 +105,37 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
       </h1>
 
       <p
-        className="text-nikah-muted"
-        style={{ fontSize: 'clamp(17px, 1.8vw, 20px)', lineHeight: 1.55, maxWidth: 800, margin: '0 0 44px' }}
+        className="mb-11 text-nikah-muted lg:mb-5"
+        style={{ fontSize: 'clamp(17px, 1.8vw, 20px)', lineHeight: 1.55, maxWidth: 800 }}
       >
         Dengan sisa {monthCopy(months)}, beberapa detail kecil mudah tercecer. Kami sudah siapkan rencana yang disesuaikan dari jawaban kalian — tinggal dibuka.
       </p>
+
+      <div className="hidden items-center lg:flex" style={{ gap: 18, marginBottom: 38 }}>
+        <Link
+          href="/premium"
+          className="inline-flex items-center justify-center rounded-full font-extrabold transition hover:brightness-105 active:scale-[0.99]"
+          style={{
+            minWidth: 258,
+            padding: '17px 28px',
+            color: '#4A1822',
+            background: 'linear-gradient(180deg, #E8D7A8 0%, #C9A961 100%)',
+            boxShadow: '0 14px 30px rgba(90, 30, 42, 0.12), inset 0 1px 0 rgba(255,255,255,0.34)',
+          }}
+        >
+          Buka rencana — Rp 149rb
+        </Link>
+        <a
+          href="#premium-details"
+          className="inline-flex items-center justify-center rounded-full border border-nikah-border bg-white/60 font-bold text-nikah-deep transition hover:bg-white"
+          style={{ padding: '16px 24px' }}
+        >
+          Lihat yang akan dibuka
+        </a>
+        <p className="text-nikah-muted" style={{ fontSize: 13.5, lineHeight: 1.45, margin: 0, maxWidth: 230 }}>
+          Sekali bayar, akses sampai hari H, garansi 3 hari refund.
+        </p>
+      </div>
 
       <div
         className="bg-white border border-nikah-border"

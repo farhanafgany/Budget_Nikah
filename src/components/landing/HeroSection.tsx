@@ -171,9 +171,11 @@ export function HeroSection() {
         <div className="min-w-0">
           <div className="inline-flex flex-wrap items-center bg-white border border-nikah-border rounded-full text-[11px] font-bold text-nikah-muted" style={{ gap: 8, padding: '7px 12px', marginBottom: 22 }}>
             <span className="text-[#B98C54]" aria-hidden="true">★</span>
-            <span>Wedding planner Indonesia</span>
+            <span className="hidden lg:inline">Cek realistis budget nikah</span>
+            <span className="lg:hidden">Wedding planner Indonesia</span>
             <span className="w-1 h-1 rounded-full bg-nikah-border" aria-hidden="true" />
-            <span>Selesai 2 menit · tanpa daftar</span>
+            <span className="hidden lg:inline">2 menit · tanpa daftar</span>
+            <span className="lg:hidden">Selesai 2 menit · tanpa daftar</span>
           </div>
 
           <h1
@@ -194,7 +196,13 @@ export function HeroSection() {
           </h1>
 
           <p
-            className="text-nikah-muted font-light max-w-[520px]"
+            className="hidden lg:block text-nikah-muted font-light max-w-[520px]"
+            style={{ fontSize: 17, lineHeight: 1.6, margin: '0 0 28px' }}
+          >
+            Dapatkan gambaran biaya, kesiapan, dan prioritas pertama tanpa harus buka spreadsheet panjang. Selesai dalam 2 menit, tanpa login.
+          </p>
+          <p
+            className="lg:hidden text-nikah-muted font-light max-w-[520px]"
             style={{ fontSize: 17, lineHeight: 1.6, margin: '0 0 28px' }}
           >
             Tahu persis berapa yang kamu butuhkan — dan apakah rencanamu sudah cukup siap. Selesai dalam 2 menit, tanpa login.
@@ -225,7 +233,8 @@ export function HeroSection() {
             <div className="inline-flex flex-wrap items-center gap-[12px] text-xs text-nikah-muted">
               <span>✓ Tanpa daftar</span>
               <span>✓ Selesai 2 menit</span>
-              <span>✓ 100% gratis</span>
+              <span className="hidden lg:inline">✓ Tanpa kartu kredit</span>
+              <span className="lg:hidden">✓ 100% gratis</span>
             </div>
           </div>
 

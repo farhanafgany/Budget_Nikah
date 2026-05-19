@@ -20,7 +20,7 @@ export function SocialProof() {
           Hasilnya bukan angka abstrak — tapi rencana yang bisa langsung dijalankan.
         </p>
         <p className="text-xs text-nikah-muted font-light mb-8" style={{ letterSpacing: '0.04em' }}>
-          3 hari tanpa pertanyaan · Bayar sekali, selamanya · Tanpa subscription
+          3 hari tanpa pertanyaan · Bayar sekali, selamanya · Tanpa langganan
         </p>
         <Link
           href="/onboarding"

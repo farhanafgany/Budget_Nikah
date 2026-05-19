@@ -44,7 +44,7 @@ export function FeatureShowcase() {
           className="text-[34px] md:text-[44px] text-nikah-text text-center mb-11 leading-tight"
           style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, textWrap: 'balance' } as React.CSSProperties}
         >
-          Yang <em>kamu dapat</em>
+          Dari cek awal sampai rencana yang bisa dijalankan.
         </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
@@ -66,7 +66,7 @@ export function FeatureShowcase() {
                   className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-wide mb-4"
                   style={{ background: 'var(--landing-pink, #FBECEF)', border: '1px solid #E8D0C0', color: '#7D3F5A' }}
                 >
-                  🔓 Premium
+                  Premium
                 </span>
               )}
               <h3 className="text-base font-extrabold text-nikah-text mb-2">{f.title}</h3>
@@ -76,7 +76,7 @@ export function FeatureShowcase() {
         </div>
 
         <p className="text-center mt-10 text-sm text-nikah-muted font-light">
-          Wedding Readiness Score bisa{' '}
+          Mulai dari Wedding Readiness Score yang bisa{' '}
           <Link href="/onboarding" className="font-semibold text-nikah-deep hover:underline">
             dicoba sekarang
           </Link>
