@@ -35,24 +35,24 @@ const FEATURES = [
 
 export function FeatureShowcase() {
   return (
-    <section id="fitur" className="px-6 md:px-8 py-20 md:py-28 bg-white">
+    <section id="fitur" className="px-6 md:px-8 py-14 md:py-28 bg-white">
       <div className="max-w-[1080px] mx-auto">
         <p className="text-xs font-extrabold uppercase tracking-widest text-nikah-mauve text-center mb-3">
           Semua dalam satu tempat
         </p>
         <h2
-          className="text-[34px] md:text-[44px] text-nikah-text text-center mb-11 leading-tight"
+          className="text-[26px] md:text-[44px] text-nikah-text text-center mb-7 md:mb-11 leading-tight"
           style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, textWrap: 'balance' } as React.CSSProperties}
         >
           Dari cek awal sampai rencana yang bisa dijalankan.
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-5">
           {FEATURES.map(f => (
             <div
               key={f.title}
-              className="bg-white border border-nikah-border rounded-[18px] hover:-translate-y-0.5 transition-all duration-200"
-              style={{ padding: '26px 24px', boxShadow: '0 1px 2px rgba(90,30,42,0.035)' }}
+              className="bg-white border border-nikah-border rounded-[18px] hover:-translate-y-0.5 transition-all duration-200 p-4 md:p-6"
+              style={{ boxShadow: '0 1px 2px rgba(90,30,42,0.035)' }}
             >
               {f.tier === 'free' ? (
                 <span

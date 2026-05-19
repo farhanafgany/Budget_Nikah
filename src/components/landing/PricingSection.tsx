@@ -11,7 +11,7 @@ const WHAT_YOU_GET = [
 
 export function PricingSection() {
   return (
-    <section className="px-6 md:px-8 py-20 md:py-28 bg-white" id="harga">
+    <section className="px-6 md:px-8 py-14 md:py-28 bg-white" id="harga">
       <div className="max-w-[1080px] mx-auto">
 
         <p className="text-xs font-extrabold uppercase tracking-widest text-nikah-mauve text-center mb-3">
