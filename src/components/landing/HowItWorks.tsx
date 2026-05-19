@@ -28,7 +28,7 @@ export function HowItWorks() {
         </p>
         <h2
           className="text-[28px] md:text-[44px] text-nikah-text text-center mb-8 md:mb-11 leading-tight"
-          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontWeight: 600, letterSpacing: '-0.02em' } as React.CSSProperties}
+          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 600, letterSpacing: '-0.02em' } as React.CSSProperties}
         >
           Mulai dalam <em>3 langkah</em>
         </h2>

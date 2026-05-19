@@ -42,7 +42,7 @@ export function FeatureShowcase() {
         </p>
         <h2
           className="text-[26px] md:text-[44px] text-nikah-text text-center mb-7 md:mb-11 leading-tight"
-          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontWeight: 600, textWrap: 'balance' } as React.CSSProperties}
+          style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 600, textWrap: 'balance' } as React.CSSProperties}
         >
           Dari cek awal sampai rencana yang bisa dijalankan.
         </h2>
