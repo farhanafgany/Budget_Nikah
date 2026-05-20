@@ -156,9 +156,10 @@ export function HeroSection() {
   return (
     <section
       aria-label="Hero"
-      className="relative overflow-hidden"
+      className="relative overflow-hidden pt-10 pb-32 md:pt-[62px] md:pb-[72px]"
       style={{
-        padding: '62px var(--d-pad-page) 72px',
+        paddingLeft: 'var(--d-pad-page)',
+        paddingRight: 'var(--d-pad-page)',
         background: 'var(--landing-bg, #FAF5F5)',
       }}
     >
@@ -169,19 +170,42 @@ export function HeroSection() {
       >
 
         <div className="min-w-0">
-          <div className="inline-flex flex-wrap items-center bg-white border border-nikah-border rounded-full text-[11px] font-bold text-nikah-muted" style={{ gap: 8, padding: '7px 12px', marginBottom: 22 }}>
+          {/* Badge — desktop only */}
+          <div className="hidden md:inline-flex flex-wrap items-center bg-white border border-nikah-border rounded-full text-[11px] font-bold text-nikah-muted" style={{ gap: 8, padding: '7px 12px', marginBottom: 22 }}>
             <span className="text-[#B98C54]" aria-hidden="true">★</span>
             <span>Cek realistis budget nikah</span>
             <span className="w-1 h-1 rounded-full bg-nikah-border" aria-hidden="true" />
             <span>2 menit · tanpa daftar</span>
           </div>
 
+          {/* Mobile headline */}
+          <div className="md:hidden" style={{ marginBottom: 22 }}>
+            <h1
+              style={{
+                fontFamily: CLAUDE_SERIF,
+                fontStyle: 'italic',
+                fontWeight: 500,
+                fontSize: 'clamp(40px, 10vw, 52px)',
+                lineHeight: 1.05,
+                letterSpacing: '-0.02em',
+                color: 'var(--landing-deep-dark, #3D1419)',
+                margin: '0 0 10px',
+              }}
+            >
+              Sudah siap?
+            </h1>
+            <p className="text-nikah-muted font-light" style={{ fontSize: 16, lineHeight: 1.55 }}>
+              Rencana nikah kalian dalam angka yang jelas.
+            </p>
+          </div>
+
+          {/* Desktop headline */}
           <h1
-            className="text-nikah-text leading-[0.98] max-w-[620px]"
-          style={{
-            fontFamily: CLAUDE_SERIF,
-            fontStyle: 'italic',
-            fontWeight: 500,
+            className="hidden md:block text-nikah-text max-w-[620px]"
+            style={{
+              fontFamily: CLAUDE_SERIF,
+              fontStyle: 'italic',
+              fontWeight: 500,
               fontSize: 'clamp(50px, 5.3vw, 70px)',
               lineHeight: 1.05,
               letterSpacing: '-1.2px',
@@ -194,7 +218,7 @@ export function HeroSection() {
           </h1>
 
           <p
-            className="text-nikah-muted font-light max-w-[520px]"
+            className="hidden md:block text-nikah-muted font-light max-w-[520px]"
             style={{ fontSize: 17, lineHeight: 1.6, margin: '0 0 28px' }}
           >
             Dapatkan gambaran biaya, kesiapan, dan prioritas pertama tanpa harus buka spreadsheet panjang. Selesai dalam 2 menit, tanpa login.
@@ -274,22 +298,22 @@ export function HeroSection() {
             <p className="text-center text-nikah-muted" style={{ fontSize: 10, marginTop: 10 }}>
               Contoh kalkulasi · hasil personal kamu akan berbeda
             </p>
-            {/* Mobile CTA — below the example card */}
-            <div className="flex flex-col items-center w-full md:hidden" style={{ gap: 10, marginTop: 6 }}>
-              <Link
-                href="/onboarding"
-                className="inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full hover:opacity-90 active:opacity-80 active:scale-[0.98] transition-all"
-                style={{ padding: '16px 32px', fontSize: 14, boxShadow: '0 8px 18px rgba(107,53,69,0.18)' }}
-              >
-                Cek Sekarang →
-              </Link>
-              <p className="text-nikah-muted" style={{ fontSize: 11 }}>Gratis · tanpa daftar · 2 menit</p>
-            </div>
           </div>
         </div>
 
         <ResultPreview />
 
+      </div>
+
+      {/* Sticky CTA — mobile only */}
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden px-4 bg-white/90 backdrop-blur border-t border-nikah-border" style={{ paddingTop: 12, paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
+        <Link
+          href="/onboarding"
+          className="block w-full bg-nikah-deep text-white font-bold rounded-full text-sm text-center active:opacity-80 active:scale-[0.98] transition-all"
+          style={{ padding: '16px' }}
+        >
+          Cek Sekarang — Gratis →
+        </Link>
       </div>
     </section>
   )
