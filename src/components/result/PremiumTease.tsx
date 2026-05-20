@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { BrandLogo } from '@/components/ui/BrandLogo'
 
 interface Props {
   isSignedIn?: boolean
@@ -45,8 +46,9 @@ export function PremiumTease({ isSignedIn = false }: Props) {
 
   return (
     <section id="premium-details" style={{ marginTop: 36 }}>
+      {/* Dark CTA banner — desktop only */}
       <div
-        className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] bg-nikah-deep text-white px-5 py-7 lg:px-9 lg:py-8"
+        className="hidden lg:grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_auto] bg-nikah-deep text-white px-9 py-8"
         style={{
           borderRadius: 24,
           gap: 20,
@@ -72,13 +74,11 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             Rp 149rb · sekali bayar · akses sampai hari H · garansi 3 hari uang kembali
           </p>
         </div>
-
-        <div className="flex flex-wrap lg:justify-end" style={{ gap: 12 }}>
+        <div className="flex justify-end" style={{ gap: 12 }}>
           <Link
             href={continueHref}
-            className="flex-1 lg:flex-none inline-flex items-center justify-center font-extrabold transition hover:brightness-105 active:scale-[0.99]"
+            className="inline-flex items-center justify-center font-extrabold transition hover:brightness-105 active:scale-[0.99]"
             style={{
-              minWidth: 0,
               borderRadius: 999,
               padding: '16px 28px',
               color: '#4A1822',
@@ -89,6 +89,25 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             Buka rencana — Rp 149rb ›
           </Link>
         </div>
+      </div>
+
+      {/* Mobile inline CTA buttons */}
+      <div className="lg:hidden" style={{ marginBottom: 32 }}>
+        <Link
+          href={continueHref}
+          className="block w-full text-white font-bold py-4 rounded-full text-center text-sm"
+          style={{ background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)', boxShadow: '0 6px 20px rgba(90,30,42,0.22)' }}
+        >
+          Buka rencana — Rp 149rb ›
+        </Link>
+        {!isSignedIn && (
+          <Link
+            href={saveHref}
+            className="block w-full text-center text-nikah-muted font-bold text-sm mt-3"
+          >
+            Simpan hasil dulu — lihat lagi nanti
+          </Link>
+        )}
       </div>
 
       <div className="text-center mt-10 lg:mt-[72px] mb-6 lg:mb-7">
@@ -106,76 +125,93 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             margin: 0,
           }}
         >
-          Semua persiapan kalian dalam satu tempat.
+          Semua persiapan dalam satu tempat.
         </h2>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3" style={{ gap: 18 }}>
-        {PREMIUM_FEATURES.map((item, i) => (
+      {/* Feature grid: 2-col on mobile, 3-col on desktop, all 6 shown */}
+      <div className="grid grid-cols-2 lg:grid-cols-3" style={{ gap: 14 }}>
+        {PREMIUM_FEATURES.map(item => (
           <div
             key={item.title}
-            className={`bg-white border border-nikah-border${i >= 3 ? ' hidden lg:block' : ''}`}
+            className="bg-white border border-nikah-border"
             style={{
-              borderRadius: 20,
-              padding: '20px 20px',
-              position: 'relative',
-              overflow: 'hidden',
+              borderRadius: 16,
+              padding: '16px 16px',
               boxShadow: '0 1px 2px rgba(90,30,42,0.035)',
             }}
           >
-            <div className="flex items-start lg:block gap-3">
-              <div
-                aria-hidden="true"
-                className="flex-shrink-0 inline-flex items-center justify-center lg:mb-5"
-                style={{ width: 38, height: 38, borderRadius: 12, background: 'var(--landing-pink, #F5E2E2)', fontSize: 20 }}
-              >
-                {item.icon}
-              </div>
-              <div className="min-w-0 lg:mt-0" style={{ paddingTop: 1 }}>
-                <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 15, lineHeight: 1.25, margin: '0 0 5px' }}>
-                  {item.title}
-                </h3>
-                <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.55, margin: 0 }}>
-                  {item.body}
-                </p>
-              </div>
-            </div>
+            <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 13.5, lineHeight: 1.25, margin: '0 0 5px' }}>
+              {item.title}
+            </h3>
+            <p className="text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.5, margin: 0 }}>
+              {item.body}
+            </p>
           </div>
         ))}
       </div>
 
-      <div className="hidden lg:block text-center" style={{ marginTop: 64 }}>
+      {/* "Belum siap" section — visible on both mobile and desktop */}
+      <div className="text-center" style={{ marginTop: 52 }}>
         <h2
           className="text-nikah-deep"
-          style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 'clamp(29px, 3.8vw, 40px)', lineHeight: 1.1, margin: '0 0 14px' }}
+          style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 'clamp(26px, 3.8vw, 38px)', lineHeight: 1.1, margin: '0 0 12px' }}
         >
-          Siap lanjutkan persiapan?
+          Belum siap memutuskan?
         </h2>
-        <p className="text-nikah-muted" style={{ fontSize: 16, lineHeight: 1.55, margin: '0 auto 24px', maxWidth: 680 }}>
-          Buka dashboard sekarang, atau simpan hasil dulu agar tidak perlu mulai dari awal.
+        <p className="text-nikah-muted" style={{ fontSize: 15, lineHeight: 1.55, margin: '0 auto 22px', maxWidth: 560 }}>
+          Hasil ini akan tersimpan di email kalian. Bisa dibuka lagi kapan saja tanpa harus mulai dari awal.
         </p>
-        <div className="flex flex-wrap justify-center" style={{ gap: 12 }}>
-          {!isSignedIn ? (
-            <Link
-              href={saveHref}
-              className="inline-flex items-center justify-center border border-nikah-border text-nikah-deep font-bold rounded-full transition hover:bg-white"
-              style={{ minWidth: 230, padding: '17px 28px' }}
-            >
-              Simpan hasil dulu
-            </Link>
-          ) : null}
+        {!isSignedIn ? (
+          <Link
+            href={saveHref}
+            className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full transition hover:bg-nikah-bg"
+            style={{ padding: '14px 28px', fontSize: 14 }}
+          >
+            Kirim hasil ke email
+          </Link>
+        ) : (
           <Link
             href={continueHref}
             className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full transition hover:opacity-90"
-            style={{ minWidth: 230, padding: '17px 28px' }}
+            style={{ padding: '14px 28px', fontSize: 14 }}
           >
             Lanjutkan sekarang →
           </Link>
-        </div>
-        <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.5, margin: '18px 0 0' }}>
-          ✓ Tanpa langganan · ✓ Garansi 3 hari refund · ✓ Pembayaran via Midtrans Snap
+        )}
+        <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: '14px 0 0' }}>
+          ✓ Tanpa subscription · ✓ Garansi 3 hari refund
         </p>
       </div>
+
+      {/* Footer — mobile only */}
+      <footer className="lg:hidden mt-14 pt-8 border-t border-nikah-border">
+        <BrandLogo size="sm" />
+        <p className="text-nikah-muted" style={{ fontSize: 12, marginTop: 8, lineHeight: 1.6, marginBottom: 20 }}>
+          Wedding financial planner untuk pasangan Indonesia.<br />
+          Sekali bayar, akses sampai hari H.
+        </p>
+        <div className="grid grid-cols-3" style={{ gap: 12 }}>
+          {[
+            { label: 'PRODUK', links: [{ text: 'Fitur', href: '/#fitur' }, { text: 'Harga', href: '/#harga' }] },
+            { label: 'DUKUNGAN', links: [{ text: 'FAQ', href: '/#faq' }, { text: 'WhatsApp', href: '#' }] },
+            { label: 'HUKUM', links: [{ text: 'Privasi', href: '#' }, { text: 'Refund', href: '#' }] },
+          ].map(col => (
+            <div key={col.label}>
+              <p className="text-nikah-text font-extrabold uppercase" style={{ fontSize: 9, letterSpacing: '0.12em', marginBottom: 8 }}>
+                {col.label}
+              </p>
+              <div className="flex flex-col" style={{ gap: 6 }}>
+                {col.links.map(link => (
+                  <a key={link.text} href={link.href} className="text-nikah-muted hover:text-nikah-text transition-colors" style={{ fontSize: 12 }}>
+                    {link.text}
+                  </a>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </footer>
     </section>
   )
 }

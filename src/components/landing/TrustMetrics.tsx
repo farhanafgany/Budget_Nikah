@@ -30,7 +30,7 @@ export function TrustMetrics() {
     <section className="px-6 md:px-8 py-14 md:py-24 bg-white">
       <div className="max-w-[1080px] mx-auto">
         <p className="text-center text-xs font-extrabold uppercase tracking-widest text-nikah-mauve mb-3">
-          Kenapa BudgetNikah berbeda
+          Cara kerja yang transparan
         </p>
         <h2
           className="text-[28px] md:text-[44px] text-nikah-text text-center mb-7 md:mb-11 leading-tight"
@@ -39,15 +39,15 @@ export function TrustMetrics() {
           Bukan tebak-tebakan — semua angka punya dasar.
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 lg:gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-5">
           {METRICS.map(metric => (
             <div
               key={metric.label}
-              className="rounded-[18px] p-4 lg:p-6 flex items-center gap-4 lg:block"
+              className="rounded-[18px] p-4 lg:p-6"
               style={{ background: CARD_BG, border: `1px solid ${CARD_BORDER}`, boxShadow: '0 2px 8px rgba(90,30,42,0.06)' }}
             >
               <div
-                className="leading-none flex-shrink-0 lg:mb-3 w-14 lg:w-auto text-center lg:text-left"
+                className="leading-none mb-3"
                 style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 34, fontWeight: 500, color: CARD_NUM_COLOR }}
               >
                 {metric.value}

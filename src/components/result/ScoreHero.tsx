@@ -213,10 +213,6 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
             Sekali bayar · akses sampai hari H · garansi 3 hari refund.
           </p>
 
-          {/* Mobile: score card in flow */}
-          <div className="lg:hidden" style={{ marginTop: 28 }}>
-            {ScoreCard}
-          </div>
         </div>
 
         {/* Right: score card (desktop only, sticky) */}
@@ -225,15 +221,64 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
         </div>
       </div>
 
-      {/* ── Mobile: "Kami sudah siapkan" summary ── */}
+      {/* ── Mobile: score + "kami sudah siapkan" dalam satu card ── */}
       <div
-        className="lg:hidden bg-white border border-nikah-border"
-        style={{ borderRadius: 20, padding: '22px 24px', marginTop: 18, boxShadow: '0 1px 4px rgba(90,30,42,0.04)' }}
+        className="lg:hidden border border-nikah-border"
+        style={{ borderRadius: 20, padding: '22px 24px', marginTop: 18, boxShadow: '0 4px 16px rgba(90,30,42,0.06)', background: 'linear-gradient(160deg, #FFFCF8 0%, #F8F1EA 52%, #EFE3D9 100%)' }}
       >
-        <p className="text-nikah-text font-bold" style={{ fontSize: 14, lineHeight: 1.4, margin: '0 0 16px' }}>
+        {/* Score section */}
+        <div className="flex items-center" style={{ gap: 16, marginBottom: 12 }}>
+          <div
+            style={{
+              width: 72,
+              height: 72,
+              borderRadius: '50%',
+              background: `conic-gradient(#5A1E2A ${scorePct}%, #EEDDE2 ${scorePct}% 100%)`,
+              display: 'grid',
+              placeItems: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <div className="bg-white" style={{ width: 54, height: 54, borderRadius: '50%', display: 'grid', placeItems: 'center' }}>
+              <div className="text-center">
+                <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 22, lineHeight: 1, color: '#3D1419' }}>{score}</div>
+                <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 7, letterSpacing: '0.12em', marginTop: 2 }}>SCORE</div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <span
+              className="inline-flex items-center rounded-full font-bold"
+              style={{ gap: 6, padding: '5px 10px', fontSize: 12, background: status.background, color: status.color }}
+            >
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: status.dot }} />
+              {label}
+            </span>
+            <span className="block text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.1em', marginTop: 5 }}>
+              Readiness
+            </span>
+          </div>
+        </div>
+
+        {/* Stats inline — satu baris */}
+        <p style={{ fontSize: 14, lineHeight: 1.5, marginBottom: 18, marginTop: 0 }}>
+          {metrics.map((m, i) => (
+            <span key={m.label} style={{ whiteSpace: 'nowrap' }}>
+              <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 16 }}>{m.value}</span>
+              <span className="text-nikah-muted" style={{ fontSize: 12, marginLeft: 3 }}>{m.label}</span>
+              {i < metrics.length - 1 && <span className="text-nikah-muted" style={{ margin: '0 6px' }}>·</span>}
+            </span>
+          ))}
+        </p>
+
+        {/* Divider */}
+        <div style={{ height: 1, background: 'var(--nikah-border)', marginBottom: 18 }} />
+
+        {/* "Kami sudah siapkan" summary */}
+        <p className="text-nikah-text font-bold" style={{ fontSize: 14, lineHeight: 1.4, margin: '0 0 14px' }}>
           Berdasarkan jawaban kalian, kami sudah siapkan:
         </p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 13 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[
             { icon: '✓', value: checklistCount.toString(), desc: `checklist disesuaikan untuk H-${Math.max(1, months)} bulan` },
             { icon: '💰', value: shortRupiah(totalBudget),  desc: 'alokasi budget per kategori' },
@@ -302,9 +347,10 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
         <div className="flex items-start justify-between" style={{ gap: 16 }}>
           <div>
             <p className="text-nikah-muted font-bold uppercase" style={{ fontSize: 11, letterSpacing: '0.18em', margin: '0 0 8px' }}>
-              Preview · Prioritas Sekarang
+              <span className="md:hidden">Prioritas Minggu Ini</span>
+              <span className="hidden md:inline">Preview · Prioritas Sekarang</span>
             </p>
-            <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 18, lineHeight: 1.35, margin: 0 }}>
+            <h3 className="hidden md:block text-nikah-text font-extrabold" style={{ fontSize: 18, lineHeight: 1.35, margin: 0 }}>
               5 hal terdekat untuk minggu ini
             </h3>
           </div>
@@ -312,7 +358,8 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
             className="rounded-full font-extrabold flex-shrink-0"
             style={{ background: '#F7E5E7', color: '#D18790', fontSize: 12, padding: '7px 13px', whiteSpace: 'nowrap' }}
           >
-            5 item utama
+            <span className="md:hidden">4 hal</span>
+            <span className="hidden md:inline">5 item utama</span>
           </span>
         </div>
 
@@ -321,10 +368,10 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           style={{ gap: 12, marginTop: 18, opacity: 0.5 }}
           aria-hidden="true"
         >
-          {PRIORITY_PREVIEW_ITEMS.map(item => (
+          {PRIORITY_PREVIEW_ITEMS.map((item, i) => (
             <div
               key={item.title}
-              className="flex items-start"
+              className={`flex items-start${i >= 3 ? ' hidden md:flex' : ''}`}
               style={{ gap: 14, borderRadius: 12, background: '#F8F0EA', padding: '14px 16px', minHeight: 58 }}
             >
               <Lock size={13} strokeWidth={1.8} className="text-nikah-rose shrink-0" style={{ marginTop: 2 }} />

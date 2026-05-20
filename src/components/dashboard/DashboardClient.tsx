@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { ChevronRight } from 'lucide-react'
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber'
 import { TabunganNikah } from '@/components/dashboard/TabunganNikah'
 import { ChecklistPernikahan } from '@/components/dashboard/ChecklistPernikahan'
@@ -102,69 +103,50 @@ function CardTitle({
   )
 }
 
-function MobileScoreStrip({
-  score,
-  label,
-  totalBudget,
-  guestCount,
-  timeLeftText,
-}: {
-  score: number
-  label: string
-  totalBudget: number
-  guestCount: number | null
-  timeLeftText: string | null
-}) {
-  const stats = [
-    { val: formatRupiah(totalBudget), lbl: 'Estimasi' },
-    ...(guestCount ? [{ val: String(guestCount), lbl: 'Undangan' }] : []),
-    ...(timeLeftText ? [{ val: timeLeftText.replace(' bulan', ' bln'), lbl: 'Sisa' }] : []),
-  ]
+const SCORE_COPY: Record<string, string> = {
+  Healthy:     'Rencana kalian aman. Pertahankan ritme nabung.',
+  Moderate:    'Ada beberapa hal yang bisa diperbaiki pelan-pelan.',
+  'High Risk': 'Mulai dari satu langkah kecil yang paling terdekat.',
+}
+
+function MobileScoreStrip({ score, label }: { score: number; label: string }) {
   return (
-    <div
-      className="bg-white border border-nikah-border"
-      style={{ borderRadius: 'var(--d-radius)', padding: '16px 20px', boxShadow: '0 2px 12px rgba(90,30,42,0.05)' }}
+    <Link
+      href="/dashboard/summary"
+      className="flex items-center bg-white border border-nikah-border"
+      style={{ borderRadius: 'var(--d-radius)', padding: '16px 18px', gap: 14, boxShadow: '0 2px 12px rgba(90,30,42,0.05)', textDecoration: 'none' }}
     >
-      <div className="flex items-center" style={{ gap: 12, marginBottom: 14 }}>
-        <div
-          style={{
-            width: 46,
-            height: 46,
-            borderRadius: '50%',
-            background: `radial-gradient(circle at center, white 55%, transparent 56%), conic-gradient(var(--nikah-deep) 0% ${score}%, #EEDCE0 ${score}% 100%)`,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-          }}
-        >
-          <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 17, color: 'var(--nikah-deep)' }}>
-            {score}
-          </span>
-        </div>
-        <div>
-          <CardTitle>Estimasi Readiness</CardTitle>
-          <span className={`inline-flex mt-1 px-2 py-0.5 rounded-full text-xs font-bold ${LABEL_COLORS[label] ?? ''}`}>
+      <div
+        style={{
+          width: 46,
+          height: 46,
+          borderRadius: '50%',
+          background: `radial-gradient(circle at center, white 55%, transparent 56%), conic-gradient(var(--nikah-deep) 0% ${score}%, #EEDCE0 ${score}% 100%)`,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          flexShrink: 0,
+        }}
+      >
+        <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 17, color: 'var(--nikah-deep)' }}>
+          {score}
+        </span>
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center" style={{ gap: 8, marginBottom: 4 }}>
+          <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-bold ${LABEL_COLORS[label] ?? ''}`}>
             {label}
           </span>
+          <span className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.1em' }}>
+            Readiness
+          </span>
         </div>
+        <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.4, margin: 0 }}>
+          {SCORE_COPY[label] ?? ''}
+        </p>
       </div>
-      <div
-        className="grid text-center border-t border-nikah-border"
-        style={{ gridTemplateColumns: `repeat(${stats.length}, 1fr)`, paddingTop: 12, gap: 8 }}
-      >
-        {stats.map(s => (
-          <div key={s.lbl}>
-            <div className="text-nikah-deep" style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 16, lineHeight: 1.05 }}>
-              {s.val}
-            </div>
-            <div className="text-nikah-muted uppercase font-bold" style={{ fontSize: 10, letterSpacing: '0.12em', marginTop: 3 }}>
-              {s.lbl}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
+      <ChevronRight size={18} className="text-nikah-muted flex-shrink-0" />
+    </Link>
   )
 }
 
@@ -350,7 +332,7 @@ export function DashboardClient({
               </div>
             )}
           </div>
-          <div id="dashboard-actions" className="flex flex-wrap items-center justify-start lg:justify-end" style={{ gap: 10 }}>
+          <div id="dashboard-actions" className="hidden lg:flex flex-wrap items-center justify-start lg:justify-end" style={{ gap: 10 }}>
             <Link
               href="/dashboard/summary"
               className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm text-center hover:bg-nikah-bg transition"
@@ -370,32 +352,30 @@ export function DashboardClient({
       </div>
 
       <main className="max-w-[1200px] mx-auto" style={{ padding: '0 var(--d-pad-page) 40px' }}>
-        <div className="lg:hidden" style={{ marginBottom: 16 }}>
-          <MobileScoreStrip
-            score={score}
-            label={label}
-            totalBudget={totalBudget}
-            guestCount={guestCount}
-            timeLeftText={timeLeftText}
-          />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr]" style={{ gap: 20, marginBottom: 20 }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr]" style={{ gap: 20, marginBottom: 16 }}>
           <CurrentPriorities days={days} checkedIds={checklistChecked} vendorPayments={vendorPayments} />
           <div className="hidden lg:block">{OverviewCard}</div>
         </div>
 
+        <div className="lg:hidden" style={{ marginBottom: 20 }}>
+          <MobileScoreStrip score={score} label={label} />
+        </div>
+
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: '0 0 14px' }}>
-          Dana &amp; Pembayaran
+          <span className="lg:hidden">UANG</span>
+          <span className="hidden lg:inline">Dana &amp; Pembayaran</span>
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 20, marginBottom: 28 }}>
           <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} />
           <VendorPaymentTracker initialPayments={vendorPayments} />
-          <DashboardNote initialNote={dashboardNote} />
+          <div className="hidden lg:block">
+            <DashboardNote initialNote={dashboardNote} />
+          </div>
         </div>
 
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: '0 0 14px' }}>
-          Tugas &amp; Referensi
+          <span className="lg:hidden">TUGAS</span>
+          <span className="hidden lg:inline">Tugas &amp; Referensi</span>
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_0.95fr_0.95fr]" style={{ gap: 20 }}>
           <ChecklistPernikahan checkedIds={checklistChecked} />

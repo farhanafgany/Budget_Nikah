@@ -100,7 +100,7 @@ export default async function DashboardPage() {
           <div className="text-4xl mb-4" aria-hidden="true">💍</div>
           <h2 className="text-xl font-extrabold text-nikah-text mb-2">Belum ada data</h2>
           <p className="text-nikah-muted text-sm mb-6 font-light">
-            Mulai susun wedding plan kamu agar semuanya terasa lebih terarah.
+            Mulai susun wedding plan kalian agar semuanya terasa lebih terarah.
           </p>
           <a href="/onboarding" className="block w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm text-center">
             Mulai Wedding Plan →

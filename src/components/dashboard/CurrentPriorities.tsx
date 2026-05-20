@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import type { VendorPaymentInput } from '@/app/dashboard/actions'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
@@ -93,20 +94,15 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
         boxShadow: '0 12px 34px rgba(90, 30, 42, 0.055)',
       }}
     >
-      <div className="flex items-start justify-between" style={{ padding: '20px 24px 17px', borderBottom: '1px solid var(--landing-border, rgba(237,228,230,0.82))', gap: 18 }}>
-        <div>
-          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: '0 0 8px' }}>
-            Prioritas Sekarang
-          </p>
-          <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.5, margin: 0 }}>
-            Mulai dari yang paling dekat. Tidak semua harus selesai sekarang.
-          </p>
-        </div>
+      <div className="flex items-center justify-between" style={{ padding: '20px 24px 17px', borderBottom: '1px solid var(--landing-border, rgba(237,228,230,0.82))', gap: 18 }}>
+        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: 0 }}>
+          Fokus Minggu Ini
+        </p>
         <span
           className="text-xs font-extrabold rounded-full"
           style={{ color: 'var(--landing-mauve, var(--nikah-mauve))', background: 'var(--landing-pink, #F8E1E7)', padding: '7px 13px', whiteSpace: 'nowrap' }}
         >
-          {items.length} prioritas
+          {items.length} hal
         </span>
       </div>
 
@@ -145,6 +141,15 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
             Belum ada prioritas dekat. Tambahkan vendor atau lanjutkan checklist agar dashboard bisa membantu menyusun fokus berikutnya.
           </p>
         )}
+      </div>
+      <div style={{ padding: '12px 24px 14px', borderTop: '1px solid var(--landing-border, rgba(237,228,230,0.82))' }}>
+        <Link
+          href="/dashboard"
+          className="text-nikah-mauve font-bold"
+          style={{ fontSize: 13 }}
+        >
+          Lihat semua prioritas →
+        </Link>
       </div>
     </div>
   )

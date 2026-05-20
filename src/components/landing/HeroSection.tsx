@@ -200,29 +200,42 @@ export function HeroSection() {
             Dapatkan gambaran biaya, kesiapan, dan prioritas pertama tanpa harus buka spreadsheet panjang. Selesai dalam 2 menit, tanpa login.
           </p>
 
-          <div className="flex flex-col items-start" style={{ gap: 14 }}>
-            <div className="flex flex-wrap items-center" style={{ gap: 12 }}>
+          <div className="flex flex-col items-start w-full" style={{ gap: 14 }}>
+            {/* Mobile: full-width stacked CTAs */}
+            <div className="flex flex-col w-full md:hidden" style={{ gap: 10 }}>
               <Link
                 href="/onboarding"
-                className="inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full hover:opacity-90 active:scale-95 transition-all"
-                style={{
-                  gap: 6,
-                  padding: '17px 28px',
-                  fontSize: 14,
-                  boxShadow: '0 8px 18px rgba(107,53,69,0.18)',
-                }}
+                className="block w-full text-center bg-nikah-deep text-white font-bold rounded-full hover:opacity-90 active:scale-95 transition-all"
+                style={{ padding: '17px 28px', fontSize: 14, boxShadow: '0 8px 18px rgba(107,53,69,0.18)' }}
               >
                 Cek Sekarang — Gratis →
               </Link>
               <a
                 href="#contoh-hasil"
-                className="hidden md:inline-flex items-center justify-center bg-white border border-nikah-border text-nikah-deep font-bold rounded-full hover:bg-nikah-bg active:scale-95 transition-all"
+                className="block w-full text-center text-nikah-deep font-bold rounded-full active:scale-95 transition-all"
+                style={{ padding: '16px 28px', fontSize: 14, background: 'var(--landing-bg, #FAF5F5)', border: '1px solid rgba(90,30,42,0.18)' }}
+              >
+                Lihat contoh hasil
+              </a>
+            </div>
+            {/* Desktop: inline button row */}
+            <div className="hidden md:flex flex-wrap items-center" style={{ gap: 12 }}>
+              <Link
+                href="/onboarding"
+                className="inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full hover:opacity-90 active:scale-95 transition-all"
+                style={{ gap: 6, padding: '17px 28px', fontSize: 14, boxShadow: '0 8px 18px rgba(107,53,69,0.18)' }}
+              >
+                Cek Sekarang — Gratis →
+              </Link>
+              <a
+                href="#contoh-hasil"
+                className="inline-flex items-center justify-center bg-white border border-nikah-border text-nikah-deep font-bold rounded-full hover:bg-nikah-bg active:scale-95 transition-all"
                 style={{ padding: '16px 24px', fontSize: 14 }}
               >
                 Lihat contoh hasil
               </a>
             </div>
-            <div className="inline-flex flex-wrap items-center gap-[12px] text-xs text-nikah-muted">
+            <div className="hidden md:inline-flex flex-wrap items-center gap-[12px] text-xs text-nikah-muted">
               <span>✓ Tanpa daftar</span>
               <span>✓ Selesai 2 menit</span>
               <span>✓ Tanpa kartu kredit</span>
@@ -275,6 +288,9 @@ export function HeroSection() {
                 ))}
               </div>
             </div>
+            <p className="text-center text-nikah-muted" style={{ fontSize: 10, marginTop: 10 }}>
+              Contoh kalkulasi · hasil personal kamu akan berbeda
+            </p>
           </div>
         </div>
 

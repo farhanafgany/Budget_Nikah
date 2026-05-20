@@ -64,7 +64,8 @@ export default function PremiumPage() {
       className="premium-theme min-h-screen bg-nikah-bg"
       style={{ background: 'var(--landing-bg, #F6EFEC)' }}
     >
-      <header className="border-b border-nikah-border bg-white/80 backdrop-blur">
+      {/* Desktop header */}
+      <header className="hidden md:block border-b border-nikah-border bg-white/80 backdrop-blur">
         <div className="mx-auto flex h-[72px] max-w-[1120px] items-center justify-between px-6">
           <Link href="/" className="inline-flex">
             <BrandLogo size="md" />
@@ -73,6 +74,13 @@ export default function PremiumPage() {
             Kembali ke Hasil
           </Link>
         </div>
+      </header>
+
+      {/* Mobile header */}
+      <header className="flex md:hidden items-center px-5 h-14">
+        <Link href="/result" className="inline-flex items-center text-sm font-bold text-nikah-deep" style={{ gap: 6 }}>
+          ← Hasil
+        </Link>
       </header>
 
       <section className="mx-auto max-w-[900px] px-6 text-center" style={{ paddingTop: 62, paddingBottom: 42 }}>
@@ -111,11 +119,11 @@ export default function PremiumPage() {
           <div
             className="flex items-center justify-between text-white"
             style={{
-              padding: '13px 28px',
+              padding: '13px 20px',
               background: 'linear-gradient(160deg, var(--landing-deep, #5A1E2A) 0%, var(--landing-deep-dark, #3D1419) 100%)',
             }}
           >
-            <p className="font-extrabold uppercase" style={{ fontSize: 12, letterSpacing: '0.18em', margin: 0 }}>
+            <p className="font-extrabold uppercase" style={{ fontSize: 11, letterSpacing: '0.12em', margin: 0 }}>
               Akses Seumur Hidup
             </p>
             <span
@@ -133,7 +141,72 @@ export default function PremiumPage() {
             </span>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]">
+          {/* Mobile layout: price → table → CTA → trust */}
+          <div className="block lg:hidden" style={{ padding: '28px 24px 32px' }}>
+            <div
+              className="text-nikah-deep"
+              style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 48, lineHeight: 1, letterSpacing: '-0.018em', marginBottom: 6 }}
+            >
+              Rp 149rb
+            </div>
+            <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.55, margin: '0 0 24px' }}>
+              Sekali bayar · tanpa subscription · termasuk update fitur
+            </p>
+
+            {/* Comparison table */}
+            <div style={{ marginBottom: 24 }}>
+              <div className="grid items-center text-nikah-muted font-extrabold uppercase border-b border-nikah-border" style={{ gridTemplateColumns: '1fr 52px 68px', gap: 8, fontSize: 10, letterSpacing: '0.08em', paddingBottom: 8, marginBottom: 2 }}>
+                <span>Yang kalian dapat</span>
+                <span className="text-center">Gratis</span>
+                <span className="text-center text-nikah-deep">Premium</span>
+              </div>
+              {COMPARISON_ROWS.map(item => (
+                <div
+                  key={item.label}
+                  className="grid items-center border-t border-nikah-border"
+                  style={{ gridTemplateColumns: '1fr 52px 68px', gap: 8, padding: '11px 0' }}
+                >
+                  <p className="text-nikah-text" style={{ fontSize: 13, lineHeight: 1.35, margin: 0 }}>
+                    {item.label}
+                  </p>
+                  <div className="flex justify-center"><ComparisonMark active={item.free} /></div>
+                  <div className="flex justify-center"><ComparisonMark active={item.premium} /></div>
+                </div>
+              ))}
+            </div>
+
+            <PremiumAccessButton
+              isProduction={isProduction}
+              loginChildren={(
+                <span className="inline-flex items-center justify-center" style={{ gap: 10 }}>
+                  Mulai Premium — Rp 149rb
+                  <ChevronRight size={18} strokeWidth={2.4} />
+                </span>
+              )}
+              paymentChildren={(
+                <span className="inline-flex items-center justify-center" style={{ gap: 10 }}>
+                  Mulai Premium — Rp 149rb
+                  <ChevronRight size={18} strokeWidth={2.4} />
+                </span>
+              )}
+            />
+
+            <div className="grid grid-cols-3 border-t border-nikah-border" style={{ gap: 10, marginTop: 20, paddingTop: 16 }}>
+              {TRUST_ITEMS.map(item => (
+                <div key={item.label} className="text-center">
+                  <p className="text-nikah-text font-extrabold" style={{ fontSize: 11, lineHeight: 1.3, margin: '0 0 2px' }}>
+                    {item.value}
+                  </p>
+                  <p className="text-nikah-muted" style={{ fontSize: 10, lineHeight: 1.3, margin: 0 }}>
+                    {item.label}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop layout: two-column side by side */}
+          <div className="hidden lg:grid grid-cols-[1.05fr_0.95fr]">
             <div style={{ padding: '38px 36px 36px' }}>
               <div
                 className="text-nikah-deep"
@@ -245,6 +318,34 @@ export default function PremiumPage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* "Yang Akan Kalian Buka" — mobile only */}
+      <section className="lg:hidden mx-auto max-w-[880px] px-6" style={{ paddingTop: 40, paddingBottom: 8 }}>
+        <p className="text-center text-xs font-extrabold uppercase text-nikah-mauve" style={{ letterSpacing: '0.18em', margin: '0 0 12px' }}>
+          Yang Akan Kalian Buka
+        </p>
+        <div className="grid grid-cols-1" style={{ gap: 14 }}>
+          {[
+            { title: 'Dashboard Persiapan', body: 'Semua progress vendor, tabungan, dan checklist dalam satu layar.' },
+            { title: 'Prioritas Sekarang', body: 'Tahu 4–5 hal terdekat yang perlu dibereskan minggu ini.' },
+            { title: 'Tracking Pembayaran', body: 'DP, termin, dan pelunasan tidak lupa karena ada di satu tempat.' },
+            { title: 'Riwayat & Catatan', body: 'Simpan keputusan penting, ide, dan info vendor sampai hari H.' },
+          ].map(item => (
+            <div
+              key={item.title}
+              className="bg-white border border-nikah-border"
+              style={{ borderRadius: 16, padding: '18px 20px', boxShadow: '0 1px 4px rgba(90,30,42,0.04)' }}
+            >
+              <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 15, lineHeight: 1.3, margin: '0 0 6px' }}>
+                {item.title}
+              </h3>
+              <p className="text-nikah-muted" style={{ fontSize: 13.5, lineHeight: 1.55, margin: 0 }}>
+                {item.body}
+              </p>
+            </div>
+          ))}
         </div>
       </section>
 

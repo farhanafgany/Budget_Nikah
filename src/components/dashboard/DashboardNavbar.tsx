@@ -28,7 +28,7 @@ export function DashboardNavbar({ userEmail }: Props) {
             Aksi cepat
           </a>
           <div
-            className="hidden sm:flex rounded-full items-center justify-center text-white font-extrabold flex-shrink-0"
+            className="flex rounded-full items-center justify-center text-white font-extrabold flex-shrink-0"
             style={{
               width: 34,
               height: 34,
@@ -40,7 +40,7 @@ export function DashboardNavbar({ userEmail }: Props) {
             {userEmail.slice(0, 1).toUpperCase()}
           </div>
           <span className="hidden sm:block truncate max-w-[180px]">{userEmail}</span>
-          <form action={logoutDashboard}>
+          <form action={logoutDashboard} className="hidden sm:block">
             <button
               type="submit"
               className="font-bold text-nikah-deep hover:text-nikah-text transition-colors rounded-full border border-nikah-border hover:bg-nikah-bg"

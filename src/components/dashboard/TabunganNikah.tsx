@@ -122,22 +122,23 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
       </div>
 
       {/* Mode toggle */}
-      <div className="flex bg-nikah-bg rounded-full overflow-x-auto [&::-webkit-scrollbar]:hidden" style={{ gap: 4, padding: 4, marginBottom: 14, scrollbarWidth: 'none' }}>
-        {(['add', 'subtract'] as const).map(m => (
-          <button
-            key={m}
-            type="button"
-            onClick={() => switchMode(m)}
-            className={`flex-1 rounded-full font-bold whitespace-nowrap transition-all ${
-              mode === m
-                ? 'bg-nikah-deep text-white'
-                : 'text-nikah-muted hover:text-nikah-text'
-            }`}
-            style={{ padding: '8px 14px', fontSize: 12 }}
-          >
-            {m === 'add' ? '+ Tambah' : '✎ Koreksi saldo'}
-          </button>
-        ))}
+      <div className="flex" style={{ gap: 8, marginBottom: 14 }}>
+        <button
+          type="button"
+          onClick={() => switchMode('add')}
+          className={`flex-1 font-bold rounded-full transition-all ${mode === 'add' ? 'bg-nikah-deep text-white' : 'text-nikah-deep hover:bg-nikah-bg'}`}
+          style={{ padding: '9px 14px', fontSize: 12, border: mode === 'add' ? 0 : '1px solid var(--landing-border, var(--nikah-border))', background: mode === 'add' ? undefined : 'transparent' }}
+        >
+          + Tambah
+        </button>
+        <button
+          type="button"
+          onClick={() => switchMode('subtract')}
+          className={`flex-1 font-bold rounded-full transition-all ${mode === 'subtract' ? 'bg-nikah-deep text-white' : 'text-nikah-deep hover:bg-nikah-bg'}`}
+          style={{ padding: '9px 14px', fontSize: 12, border: mode === 'subtract' ? 0 : '1px solid var(--landing-border, var(--nikah-border))', background: mode === 'subtract' ? undefined : 'transparent' }}
+        >
+          Koreksi saldo
+        </button>
       </div>
 
       <div className="flex" style={{ gap: 8 }}>

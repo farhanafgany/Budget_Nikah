@@ -15,13 +15,22 @@ import { createClient }       from '@/lib/supabase/client'
 function ResultNavbar() {
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
-      <div className="max-w-[1080px] mx-auto px-8 h-16 flex items-center justify-between">
+      <div className="max-w-[1080px] mx-auto px-6 md:px-8 h-14 md:h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <BrandLogo size="sm" />
         </Link>
+        {/* Mobile: "Hasil tersimpan" indicator */}
+        <div
+          className="md:hidden inline-flex items-center rounded-full font-bold"
+          style={{ gap: 6, padding: '5px 12px', fontSize: 12, background: '#FEF3F2', color: '#C16E73' }}
+        >
+          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#E5594A', flexShrink: 0, display: 'inline-block' }} />
+          Hasil tersimpan
+        </div>
+        {/* Desktop: link to premium */}
         <Link
           href="/premium"
-          className="inline-flex items-center justify-center rounded-full border border-nikah-deep px-4 py-2 text-xs font-bold text-nikah-deep transition-colors hover:bg-nikah-bg"
+          className="hidden md:inline-flex items-center justify-center rounded-full border border-nikah-deep px-4 py-2 text-xs font-bold text-nikah-deep transition-colors hover:bg-nikah-bg"
         >
           Buka rencana →
         </Link>
@@ -90,7 +99,7 @@ export default function ResultPage() {
   return (
     <main className="premium-theme min-h-screen bg-nikah-bg">
       <ResultNavbar />
-      <div className="max-w-[1040px] mx-auto px-6 pb-24 md:pb-[72px]" style={{ paddingTop: 58 }}>
+      <div className="max-w-[1040px] mx-auto px-6 pb-12 md:pb-[72px]" style={{ paddingTop: 58 }}>
 
         <ScoreHero
           score={scoreResult.score}
@@ -107,16 +116,6 @@ export default function ResultPage() {
 
       </div>
 
-      {/* Sticky mobile CTA */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden px-4 pb-4 pt-3" style={{ background: 'linear-gradient(to top, rgba(255,255,255,1) 70%, rgba(255,255,255,0))' }}>
-        <Link
-          href="/premium"
-          className="block w-full text-white font-bold py-4 rounded-full text-center text-sm"
-          style={{ background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)', boxShadow: '0 6px 20px rgba(90,30,42,0.28)' }}
-        >
-          Lanjutkan persiapan — Rp 149rb →
-        </Link>
-      </div>
     </main>
   )
 }
