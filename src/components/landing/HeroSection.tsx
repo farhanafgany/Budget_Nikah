@@ -56,68 +56,96 @@ export function HeroSection() {
 
           {/* Mobile layout */}
           <div className="md:hidden" style={{ marginBottom: 28 }}>
-            <div
-              className="inline-flex flex-wrap items-center bg-white border border-nikah-border rounded-full text-[11px] font-bold text-nikah-muted"
-              style={{ gap: 8, padding: '7px 12px', marginBottom: 16 }}
-            >
-              <span className="text-[#B98C54]" aria-hidden="true">★</span>
-              <span>2 menit · tanpa daftar · gratis</span>
-            </div>
 
+            {/* Eyebrow */}
+            <p
+              style={{
+                fontSize: 11,
+                fontWeight: 800,
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: '#B98C54',
+                margin: '0 0 12px',
+              }}
+            >
+              Wedding financial planner
+            </p>
+
+            {/* Headline */}
             <h1
               style={{
                 fontFamily: CLAUDE_SERIF,
                 fontStyle: 'italic',
                 fontWeight: 500,
-                fontSize: 'clamp(34px, 8.5vw, 48px)',
-                lineHeight: 1.08,
-                letterSpacing: '-0.02em',
+                fontSize: 'clamp(38px, 10vw, 54px)',
+                lineHeight: 1.04,
+                letterSpacing: '-0.03em',
                 color: 'var(--landing-deep-dark, #3D1419)',
-                margin: '0 0 12px',
+                margin: '0 0 16px',
               }}
             >
               Jangan tebak-tebak soal budget nikahmu.
             </h1>
 
-            <p className="text-nikah-muted font-light" style={{ fontSize: 15, lineHeight: 1.55, marginBottom: 22 }}>
-              Dapatkan gambaran biaya, kesiapan, dan prioritas pertama tanpa buka spreadsheet. Selesai 2 menit.
+            {/* Subtitle */}
+            <p
+              className="text-nikah-muted"
+              style={{ fontSize: 15, lineHeight: 1.55, fontWeight: 400, marginBottom: 28 }}
+            >
+              Cek apakah rencana kalian realistis — selesai dalam 2 menit, tanpa login.
             </p>
 
-            {/* Dashboard screenshot — mobile */}
-            <div
-              className="overflow-hidden border border-nikah-border"
+            {/* Label konteks */}
+            <p
               style={{
-                borderRadius: 14,
-                boxShadow: '0 8px 28px rgba(90,30,42,0.10)',
-                marginBottom: 20,
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.16em',
+                textTransform: 'uppercase',
+                color: 'var(--landing-muted, #A38B89)',
+                marginBottom: 10,
               }}
             >
-              <Image
-                src="/images/dashboard-preview.png"
-                alt="Contoh tampilan dashboard BudgetNikah"
-                width={1280}
-                height={700}
-                style={{ width: '100%', height: 'auto', display: 'block' }}
-                priority
-              />
+              Begini hasilnya
+            </p>
+
+            {/* Screenshots — 2 kolom */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: 10,
+                marginBottom: 0,
+              }}
+            >
+              <div
+                className="overflow-hidden border border-nikah-border"
+                style={{ borderRadius: 10, boxShadow: '0 4px 16px rgba(90,30,42,0.10)' }}
+              >
+                <Image
+                  src="/images/result-preview.png"
+                  alt="Halaman hasil analisa BudgetNikah"
+                  width={1280}
+                  height={800}
+                  style={{ width: '100%', height: 'auto', display: 'block' }}
+                  priority
+                />
+              </div>
+              <div
+                className="overflow-hidden border border-nikah-border"
+                style={{ borderRadius: 10, boxShadow: '0 4px 16px rgba(90,30,42,0.10)' }}
+              >
+                <Image
+                  src="/images/dashboard-preview.png"
+                  alt="Tampilan dashboard BudgetNikah"
+                  width={1280}
+                  height={700}
+                  style={{ width: '100%', height: 'auto', display: 'block' }}
+                  priority
+                />
+              </div>
             </div>
 
-            <Link
-              href="/onboarding"
-              className="block w-full text-white font-bold rounded-[14px] text-center active:opacity-80 active:scale-[0.98] transition-all"
-              style={{
-                padding: '16px',
-                fontSize: 15,
-                background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)',
-                boxShadow: '0 6px 18px rgba(90,30,42,0.22)',
-              }}
-            >
-              Cek Sekarang — Gratis →
-            </Link>
-
-            <p className="text-center text-nikah-muted" style={{ fontSize: 11, marginTop: 10 }}>
-              Gratis · tanpa daftar · selesai dalam 2 menit
-            </p>
           </div>
 
           {/* Desktop headline */}
@@ -174,6 +202,32 @@ export function HeroSection() {
 
         <DashboardPreview />
 
+      </div>
+
+      {/* Sticky CTA — mobile only */}
+      <div
+        className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+        style={{
+          padding: '10px 16px',
+          paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
+          background: 'rgba(251,246,241,0.92)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderTop: '1px solid var(--landing-border, #E8DACF)',
+        }}
+      >
+        <Link
+          href="/onboarding"
+          className="block w-full text-white font-bold text-center rounded-[12px] active:opacity-80 active:scale-[0.98] transition-all"
+          style={{
+            padding: '13px 16px',
+            fontSize: 14,
+            background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)',
+            boxShadow: '0 4px 14px rgba(90,30,42,0.22)',
+          }}
+        >
+          Cek Sekarang — Gratis →
+        </Link>
       </div>
     </section>
   )
