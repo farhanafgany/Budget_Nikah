@@ -9,7 +9,7 @@ export function StepDate() {
     <StepWrapper stepIndex={2} onNext={nextStep} onBack={prevStep} nextDisabled={!weddingDate}>
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Tanggal</p>
       <h2 className="text-2xl font-extrabold text-nikah-text mb-1">Kapan rencananya?</h2>
-      <p className="text-nikah-muted text-sm mb-8 font-light">Estimasi hari H kamu.</p>
+      <p className="text-nikah-muted text-sm mb-8 font-light">Estimasi hari H kalian.</p>
 
       <div>
         <label htmlFor="weddingDate" className="block text-xs font-bold text-nikah-text mb-1.5">Tanggal rencana</label>

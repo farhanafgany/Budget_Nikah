@@ -29,7 +29,7 @@ const FEATURES = [
   {
     tier: 'paid' as const,
     title: 'Seserahan Custom',
-    desc: 'Atur daftar seserahan sesuai kebutuhan dan kebiasaan keluarga kalian.',
+    desc: 'Atur daftar seserahan sesuai kebutuhan dan kebiasaan keluarga kamu.',
   },
 ]
 
