@@ -251,12 +251,12 @@ export function HeroSection() {
 
           {/* Mobile: CONTOH HASIL card — split layout */}
           <div className="lg:hidden mt-6">
-            <div style={{ borderRadius: 20, overflow: 'hidden', boxShadow: '0 10px 36px rgba(90,30,42,0.16)' }}>
+            <div style={{ borderRadius: 20, overflow: 'hidden', boxShadow: '0 8px 28px rgba(90,30,42,0.11)' }}>
 
-              {/* Top: dark — score + insight */}
-              <div style={{ background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)', padding: '18px 20px 16px' }}>
+              {/* Top: soft mauve — score + insight */}
+              <div style={{ background: 'linear-gradient(160deg, #F5E8EE 0%, #EDD8E4 100%)', padding: '18px 20px 16px' }}>
                 <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
-                  <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', margin: 0 }}>
+                  <p style={{ color: 'rgba(90,30,42,0.45)', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', margin: 0 }}>
                     Contoh Hasil
                   </p>
                   <span className="inline-flex items-center rounded-full font-semibold" style={{ gap: 5, padding: '4px 10px', fontSize: 11, background: '#DCEAD9', color: '#4A7C5A' }}>
@@ -268,10 +268,10 @@ export function HeroSection() {
                   {/* Score ring */}
                   <div className="relative shrink-0" style={{ width: 80, height: 80 }}>
                     <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="5.5" />
+                      <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(155,80,120,0.16)" strokeWidth="5.5" />
                       <circle
                         cx="40" cy="40" r="34" fill="none"
-                        stroke="#E8D7A8" strokeWidth="5.5"
+                        stroke="#7D3F5A" strokeWidth="5.5"
                         strokeLinecap="round"
                         strokeDasharray={`${2 * Math.PI * 34 * 0.78} ${2 * Math.PI * 34}`}
                         transform="rotate(-90 40 40)"
@@ -279,24 +279,24 @@ export function HeroSection() {
                     </svg>
                     <div className="absolute inset-0 grid place-items-center">
                       <div className="text-center">
-                        <div style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 26, lineHeight: 1, color: '#fff' }}>78</div>
-                        <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', marginTop: 3 }}>Score</div>
+                        <div style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 26, lineHeight: 1, color: '#5A1E2A' }}>78</div>
+                        <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(90,30,42,0.45)', textTransform: 'uppercase', marginTop: 3 }}>Score</div>
                       </div>
                     </div>
                   </div>
-                  <p style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 16, lineHeight: 1.4, color: 'rgba(255,255,255,0.92)', margin: 0 }}>
+                  <p style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 16, lineHeight: 1.4, color: '#5A1E2A', margin: 0 }}>
                     Rencana aman, tapi target tabungan perlu naik Rp&nbsp;1.2jt/bulan.
                   </p>
                 </div>
               </div>
 
-              {/* Bottom: light — stats */}
-              <div style={{ background: '#FBF6F1', padding: '14px 20px' }}>
+              {/* Bottom: lighter mauve — stats */}
+              <div style={{ background: '#FAF2F6', padding: '14px 20px', borderTop: '1px solid #E8D0DC' }}>
                 <div className="grid grid-cols-3 text-center">
                   {RESULT_STATS.map((stat) => (
                     <div key={stat.lbl}>
-                      <div style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 16, color: '#3D1419', lineHeight: 1 }}>{stat.val}</div>
-                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--nikah-muted)', marginTop: 4 }}>{stat.lbl}</div>
+                      <div style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 16, color: '#5A1E2A', lineHeight: 1 }}>{stat.val}</div>
+                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(90,30,42,0.45)', marginTop: 4 }}>{stat.lbl}</div>
                     </div>
                   ))}
                 </div>
