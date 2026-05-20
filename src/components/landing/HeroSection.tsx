@@ -249,53 +249,61 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Mobile: CONTOH HASIL card inline */}
-          <div className="lg:hidden mt-8">
-            <div
-              className="border border-nikah-border"
-              style={{
-                borderRadius: 20,
-                padding: '20px 22px 18px',
-                background: 'linear-gradient(160deg, #FBF6F1 0%, #F4E9DE 48%, #EFE3D9 100%)',
-              }}
-            >
-              <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
-                <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-nikah-muted">Contoh Hasil</p>
-                <span className="inline-flex items-center rounded-full bg-[#DCEAD9] text-[#4A7C5A] text-[11px] font-semibold" style={{ gap: 5, padding: '4px 10px' }}>
-                  <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: 999, background: '#4A7C5A' }} />
-                  Healthy
-                </span>
-              </div>
-              <div className="flex items-center" style={{ gap: 16, marginBottom: 16 }}>
-                <div className="relative shrink-0" style={{ width: 72, height: 72 }}>
-                  <svg width="72" height="72" viewBox="0 0 72 72" aria-hidden="true">
-                    <circle cx="36" cy="36" r="30" fill="none" stroke="#EFDADA" strokeWidth="5" />
-                    <circle
-                      cx="36" cy="36" r="30" fill="none"
-                      stroke="#5A1E2A" strokeWidth="5"
-                      strokeLinecap="round"
-                      strokeDasharray={`${2 * Math.PI * 30 * 0.78} ${2 * Math.PI * 30}`}
-                      transform="rotate(-90 36 36)"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 grid place-items-center">
-                    <span style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 22, lineHeight: 1, color: '#3D1419' }}>78</span>
-                  </div>
+          {/* Mobile: CONTOH HASIL card — split layout */}
+          <div className="lg:hidden mt-6">
+            <div style={{ borderRadius: 20, overflow: 'hidden', boxShadow: '0 10px 36px rgba(90,30,42,0.16)' }}>
+
+              {/* Top: dark — score + insight */}
+              <div style={{ background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)', padding: '18px 20px 16px' }}>
+                <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
+                  <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', margin: 0 }}>
+                    Contoh Hasil
+                  </p>
+                  <span className="inline-flex items-center rounded-full font-semibold" style={{ gap: 5, padding: '4px 10px', fontSize: 11, background: '#DCEAD9', color: '#4A7C5A' }}>
+                    <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: 999, background: '#4A7C5A' }} />
+                    Healthy
+                  </span>
                 </div>
-                <p className="text-nikah-text" style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 15, lineHeight: 1.45 }}>
-                  Rencana aman, tapi target tabungan perlu naik Rp 1.2jt/bulan.
-                </p>
-              </div>
-              <div className="grid grid-cols-3" style={{ gap: 8, paddingTop: 14, borderTop: '1px solid rgba(232,218,207,0.7)' }}>
-                {RESULT_STATS.map((stat) => (
-                  <div key={stat.lbl} className="text-center">
-                    <div className="text-[10px] text-nikah-muted" style={{ marginBottom: 3 }}>{stat.lbl}</div>
-                    <div style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 15, color: '#3D1419' }}>{stat.val}</div>
+                <div className="flex items-center" style={{ gap: 16 }}>
+                  {/* Score ring */}
+                  <div className="relative shrink-0" style={{ width: 80, height: 80 }}>
+                    <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
+                      <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="5.5" />
+                      <circle
+                        cx="40" cy="40" r="34" fill="none"
+                        stroke="#E8D7A8" strokeWidth="5.5"
+                        strokeLinecap="round"
+                        strokeDasharray={`${2 * Math.PI * 34 * 0.78} ${2 * Math.PI * 34}`}
+                        transform="rotate(-90 40 40)"
+                      />
+                    </svg>
+                    <div className="absolute inset-0 grid place-items-center">
+                      <div className="text-center">
+                        <div style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 26, lineHeight: 1, color: '#fff' }}>78</div>
+                        <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(255,255,255,0.5)', textTransform: 'uppercase', marginTop: 3 }}>Score</div>
+                      </div>
+                    </div>
                   </div>
-                ))}
+                  <p style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 16, lineHeight: 1.4, color: 'rgba(255,255,255,0.92)', margin: 0 }}>
+                    Rencana aman, tapi target tabungan perlu naik Rp&nbsp;1.2jt/bulan.
+                  </p>
+                </div>
               </div>
+
+              {/* Bottom: light — stats */}
+              <div style={{ background: '#FBF6F1', padding: '14px 20px' }}>
+                <div className="grid grid-cols-3 text-center">
+                  {RESULT_STATS.map((stat) => (
+                    <div key={stat.lbl}>
+                      <div style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 16, color: '#3D1419', lineHeight: 1 }}>{stat.val}</div>
+                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--nikah-muted)', marginTop: 4 }}>{stat.lbl}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
-            <p className="text-center text-nikah-muted" style={{ fontSize: 10, marginTop: 10 }}>
+            <p className="text-center text-nikah-muted" style={{ fontSize: 10, marginTop: 8 }}>
               Contoh kalkulasi · hasil personal kamu akan berbeda
             </p>
           </div>
@@ -306,11 +314,11 @@ export function HeroSection() {
       </div>
 
       {/* Sticky CTA — mobile only */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden px-4 bg-white/90 backdrop-blur border-t border-nikah-border" style={{ paddingTop: 12, paddingBottom: 'max(16px, env(safe-area-inset-bottom))' }}>
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden px-4 bg-white/90 backdrop-blur border-t border-nikah-border" style={{ paddingTop: 8, paddingBottom: 'max(10px, env(safe-area-inset-bottom))' }}>
         <Link
           href="/onboarding"
           className="block w-full bg-nikah-deep text-white font-bold rounded-full text-sm text-center active:opacity-80 active:scale-[0.98] transition-all"
-          style={{ padding: '16px' }}
+          style={{ padding: '13px' }}
         >
           Cek Sekarang — Gratis →
         </Link>
