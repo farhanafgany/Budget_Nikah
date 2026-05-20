@@ -260,16 +260,15 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           </div>
         </div>
 
-        {/* Stats inline — satu baris */}
-        <p style={{ fontSize: 14, lineHeight: 1.5, marginBottom: 18, marginTop: 0 }}>
-          {metrics.map((m, i) => (
-            <span key={m.label} style={{ whiteSpace: 'nowrap' }}>
-              <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 16 }}>{m.value}</span>
-              <span className="text-nikah-muted" style={{ fontSize: 12, marginLeft: 3 }}>{m.label}</span>
-              {i < metrics.length - 1 && <span className="text-nikah-muted" style={{ margin: '0 6px' }}>·</span>}
-            </span>
+        {/* Stats grid */}
+        <div className="grid grid-cols-3 text-center" style={{ gap: 8, marginBottom: 18, paddingTop: 4 }}>
+          {metrics.map(m => (
+            <div key={m.label}>
+              <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 18, lineHeight: 1, color: '#3D1419' }}>{m.value}</div>
+              <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9, letterSpacing: '0.12em', marginTop: 5 }}>{m.label}</div>
+            </div>
           ))}
-        </p>
+        </div>
 
         {/* Divider */}
         <div style={{ height: 1, background: 'var(--nikah-border)', marginBottom: 18 }} />
@@ -339,9 +338,8 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           marginTop: 28,
           minHeight: 244,
           padding: '28px 30px 38px',
-          boxShadow: '0 4px 16px rgba(90,30,42,0.028)',
+          boxShadow: '0 4px 20px rgba(90,30,42,0.07)',
           background: 'linear-gradient(180deg, #FFFFFF 0%, #FBF6F1 100%)',
-          border: '1px solid var(--landing-border, #E8DACF)',
         }}
       >
         <div className="flex items-start justify-between" style={{ gap: 16 }}>
@@ -390,9 +388,9 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
         <div
           className="absolute inset-x-0 flex items-center justify-center"
           style={{
-            left: -4, right: -4, bottom: -6,
+            left: 0, right: 0, bottom: 0,
             height: 178,
-            background: 'linear-gradient(180deg, rgba(251,246,241,0) 0%, rgba(251,246,241,0.45) 20%, rgba(245,237,232,0.94) 48%, #F5EDE8 72%, #F5EDE8 100%)',
+            background: 'linear-gradient(180deg, rgba(251,246,241,0) 0%, rgba(251,246,241,0) 30%, rgba(251,246,241,0.6) 55%, rgba(245,237,232,0.96) 72%, #F5EDE8 84%, #F5EDE8 100%)',
             zIndex: 2,
           }}
         >

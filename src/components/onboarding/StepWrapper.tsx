@@ -37,7 +37,7 @@ export function StepWrapper({
   const progress = ((stepIndex + 1) / TOTAL_STEPS) * 100
 
   return (
-    <div className="min-h-screen bg-nikah-bg flex flex-col lg:flex-row">
+    <div className="min-h-[100dvh] bg-nikah-bg flex flex-col lg:flex-row">
 
       {/* ── Desktop left panel ── */}
       <aside
@@ -153,8 +153,8 @@ export function StepWrapper({
 
         {/* Sticky CTA */}
         <div
-          className="px-6 py-5 border-t border-nikah-border lg:px-12 lg:py-8"
-          style={{ background: 'var(--nikah-bg)' }}
+          className="px-6 border-t border-nikah-border lg:px-12 lg:py-8"
+          style={{ background: 'var(--nikah-bg)', paddingTop: 20, paddingBottom: 'max(20px, env(safe-area-inset-bottom))' }}
         >
           <div className="max-w-lg">
             <button

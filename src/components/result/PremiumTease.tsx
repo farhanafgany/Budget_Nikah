@@ -95,7 +95,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
       <div className="lg:hidden" style={{ marginBottom: 32 }}>
         <Link
           href={continueHref}
-          className="block w-full text-white font-bold py-4 rounded-full text-center text-sm"
+          className="block w-full text-white font-bold py-4 rounded-full text-center text-sm active:opacity-75 active:scale-[0.98] transition-all"
           style={{ background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)', boxShadow: '0 6px 20px rgba(90,30,42,0.22)' }}
         >
           Buka rencana — Rp 149rb ›
@@ -185,30 +185,24 @@ export function PremiumTease({ isSignedIn = false }: Props) {
       </div>
 
       {/* Footer — mobile only */}
-      <footer className="lg:hidden mt-14 pt-8 border-t border-nikah-border">
-        <BrandLogo size="sm" />
-        <p className="text-nikah-muted" style={{ fontSize: 12, marginTop: 8, lineHeight: 1.6, marginBottom: 20 }}>
+      <footer className="lg:hidden mt-14 pt-8 border-t border-nikah-border text-center">
+        <div className="flex justify-center mb-2">
+          <BrandLogo size="sm" />
+        </div>
+        <p className="text-nikah-muted" style={{ fontSize: 12, marginTop: 6, lineHeight: 1.6, marginBottom: 20 }}>
           Wedding financial planner untuk pasangan Indonesia.<br />
           Sekali bayar, akses sampai hari H.
         </p>
-        <div className="grid grid-cols-3" style={{ gap: 12 }}>
+        <div className="flex justify-center" style={{ gap: 28 }}>
           {[
-            { label: 'PRODUK', links: [{ text: 'Fitur', href: '/#fitur' }, { text: 'Harga', href: '/#harga' }] },
-            { label: 'DUKUNGAN', links: [{ text: 'FAQ', href: '/#faq' }, { text: 'WhatsApp', href: '#' }] },
-            { label: 'HUKUM', links: [{ text: 'Privasi', href: '#' }, { text: 'Refund', href: '#' }] },
-          ].map(col => (
-            <div key={col.label}>
-              <p className="text-nikah-text font-extrabold uppercase" style={{ fontSize: 9, letterSpacing: '0.12em', marginBottom: 8 }}>
-                {col.label}
-              </p>
-              <div className="flex flex-col" style={{ gap: 6 }}>
-                {col.links.map(link => (
-                  <a key={link.text} href={link.href} className="text-nikah-muted hover:text-nikah-text transition-colors" style={{ fontSize: 12 }}>
-                    {link.text}
-                  </a>
-                ))}
-              </div>
-            </div>
+            { text: 'Fitur', href: '/#fitur' },
+            { text: 'FAQ', href: '/#faq' },
+            { text: 'Privasi', href: '#' },
+            { text: 'Refund', href: '#' },
+          ].map(link => (
+            <a key={link.text} href={link.href} className="text-nikah-muted hover:text-nikah-text transition-colors" style={{ fontSize: 12 }}>
+              {link.text}
+            </a>
           ))}
         </div>
       </footer>

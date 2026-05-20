@@ -201,23 +201,6 @@ export function HeroSection() {
           </p>
 
           <div className="flex flex-col items-start w-full" style={{ gap: 14 }}>
-            {/* Mobile: full-width stacked CTAs */}
-            <div className="flex flex-col w-full md:hidden" style={{ gap: 10 }}>
-              <Link
-                href="/onboarding"
-                className="block w-full text-center bg-nikah-deep text-white font-bold rounded-full hover:opacity-90 active:scale-95 transition-all"
-                style={{ padding: '17px 28px', fontSize: 14, boxShadow: '0 8px 18px rgba(107,53,69,0.18)' }}
-              >
-                Cek Sekarang — Gratis →
-              </Link>
-              <a
-                href="#contoh-hasil"
-                className="block w-full text-center text-nikah-deep font-bold rounded-full active:scale-95 transition-all"
-                style={{ padding: '16px 28px', fontSize: 14, background: 'var(--landing-bg, #FAF5F5)', border: '1px solid rgba(90,30,42,0.18)' }}
-              >
-                Lihat contoh hasil
-              </a>
-            </div>
             {/* Desktop: inline button row */}
             <div className="hidden md:flex flex-wrap items-center" style={{ gap: 12 }}>
               <Link
@@ -291,20 +274,22 @@ export function HeroSection() {
             <p className="text-center text-nikah-muted" style={{ fontSize: 10, marginTop: 10 }}>
               Contoh kalkulasi · hasil personal kamu akan berbeda
             </p>
+            {/* Mobile CTA — below the example card */}
+            <div className="flex flex-col items-center w-full md:hidden" style={{ gap: 10, marginTop: 6 }}>
+              <Link
+                href="/onboarding"
+                className="inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full hover:opacity-90 active:opacity-80 active:scale-[0.98] transition-all"
+                style={{ padding: '16px 32px', fontSize: 14, boxShadow: '0 8px 18px rgba(107,53,69,0.18)' }}
+              >
+                Cek Sekarang →
+              </Link>
+              <p className="text-nikah-muted" style={{ fontSize: 11 }}>Gratis · tanpa daftar · 2 menit</p>
+            </div>
           </div>
         </div>
 
         <ResultPreview />
 
-      </div>
-
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden p-4 bg-white/90 backdrop-blur border-t border-nikah-border">
-        <Link
-          href="/onboarding"
-          className="block w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm text-center"
-        >
-          Cek Sekarang — Gratis →
-        </Link>
       </div>
     </section>
   )
