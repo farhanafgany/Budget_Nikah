@@ -156,12 +156,12 @@ h1 em, h2 em, h3 em, h4 em {
 /* Claude Design inspired landing palette.
    Scoped to the landing experiment so the dashboard can stay functional while we compare. */
 .landing-theme {
-  --landing-bg: #F4ECF1;
-  --landing-band: #ECD9E6;
-  --landing-card: #FBF5F8;
+  --landing-bg: #F5EDE8;
+  --landing-band: #EFE3D9;
+  --landing-card: #FBF6F1;
   --landing-card-elev: #FFFFFF;
-  --landing-border: #E8D2DC;
-  --landing-border-soft: #F0E4ED;
+  --landing-border: #E8DACF;
+  --landing-border-soft: #F0E4DA;
   --landing-deep: #5A1E2A;
   --landing-deep-dark: #3D1419;
   --landing-text: #2A1A1F;
@@ -169,7 +169,7 @@ h1 em, h2 em, h3 em, h4 em {
   --landing-secondary: #6E5359;
   --landing-mauve: #B98789;
   --landing-rose-text: #C16E73;
-  --landing-pink: #FAECF2;
+  --landing-pink: #F5E2E2;
   --landing-gold: #C9A961;
   --landing-shadow: 0 4px 16px rgba(90, 30, 42, 0.06);
   --landing-shadow-lg: 0 12px 40px rgba(90, 30, 42, 0.10);

@@ -1,5 +1,8 @@
 'use client'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useOnboardingStore } from '@/stores/onboardingStore'
 
 const RESULT_STATS = [
   { val: 'Rp 87jt', lbl: 'Budget' },
@@ -152,7 +155,23 @@ function ResultPreview() {
   )
 }
 
+function formatRupiah(raw: string) {
+  const digits = raw.replace(/\D/g, '')
+  if (!digits) return ''
+  return new Intl.NumberFormat('id-ID').format(Number(digits))
+}
+
 export function HeroSection() {
+  const [budget, setBudget] = useState('')
+  const router = useRouter()
+  const setField = useOnboardingStore(s => s.setField)
+
+  function handleCek() {
+    const digits = budget.replace(/\D/g, '')
+    if (digits) setField('totalBudget', Number(digits))
+    router.push('/onboarding')
+  }
+
   return (
     <section
       aria-label="Hero"
@@ -178,24 +197,53 @@ export function HeroSection() {
             <span>2 menit · tanpa daftar</span>
           </div>
 
-          {/* Mobile headline */}
+          {/* Mobile hero — varian 4: input interaktif */}
           <div className="md:hidden" style={{ marginBottom: 22 }}>
             <h1
               style={{
                 fontFamily: CLAUDE_SERIF,
                 fontStyle: 'italic',
                 fontWeight: 500,
-                fontSize: 'clamp(40px, 10vw, 52px)',
-                lineHeight: 1.05,
+                fontSize: 'clamp(36px, 9vw, 48px)',
+                lineHeight: 1.08,
                 letterSpacing: '-0.02em',
                 color: 'var(--landing-deep-dark, #3D1419)',
                 margin: '0 0 10px',
               }}
             >
-              Sudah siap?
+              Budget nikah kalian berapa?
             </h1>
-            <p className="text-nikah-muted font-light" style={{ fontSize: 16, lineHeight: 1.55 }}>
-              Rencana nikah kalian dalam angka yang jelas.
+            <p className="text-nikah-muted font-light" style={{ fontSize: 15, lineHeight: 1.5, marginBottom: 24 }}>
+              Masukkan angkanya — langsung tahu apakah rencana kalian realistis.
+            </p>
+
+            {/* Input */}
+            <div
+              className="flex items-center bg-white border border-nikah-border"
+              style={{ borderRadius: 14, padding: '14px 18px', marginBottom: 12, gap: 10, boxShadow: '0 2px 8px rgba(90,30,42,0.06)' }}
+            >
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--nikah-muted)', flexShrink: 0 }}>Rp</span>
+              <input
+                type="text"
+                inputMode="numeric"
+                placeholder="80.000.000"
+                value={budget}
+                onChange={e => setBudget(formatRupiah(e.target.value))}
+                className="flex-1 bg-transparent text-nikah-text font-bold focus:outline-none"
+                style={{ fontSize: 17, minWidth: 0 }}
+              />
+            </div>
+
+            <button
+              onClick={handleCek}
+              className="block w-full text-white font-bold rounded-[14px] text-center active:opacity-80 active:scale-[0.98] transition-all"
+              style={{ padding: '16px', fontSize: 15, background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)', boxShadow: '0 6px 18px rgba(90,30,42,0.22)' }}
+            >
+              {budget ? 'Lihat apakah itu cukup →' : 'Cek rencana kalian →'}
+            </button>
+
+            <p className="text-center text-nikah-muted" style={{ fontSize: 11, marginTop: 10 }}>
+              Gratis · tanpa daftar · selesai dalam 2 menit
             </p>
           </div>
 
@@ -249,80 +297,13 @@ export function HeroSection() {
             </div>
           </div>
 
-          {/* Mobile: CONTOH HASIL card — split layout */}
-          <div className="lg:hidden mt-6">
-            <div style={{ borderRadius: 20, overflow: 'hidden', boxShadow: '0 8px 28px rgba(90,30,42,0.11)' }}>
-
-              {/* Top: soft mauve — score + insight */}
-              <div style={{ background: 'linear-gradient(160deg, #F5E8EE 0%, #EDD8E4 100%)', padding: '18px 20px 16px' }}>
-                <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
-                  <p style={{ color: 'rgba(90,30,42,0.45)', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase', margin: 0 }}>
-                    Contoh Hasil
-                  </p>
-                  <span className="inline-flex items-center rounded-full font-semibold" style={{ gap: 5, padding: '4px 10px', fontSize: 11, background: '#DCEAD9', color: '#4A7C5A' }}>
-                    <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: 999, background: '#4A7C5A' }} />
-                    Healthy
-                  </span>
-                </div>
-                <div className="flex items-center" style={{ gap: 16 }}>
-                  {/* Score ring */}
-                  <div className="relative shrink-0" style={{ width: 80, height: 80 }}>
-                    <svg width="80" height="80" viewBox="0 0 80 80" aria-hidden="true">
-                      <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(155,80,120,0.16)" strokeWidth="5.5" />
-                      <circle
-                        cx="40" cy="40" r="34" fill="none"
-                        stroke="#7D3F5A" strokeWidth="5.5"
-                        strokeLinecap="round"
-                        strokeDasharray={`${2 * Math.PI * 34 * 0.78} ${2 * Math.PI * 34}`}
-                        transform="rotate(-90 40 40)"
-                      />
-                    </svg>
-                    <div className="absolute inset-0 grid place-items-center">
-                      <div className="text-center">
-                        <div style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 26, lineHeight: 1, color: '#5A1E2A' }}>78</div>
-                        <div style={{ fontSize: 8, fontWeight: 700, letterSpacing: '0.12em', color: 'rgba(90,30,42,0.45)', textTransform: 'uppercase', marginTop: 3 }}>Score</div>
-                      </div>
-                    </div>
-                  </div>
-                  <p style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 16, lineHeight: 1.4, color: '#5A1E2A', margin: 0 }}>
-                    Rencana aman, tapi target tabungan perlu naik Rp&nbsp;1.2jt/bulan.
-                  </p>
-                </div>
-              </div>
-
-              {/* Bottom: lighter mauve — stats */}
-              <div style={{ background: '#FAF2F6', padding: '14px 20px', borderTop: '1px solid #E8D0DC' }}>
-                <div className="grid grid-cols-3 text-center">
-                  {RESULT_STATS.map((stat) => (
-                    <div key={stat.lbl}>
-                      <div style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 16, color: '#5A1E2A', lineHeight: 1 }}>{stat.val}</div>
-                      <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'rgba(90,30,42,0.45)', marginTop: 4 }}>{stat.lbl}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-            </div>
-            <p className="text-center text-nikah-muted" style={{ fontSize: 10, marginTop: 8 }}>
-              Contoh kalkulasi · hasil personal kamu akan berbeda
-            </p>
-          </div>
         </div>
 
         <ResultPreview />
 
       </div>
 
-      {/* Sticky CTA — mobile only */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden px-4 bg-white/90 backdrop-blur border-t border-nikah-border" style={{ paddingTop: 8, paddingBottom: 'max(10px, env(safe-area-inset-bottom))' }}>
-        <Link
-          href="/onboarding"
-          className="block w-full bg-nikah-deep text-white font-bold rounded-full text-sm text-center active:opacity-80 active:scale-[0.98] transition-all"
-          style={{ padding: '13px' }}
-        >
-          Cek Sekarang — Gratis →
-        </Link>
-      </div>
+      {/* Sticky CTA — disembunyikan di varian 4 (CTA ada di dalam hero) */}
     </section>
   )
 }
