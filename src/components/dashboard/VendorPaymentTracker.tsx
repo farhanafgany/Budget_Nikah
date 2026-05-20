@@ -270,7 +270,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                       type="button"
                       onClick={() => setInstallmentDraft({ vendorId: item.id, amount: '' })}
                       className="text-nikah-deep font-bold"
-                      style={{ border: 0, background: 'transparent', fontSize: 11, padding: 0 }}
+                      style={{ border: 0, background: 'transparent', fontSize: 11, padding: '6px 10px', margin: '-6px -10px' }}
                     >
                       Catat Bayar
                     </button>
@@ -278,7 +278,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                       type="button"
                       onClick={() => markPaid(item.id)}
                       className="text-nikah-deep font-bold"
-                      style={{ border: 0, background: 'transparent', fontSize: 11, padding: '5px 0' }}
+                      style={{ border: 0, background: 'transparent', fontSize: 11, padding: '6px 10px', margin: '-6px -10px' }}
                     >
                       Lunas
                     </button>

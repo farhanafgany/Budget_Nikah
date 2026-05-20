@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Check, ChevronRight, Minus } from 'lucide-react'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { PremiumAccessButton } from '@/components/payment/PremiumAccessButton'
+import { createClient } from '@/lib/supabase/server'
 
 const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
 
@@ -56,8 +57,11 @@ function ComparisonMark({ active }: { active: boolean }) {
   )
 }
 
-export default function PremiumPage() {
+export default async function PremiumPage() {
   const isProduction = process.env.MIDTRANS_IS_PRODUCTION === 'true'
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  const isSignedIn = Boolean(user)
 
   return (
     <main
@@ -257,9 +261,11 @@ export default function PremiumPage() {
                   </span>
                 )}
               />
-              <p className="text-nikah-muted" style={{ fontSize: 12.5, lineHeight: 1.45, margin: '11px 0 0' }}>
-                Kalian akan masuk dulu jika belum login agar hasil simulasi tersimpan sebelum pembayaran.
-              </p>
+              {!isSignedIn && (
+                <p className="text-nikah-muted" style={{ fontSize: 12.5, lineHeight: 1.45, margin: '11px 0 0' }}>
+                  Kalian akan masuk dulu agar hasil simulasi tersimpan sebelum pembayaran.
+                </p>
+              )}
 
               <div className="grid grid-cols-3 border-t border-nikah-border" style={{ gap: 12, marginTop: 26, paddingTop: 17 }}>
                 {TRUST_ITEMS.map(item => (
