@@ -105,7 +105,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             href={saveHref}
             className="block w-full text-center text-nikah-muted font-bold text-sm mt-3 active:opacity-60 transition-opacity"
           >
-            Simpan hasil dulu — lihat lagi nanti
+            Simpan hasil ke akun dulu →
           </Link>
         )}
       </div>
@@ -160,7 +160,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           Belum siap memutuskan?
         </h2>
         <p className="text-nikah-muted" style={{ fontSize: 15, lineHeight: 1.55, margin: '0 auto 22px', maxWidth: 560 }}>
-          Hasil ini akan tersimpan di email kalian. Bisa dibuka lagi kapan saja tanpa harus mulai dari awal.
+          Buat akun gratis untuk menyimpan hasil ini. Bisa dibuka lagi kapan saja dari perangkat mana pun.
         </p>
         {!isSignedIn ? (
           <Link
@@ -168,7 +168,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full transition hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
             style={{ padding: '14px 28px', fontSize: 14 }}
           >
-            Kirim hasil ke email
+            Simpan hasil ke akun →
           </Link>
         ) : (
           <Link

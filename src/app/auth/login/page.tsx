@@ -3,7 +3,7 @@ import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import { clearOnboardingStore, useOnboardingStore } from '@/stores/onboardingStore'
+import { useOnboardingStore } from '@/stores/onboardingStore'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { AlarmClock, BriefcaseBusiness, Coins } from 'lucide-react'
 
@@ -109,7 +109,8 @@ function LoginContent() {
         return
       }
 
-      await clearOnboardingStore()
+      // Jangan clear localStorage di sini — biarkan user bisa kembali ke /result
+      // setelah login. localStorage akan dibersihkan saat /premium/success dimuat.
     }
     router.replace(nextPath)
   }
@@ -218,7 +219,15 @@ function LoginContent() {
                 />
               </div>
               <div>
-                <label htmlFor="login-password" className="sr-only">Password</label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label htmlFor="login-password" className="text-xs font-bold text-nikah-text">Password</label>
+                  <Link
+                    href="/auth/reset-password"
+                    className="text-xs text-nikah-deep font-semibold hover:underline underline-offset-2"
+                  >
+                    Lupa password?
+                  </Link>
+                </div>
                 <input
                   id="login-password"
                   type="password" value={password} onChange={e => setPassword(e.target.value)}

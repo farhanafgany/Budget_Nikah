@@ -12,21 +12,31 @@ import { PremiumTease }       from '@/components/result/PremiumTease'
 import { BrandLogo }          from '@/components/ui/BrandLogo'
 import { createClient }       from '@/lib/supabase/client'
 
-function ResultNavbar() {
+function ResultNavbar({ isSignedIn }: { isSignedIn: boolean }) {
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
       <div className="max-w-[1080px] mx-auto px-6 md:px-8 h-14 md:h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <BrandLogo size="sm" />
         </Link>
-        {/* Mobile: "Hasil tersimpan" indicator */}
-        <div
-          className="md:hidden inline-flex items-center rounded-full font-bold"
-          style={{ gap: 6, padding: '5px 12px', fontSize: 12, background: '#FEF3F2', color: '#C16E73' }}
-        >
-          <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#E5594A', flexShrink: 0, display: 'inline-block' }} />
-          Hasil tersimpan
-        </div>
+        {/* Mobile: ajak simpan jika belum login, atau akses premium jika sudah */}
+        {isSignedIn ? (
+          <Link
+            href="/premium"
+            className="md:hidden inline-flex items-center rounded-full font-bold transition-colors hover:bg-nikah-bg"
+            style={{ gap: 6, padding: '6px 14px', fontSize: 12, background: 'var(--nikah-bg)', color: 'var(--nikah-deep)', border: '1px solid var(--nikah-border)' }}
+          >
+            Buka rencana →
+          </Link>
+        ) : (
+          <Link
+            href="/auth/login?next=/premium"
+            className="md:hidden inline-flex items-center rounded-full font-bold transition-opacity hover:opacity-80"
+            style={{ gap: 6, padding: '6px 14px', fontSize: 12, background: 'var(--nikah-deep)', color: '#fff' }}
+          >
+            Simpan hasil →
+          </Link>
+        )}
         {/* Desktop: link to premium */}
         <Link
           href="/premium"
@@ -67,11 +77,18 @@ export default function ResultPage() {
     if (!mounted) return
 
     if (!isComplete) {
-      router.replace('/onboarding')
+      // User sudah login tapi tidak ada data onboarding di localStorage
+      // (misal: ganti perangkat, atau baru saja login). Arahkan ke dashboard
+      // (atau /premium jika belum premium) daripada kembali ke onboarding.
+      if (isSignedIn) {
+        router.replace('/dashboard')
+      } else {
+        router.replace('/onboarding')
+      }
     } else {
       initSimulation(onboarding.guestCount, onboarding.weddingStyle)
     }
-  }, [mounted, isComplete, onboarding.guestCount, onboarding.weddingStyle, router, initSimulation])
+  }, [mounted, isComplete, isSignedIn, onboarding.guestCount, onboarding.weddingStyle, router, initSimulation])
 
   const { scoreResult } = useMemo(() => {
     const alloc = calculateAllocation({
@@ -98,7 +115,7 @@ export default function ResultPage() {
 
   return (
     <main className="premium-theme min-h-screen bg-nikah-bg">
-      <ResultNavbar />
+      <ResultNavbar isSignedIn={isSignedIn} />
       <div className="max-w-[1040px] mx-auto px-6 pb-12 md:pb-[72px]" style={{ paddingTop: 58 }}>
 
         <ScoreHero

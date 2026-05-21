@@ -121,10 +121,15 @@ export function StepWrapper({
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Progress bar — mobile only */}
-        <div className="lg:hidden h-1 bg-nikah-border w-full">
+        <div className="lg:hidden w-full" style={{ height: 4, background: 'var(--nikah-border)' }}>
           <div
-            className="h-full bg-gradient-to-r from-nikah-mauve to-nikah-deep transition-all duration-300"
-            style={{ width: `${progress}%` }}
+            style={{
+              height: '100%',
+              width: `${progress}%`,
+              background: 'linear-gradient(90deg, var(--nikah-mauve) 0%, var(--nikah-deep) 100%)',
+              transition: 'width 0.35s cubic-bezier(0.4,0,0.2,1)',
+              borderRadius: '0 2px 2px 0',
+            }}
           />
         </div>
 
