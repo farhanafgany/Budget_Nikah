@@ -10,14 +10,14 @@ const PAYMENT_METHODS = ['QRIS', 'GoPay', 'OVO', 'Dana', 'BCA', 'Mandiri', 'BNI'
 function PaymentMethodsRow() {
   return (
     <div className="flex flex-wrap items-center justify-center" style={{ gap: '6px 8px', marginTop: 14 }}>
-      <span className="text-nikah-muted" style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', marginRight: 2 }}>
+      <span className="text-nikah-muted" style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', marginRight: 2 }}>
         Tersedia via:
       </span>
       {PAYMENT_METHODS.map(method => (
         <span
           key={method}
           className="inline-flex items-center border border-nikah-border bg-white text-nikah-text font-bold"
-          style={{ fontSize: 10, padding: '3px 8px', borderRadius: 6 }}
+          style={{ fontSize: 11, padding: '4px 9px', borderRadius: 6 }}
         >
           {method}
         </span>
@@ -223,10 +223,10 @@ export default async function PremiumPage() {
             <div className="grid grid-cols-3 border-t border-nikah-border" style={{ gap: 10, marginTop: 20, paddingTop: 16 }}>
               {TRUST_ITEMS.map(item => (
                 <div key={item.label} className="text-center">
-                  <p className="text-nikah-text font-extrabold" style={{ fontSize: 11, lineHeight: 1.3, margin: '0 0 2px' }}>
+                  <p className="text-nikah-text font-extrabold" style={{ fontSize: 12, lineHeight: 1.3, margin: '0 0 2px' }}>
                     {item.value}
                   </p>
-                  <p className="text-nikah-muted" style={{ fontSize: 10, lineHeight: 1.3, margin: 0 }}>
+                  <p className="text-nikah-muted" style={{ fontSize: 11, lineHeight: 1.3, margin: 0 }}>
                     {item.label}
                   </p>
                 </div>
@@ -459,6 +459,7 @@ export default async function PremiumPage() {
           Pembayaran diproses aman melalui Midtrans Snap
         </p>
       </section>
+
     </main>
   )
 }

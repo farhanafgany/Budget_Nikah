@@ -141,7 +141,7 @@ function SignupContent() {
   if (success) {
     return (
       <main
-        className="premium-theme min-h-screen bg-nikah-bg px-4 py-8 flex items-center justify-center"
+        className="premium-theme min-h-screen bg-nikah-bg px-4 py-8 flex flex-col items-center justify-start lg:justify-center overflow-y-auto"
         style={{
           background: 'var(--landing-bg, var(--nikah-bg))',
         }}
@@ -202,7 +202,7 @@ function SignupContent() {
 
   return (
     <main
-      className="premium-theme min-h-screen bg-nikah-bg px-4 py-8 flex items-center justify-center"
+      className="premium-theme min-h-screen bg-nikah-bg px-4 py-8 flex flex-col items-center justify-start lg:justify-center overflow-y-auto"
       style={{
         background: 'var(--landing-bg, var(--nikah-bg))',
       }}

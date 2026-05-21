@@ -323,7 +323,7 @@ export function DashboardClient({
                 fontFamily: SERIF,
                 fontStyle: 'italic',
                 fontWeight: 500,
-                fontSize: 'clamp(42px, 5vw, 58px)',
+                fontSize: 'clamp(30px, 7vw, 58px)',
                 letterSpacing: '-0.025em',
                 lineHeight: 1.05,
                 margin: '0 0 12px',
@@ -386,7 +386,7 @@ export function DashboardClient({
         </div>
 
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: '0 0 14px' }}>
-          <span className="lg:hidden">UANG</span>
+          <span className="lg:hidden">Dana &amp; Pembayaran</span>
           <span className="hidden lg:inline">Dana &amp; Pembayaran</span>
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 20, marginBottom: 28 }}>
@@ -396,7 +396,7 @@ export function DashboardClient({
         </div>
 
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: '0 0 14px' }}>
-          <span className="lg:hidden">TUGAS</span>
+          <span className="lg:hidden">Persiapan &amp; Referensi</span>
           <span className="hidden lg:inline">Tugas &amp; Referensi</span>
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_0.95fr_0.95fr]" style={{ gap: 20 }}>
