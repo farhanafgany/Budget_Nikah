@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /auth/
+Disallow: /dashboard/
+Disallow: /premium/success
+Disallow: /api/
+Disallow: /hero-demo/
+Allow: /
+
+Sitemap: https://budgetnikah.com/sitemap.xml
