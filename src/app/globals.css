@@ -5,9 +5,9 @@
 
 /* ===== BudgetNikah brand tokens ===== */
 
-/* Fraunces italic accent — applied globally to em inside headings */
+/* Serif italic accent — applied globally to em inside headings */
 h1 em, h2 em, h3 em, h4 em {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-playfair), Georgia, serif;
   font-style: italic;
   font-weight: 500;
   color: var(--nikah-deep, #6B3545);
@@ -33,7 +33,8 @@ h1 em, h2 em, h3 em, h4 em {
   --shadow-xl: 0 26px 68px rgba(90,30,42,0.13), 0 6px 14px rgba(90,30,42,0.06);
 
   /* ── Display serif ── */
-  --serif-display: var(--font-fraunces), Georgia, serif;
+  --font-fraunces: var(--font-playfair);
+  --serif-display: var(--font-playfair), Georgia, serif;
 
   /* ── Density tokens ── */
   --d-pad-page:    32px;

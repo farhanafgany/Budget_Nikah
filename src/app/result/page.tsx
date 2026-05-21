@@ -11,7 +11,6 @@ import { ScoreHero }          from '@/components/result/ScoreHero'
 import { PremiumTease }       from '@/components/result/PremiumTease'
 import { InsightCards }       from '@/components/result/InsightCards'
 import { BrandLogo }          from '@/components/ui/BrandLogo'
-import { createClient }       from '@/lib/supabase/client'
 import { generateInsights }   from '@/lib/insights'
 
 function ResultSkeleton() {
@@ -87,27 +86,57 @@ export default function ResultPage() {
   const initSimulation = useSimulationStore(s => s.init)
   const [mounted, setMounted] = useState(false)
   const [isSignedIn, setIsSignedIn] = useState(false)
+  const [authChecked, setAuthChecked] = useState(false)
   const isComplete = onboarding.isComplete()
 
   useEffect(() => {
+    let active = true
+    let unsubscribe: (() => void) | undefined
+
     setMounted(true)
-    const supabase = createClient()
 
-    supabase.auth.getSession().then(({ data }) => {
-      setIsSignedIn(Boolean(data.session?.user))
-    })
+    void import('@/lib/supabase/client')
+      .then(({ createClient }) => {
+        if (!active) return
+        const supabase = createClient()
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsSignedIn(Boolean(session?.user))
-    })
+        supabase.auth
+          .getSession()
+          .then(({ data }) => {
+            if (!active) return
+            setIsSignedIn(Boolean(data.session?.user))
+            setAuthChecked(true)
+          })
+          .catch(() => {
+            if (!active) return
+            setIsSignedIn(false)
+            setAuthChecked(true)
+          })
 
-    return () => listener.subscription.unsubscribe()
+        const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (!active) return
+          setIsSignedIn(Boolean(session?.user))
+          setAuthChecked(true)
+        })
+        unsubscribe = () => listener.subscription.unsubscribe()
+      })
+      .catch(() => {
+        if (!active) return
+        setIsSignedIn(false)
+        setAuthChecked(true)
+      })
+
+    return () => {
+      active = false
+      unsubscribe?.()
+    }
   }, [])
 
   useEffect(() => {
     if (!mounted) return
 
     if (!isComplete) {
+      if (!authChecked) return
       // User sudah login tapi tidak ada data onboarding di localStorage
       // (misal: ganti perangkat, atau baru saja login). Arahkan ke dashboard
       // (atau /premium jika belum premium) daripada kembali ke onboarding.
@@ -119,7 +148,7 @@ export default function ResultPage() {
     } else {
       initSimulation(onboarding.guestCount, onboarding.weddingStyle)
     }
-  }, [mounted, isComplete, isSignedIn, onboarding.guestCount, onboarding.weddingStyle, router, initSimulation])
+  }, [mounted, isComplete, authChecked, isSignedIn, onboarding.guestCount, onboarding.weddingStyle, router, initSimulation])
 
   const { scoreResult, insights } = useMemo(() => {
     const alloc = calculateAllocation({

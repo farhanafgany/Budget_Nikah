@@ -71,6 +71,8 @@ Aturan penting:
 - Desktop dan mobile boleh punya layout berbeda kalau itu membuat UX lebih baik.
 - Jangan menganggap desain desktop otomatis harus mengubah mobile.
 - Jangan menganggap desain mobile otomatis harus mengubah desktop.
+- Jika task menyebut **desain desktop**, fokus hanya pada desktop dan jangan ubah mobile kecuali user eksplisit meminta.
+- Jika task menyebut **desain mobile**, fokus hanya pada mobile dan jangan ubah desktop kecuali user eksplisit meminta.
 - Saat sedang memperbaiki **mobile**, jaga desktop tetap stabil kecuali user eksplisit minta keduanya.
 - Saat sedang memperbaiki **desktop**, jaga mobile tetap stabil kecuali user eksplisit minta keduanya.
 - Setiap perubahan visual harus dicek minimal di viewport mobile (`390px`/`430px`) dan desktop (`1280px`/`1440px`) kalau area tersebut terdampak.

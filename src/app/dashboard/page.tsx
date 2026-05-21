@@ -77,21 +77,25 @@ export default async function DashboardPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: account } = await supabase
-    .from('app_users')
-    .select('is_premium')
-    .eq('id', user.id)
-    .single()
+  const [accountResult, profileResult] = await Promise.all([
+    supabase
+      .from('app_users')
+      .select('is_premium')
+      .eq('id', user.id)
+      .single(),
+    supabase
+      .from('wedding_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single(),
+  ])
+
+  const account = accountResult.data
+  const profile = profileResult.data
 
   if (!account?.is_premium) {
     redirect('/premium')
   }
-
-  const { data: profile } = await supabase
-    .from('wedding_profiles')
-    .select('*')
-    .eq('user_id', user.id)
-    .single()
 
   if (!profile) {
     return (

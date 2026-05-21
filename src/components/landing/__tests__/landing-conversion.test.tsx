@@ -80,16 +80,16 @@ describe('FeatureShowcase', () => {
 import { PricingSection } from '../PricingSection'
 
 describe('PricingSection', () => {
-  it('primary CTA mengarah ke /onboarding', () => {
+  it('premium CTA mengarah ke /premium', () => {
     render(<PricingSection />)
-    const primary = screen.getByRole('link', { name: /Mulai Sekarang/i })
-    expect(primary).toHaveAttribute('href', '/onboarding')
+    const premium = screen.getByRole('link', { name: /Beli Akses Premium/i })
+    expect(premium).toHaveAttribute('href', '/premium')
   })
 
-  it('secondary CTA mengarah ke /premium', () => {
+  it('free trial CTA mengarah ke /onboarding', () => {
     render(<PricingSection />)
-    const secondary = screen.getByRole('link', { name: /Langsung Beli Akses Premium/i })
-    expect(secondary).toHaveAttribute('href', '/premium')
+    const freeTrial = screen.getByRole('link', { name: /Coba gratis dulu/i })
+    expect(freeTrial).toHaveAttribute('href', '/onboarding')
   })
 
   it('menampilkan guarantee strip 3 hari tanpa pertanyaan', () => {

@@ -39,8 +39,8 @@ function DashboardPreview() {
           alt="Contoh tampilan dashboard BudgetNikah"
           width={1280}
           height={700}
+          sizes="(min-width: 1024px) 519px, 1px"
           style={{ width: '100%', height: 'auto', display: 'block' }}
-          priority
         />
       </div>
       <p className="text-center text-nikah-muted" style={{ fontSize: 11, marginTop: 10 }}>

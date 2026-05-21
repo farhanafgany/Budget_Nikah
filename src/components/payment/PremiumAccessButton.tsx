@@ -2,11 +2,11 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
 import { MidtransPaymentButton } from './MidtransPaymentButton'
 
 interface PremiumAccessButtonProps {
   isProduction?: boolean
+  isSignedIn?: boolean
   variant?: 'primary' | 'gold'
   loginChildren: React.ReactNode
   paymentChildren: React.ReactNode
@@ -14,23 +14,48 @@ interface PremiumAccessButtonProps {
 
 export function PremiumAccessButton({
   isProduction = false,
+  isSignedIn,
   variant = 'primary',
   loginChildren,
   paymentChildren,
 }: PremiumAccessButtonProps) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
+  const [isLoggedIn, setIsLoggedIn] = useState(Boolean(isSignedIn))
+  const [isCheckingAuth, setIsCheckingAuth] = useState(isSignedIn === undefined)
 
   useEffect(() => {
-    let active = true
-    const supabase = createClient()
+    if (isSignedIn !== undefined) {
+      setIsLoggedIn(isSignedIn)
+      setIsCheckingAuth(false)
+      return
+    }
 
-    supabase.auth
-      .getSession()
-      .then(({ data }) => {
+    let active = true
+    let unsubscribe: (() => void) | undefined
+
+    void import('@/lib/supabase/client')
+      .then(({ createClient }) => {
         if (!active) return
-        setIsLoggedIn(Boolean(data.session?.user))
-        setIsCheckingAuth(false)
+        const supabase = createClient()
+
+        supabase.auth
+          .getSession()
+          .then(({ data }) => {
+            if (!active) return
+            setIsLoggedIn(Boolean(data.session?.user))
+            setIsCheckingAuth(false)
+          })
+          .catch(() => {
+            if (!active) return
+            setIsLoggedIn(false)
+            setIsCheckingAuth(false)
+          })
+
+        const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+          if (!active) return
+          setIsLoggedIn(Boolean(session?.user))
+          setIsCheckingAuth(false)
+        })
+        unsubscribe = () => data.subscription.unsubscribe()
       })
       .catch(() => {
         if (!active) return
@@ -38,16 +63,11 @@ export function PremiumAccessButton({
         setIsCheckingAuth(false)
       })
 
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(Boolean(session?.user))
-      setIsCheckingAuth(false)
-    })
-
     return () => {
       active = false
-      data.subscription.unsubscribe()
+      unsubscribe?.()
     }
-  }, [])
+  }, [isSignedIn])
 
   const className = variant === 'gold'
     ? 'inline-flex items-center justify-center rounded-full font-extrabold transition hover:brightness-105 active:scale-[0.99]'

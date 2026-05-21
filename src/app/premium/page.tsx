@@ -206,6 +206,7 @@ export default async function PremiumPage() {
 
             <PremiumAccessButton
               isProduction={isProduction}
+              isSignedIn={isSignedIn}
               loginChildren={(
                 <span className="inline-flex items-center justify-center" style={{ gap: 10 }}>
                   Mulai Premium — Rp 149rb
@@ -277,6 +278,7 @@ export default async function PremiumPage() {
 
               <PremiumAccessButton
                 isProduction={isProduction}
+                isSignedIn={isSignedIn}
                 loginChildren={(
                   <span className="inline-flex items-center justify-center" style={{ gap: 10 }}>
                     Simpan & Lanjut ke Pembayaran
@@ -444,6 +446,7 @@ export default async function PremiumPage() {
         </p>
         <PremiumAccessButton
           isProduction={isProduction}
+          isSignedIn={isSignedIn}
           variant="gold"
           loginChildren={(
             <span className="inline-flex items-center justify-center" style={{ gap: 10 }}>
