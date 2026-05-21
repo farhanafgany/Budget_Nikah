@@ -1,5 +1,4 @@
 'use client'
-import { useEffect, useRef } from 'react'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { StepWrapper } from './StepWrapper'
 
@@ -19,16 +18,8 @@ const PRIORITIES = [
 export function StepEventPriority() {
   const { eventType, planningPriority, setField, prevStep, nextStep } = useOnboardingStore()
   const canNext = !!eventType && !!planningPriority
-  const interacted = useRef(false)
-
-  useEffect(() => {
-    if (!canNext || !interacted.current) return
-    const timer = setTimeout(() => nextStep(), 360)
-    return () => clearTimeout(timer)
-  }, [canNext, nextStep])
 
   function handleSet<K extends 'eventType' | 'planningPriority'>(key: K, value: string) {
-    interacted.current = true
     setField(key, value as never)
   }
 
@@ -42,7 +33,9 @@ export function StepEventPriority() {
     >
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Terakhir</p>
       <h2 className="text-2xl font-extrabold text-nikah-text mb-1">Jenis acara & prioritas</h2>
-      <p className="text-nikah-muted text-sm mb-6 font-light">Dua pertanyaan terakhir!</p>
+      <p className="text-nikah-muted text-sm mb-6 font-light">
+        {canNext ? '✓ Semua dipilih — siap lihat hasilnya!' : 'Dua pilihan terakhir sebelum hasil kalian.'}
+      </p>
 
       <div className="mb-6">
         <p className="text-xs font-bold text-nikah-text mb-3">Jenis acara</p>

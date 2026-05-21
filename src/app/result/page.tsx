@@ -9,8 +9,10 @@ import { calculateScore } from '@/lib/scoring'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { ScoreHero }          from '@/components/result/ScoreHero'
 import { PremiumTease }       from '@/components/result/PremiumTease'
+import { InsightCards }       from '@/components/result/InsightCards'
 import { BrandLogo }          from '@/components/ui/BrandLogo'
 import { createClient }       from '@/lib/supabase/client'
+import { generateInsights }   from '@/lib/insights'
 
 function ResultNavbar({ isSignedIn }: { isSignedIn: boolean }) {
   return (
@@ -90,7 +92,7 @@ export default function ResultPage() {
     }
   }, [mounted, isComplete, isSignedIn, onboarding.guestCount, onboarding.weddingStyle, router, initSimulation])
 
-  const { scoreResult } = useMemo(() => {
+  const { scoreResult, insights } = useMemo(() => {
     const alloc = calculateAllocation({
       totalBudget: onboarding.totalBudget,
       guestCount: sim.guestCount || onboarding.guestCount,
@@ -105,11 +107,19 @@ export default function ResultPage() {
       weddingCity: onboarding.weddingCity,
       allocation: alloc,
     })
-    return {
-      scoreResult: sr,
-    }
+    const ins = generateInsights({
+      totalBudget: onboarding.totalBudget,
+      guestCount: sim.guestCount || onboarding.guestCount,
+      weddingStyle: sim.weddingStyle || onboarding.weddingStyle,
+      planningPriority: onboarding.planningPriority,
+      weddingCity: onboarding.weddingCity,
+      allocation: alloc,
+      score: sr.score,
+      weddingDate: onboarding.weddingDate,
+    })
+    return { scoreResult: sr, insights: ins }
   }, [onboarding.totalBudget, onboarding.guestCount, onboarding.weddingStyle, onboarding.planningPriority, onboarding.weddingCity,
-      sim.guestCount, sim.weddingStyle])
+      onboarding.weddingDate, sim.guestCount, sim.weddingStyle])
 
   if (!mounted || !isComplete) return null
 
@@ -128,6 +138,12 @@ export default function ResultPage() {
           partnerOneName={onboarding.partnerOneName}
           weddingCity={onboarding.weddingCity}
         />
+
+        {insights.length > 0 && (
+          <div style={{ marginTop: 28 }}>
+            <InsightCards insights={insights} />
+          </div>
+        )}
 
         <PremiumTease
           isSignedIn={isSignedIn}

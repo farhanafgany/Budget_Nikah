@@ -166,8 +166,7 @@ export default async function PremiumPage() {
                 gap: 6,
               }}
             >
-              <s style={{ opacity: 0.55, fontWeight: 400 }}>Rp 249rb</s>
-              Rp 149rb — Harga peluncuran
+              Rp 149rb · Sekali bayar selamanya
             </span>
           </div>
 
