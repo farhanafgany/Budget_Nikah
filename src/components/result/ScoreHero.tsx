@@ -330,51 +330,58 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
         ))}
       </div>
 
-      {/* ── Priority preview (both) ── */}
+      {/* ── Priority preview — wrapper handles the fade mask ── */}
+      <div
+        style={{
+          position: 'relative',
+          marginTop: 28,
+          paddingBottom: 28,
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 26%, transparent 68%)',
+          maskImage: 'linear-gradient(to bottom, black 0%, black 26%, transparent 68%)',
+        }}
+      >
       <div
         className="relative overflow-hidden"
         style={{
           borderRadius: 24,
-          marginTop: 28,
-          minHeight: 244,
-          padding: '28px 30px 38px',
+          height: 300,
+          padding: '24px 24px 0',
           boxShadow: '0 4px 20px rgba(90,30,42,0.07)',
-          background: 'linear-gradient(180deg, #FFFFFF 0%, #FBF6F1 100%)',
+          background: 'linear-gradient(180deg, #FFFFFF 0%, #FAF5F2 100%)',
         }}
       >
-        <div className="flex items-start justify-between" style={{ gap: 16 }}>
+        {/* Header */}
+        <div className="flex items-start justify-between" style={{ gap: 16, marginBottom: 14 }}>
           <div>
-            <p className="text-nikah-muted font-bold uppercase" style={{ fontSize: 11, letterSpacing: '0.18em', margin: '0 0 8px' }}>
+            <p className="text-nikah-muted font-bold uppercase" style={{ fontSize: 11, letterSpacing: '0.18em', margin: 0 }}>
               <span className="md:hidden">Prioritas Minggu Ini</span>
               <span className="hidden md:inline">Preview · Prioritas Sekarang</span>
             </p>
-            <h3 className="hidden md:block text-nikah-text font-extrabold" style={{ fontSize: 18, lineHeight: 1.35, margin: 0 }}>
-              5 hal terdekat untuk minggu ini
-            </h3>
           </div>
           <span
             className="rounded-full font-extrabold flex-shrink-0"
-            style={{ background: '#F7E5E7', color: '#D18790', fontSize: 12, padding: '7px 13px', whiteSpace: 'nowrap' }}
+            style={{ background: '#F7E5E7', color: '#D18790', fontSize: 11, padding: '5px 11px', whiteSpace: 'nowrap' }}
           >
             <span className="md:hidden">4 hal</span>
             <span className="hidden md:inline">5 item utama</span>
           </span>
         </div>
 
+        {/* Items */}
         <div
           className="grid grid-cols-1 md:grid-cols-2"
-          style={{ gap: 12, marginTop: 18, opacity: 0.5 }}
+          style={{ gap: 10 }}
           aria-hidden="true"
         >
           {PRIORITY_PREVIEW_ITEMS.map((item, i) => (
             <div
               key={item.title}
               className={`flex items-start${i >= 3 ? ' hidden md:flex' : ''}`}
-              style={{ gap: 14, borderRadius: 12, background: '#F8F0EA', padding: '14px 16px', minHeight: 58 }}
+              style={{ gap: 12, borderRadius: 12, background: '#F8F0EA', padding: '12px 14px' }}
             >
-              <Lock size={13} strokeWidth={1.8} className="text-nikah-rose shrink-0" style={{ marginTop: 2 }} />
+              <Lock size={12} strokeWidth={1.8} className="text-nikah-rose shrink-0" style={{ marginTop: 3 }} />
               <div>
-                <p className="text-nikah-text font-extrabold" style={{ fontSize: 14, lineHeight: 1.3, margin: '0 0 3px' }}>
+                <p className="text-nikah-text font-extrabold" style={{ fontSize: 13.5, lineHeight: 1.3, margin: '0 0 2px' }}>
                   {item.title}
                 </p>
                 <p className="text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.35, margin: 0 }}>
@@ -385,23 +392,19 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           ))}
         </div>
 
+      </div>
+      </div>{/* end mask wrapper */}
+
+      {/* Lock CTA — di luar wrapper mask agar tetap terlihat */}
+      <div
+        style={{ marginTop: -56, display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 10 }}
+      >
         <div
-          className="absolute inset-x-0 flex items-center justify-center"
-          style={{
-            left: 0, right: 0, bottom: 0,
-            height: 178,
-            background: 'linear-gradient(180deg, rgba(251,246,241,0) 0%, rgba(251,246,241,0) 30%, rgba(251,246,241,0.6) 55%, rgba(245,237,232,0.96) 72%, #F5EDE8 84%, #F5EDE8 100%)',
-            zIndex: 2,
-          }}
+          className="inline-flex items-center justify-center bg-white text-nikah-text"
+          style={{ gap: 8, borderRadius: 999, padding: '12px 20px', fontSize: 13.5, boxShadow: '0 8px 28px rgba(90,30,42,0.14)' }}
         >
-          <div aria-hidden="true" style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 72, background: '#F5EDE8' }} />
-          <div
-            className="inline-flex items-center justify-center bg-white text-nikah-text"
-            style={{ gap: 10, borderRadius: 999, padding: '14px 22px', fontSize: 14, boxShadow: '0 12px 30px rgba(90,30,42,0.12)', position: 'relative', zIndex: 3 }}
-          >
-            <Lock size={14} strokeWidth={1.8} aria-hidden="true" style={{ color: '#5A1E2A' }} />
-            Buka untuk lanjut tracking sampai hari H
-          </div>
+          <Lock size={13} strokeWidth={1.8} aria-hidden="true" style={{ color: '#5A1E2A' }} />
+          Buka untuk lanjut tracking sampai hari H
         </div>
       </div>
 

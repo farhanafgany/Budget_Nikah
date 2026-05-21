@@ -3,7 +3,6 @@ import { HeroSection }        from '@/components/landing/HeroSection'
 import { PainCards }          from '@/components/landing/PainCards'
 import { FeatureShowcase }    from '@/components/landing/FeatureShowcase'
 import { SimulationPreview }  from '@/components/landing/SimulationPreview'
-import { HowItWorks }         from '@/components/landing/HowItWorks'
 import { PricingSection }     from '@/components/landing/PricingSection'
 import { FAQSection }         from '@/components/landing/FAQSection'
 import { FinalCTA }           from '@/components/landing/FinalCTA'
@@ -21,7 +20,6 @@ export default function LandingPage() {
         <PainCards />
         <FeatureShowcase />
         <SimulationPreview />
-        <HowItWorks />
         <PricingSection />
         <FAQSection />
         <FinalCTA />

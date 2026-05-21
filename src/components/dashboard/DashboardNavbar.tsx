@@ -2,7 +2,6 @@
 import Link from 'next/link'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { logoutDashboard } from '@/app/dashboard/actions'
-import { Plus } from 'lucide-react'
 
 interface Props {
   userEmail: string
@@ -10,25 +9,34 @@ interface Props {
 
 export function DashboardNavbar({ userEmail }: Props) {
   return (
-    <header className="border-b border-nikah-border bg-white">
+    <header className="border-b border-nikah-border bg-nikah-bg">
       <div
         className="max-w-[1200px] mx-auto flex items-center justify-between"
-        style={{ padding: '0 var(--d-pad-page)', height: 72 }}
+        style={{ padding: '0 var(--d-pad-page)', height: 56 }}
       >
         <Link href="/" className="flex items-center">
           <BrandLogo size="sm" />
         </Link>
         <div className="flex items-center text-nikah-muted" style={{ gap: 12, fontSize: 13 }}>
+          {/* Mobile: tombol Lihat Ringkasan sebagai pengganti avatar */}
+          <Link
+            href="/dashboard/summary"
+            className="sm:hidden inline-flex items-center rounded-full border border-nikah-border bg-white font-bold text-nikah-deep active:scale-95 transition-all"
+            style={{ padding: '9px 15px', fontSize: 12 }}
+          >
+            Lihat Ringkasan
+          </Link>
+
+          {/* Desktop: Perbarui plan + avatar + email + logout */}
           <a
-            href="#dashboard-actions"
+            href="/onboarding"
             className="hidden sm:inline-flex items-center rounded-full border border-nikah-border bg-white font-bold text-nikah-deep hover:bg-nikah-bg transition"
             style={{ gap: 7, padding: '10px 16px' }}
           >
-            <Plus size={15} strokeWidth={2} />
-            Aksi cepat
+            Perbarui plan
           </a>
           <div
-            className="flex rounded-full items-center justify-center text-white font-extrabold flex-shrink-0"
+            className="hidden sm:flex rounded-full items-center justify-center text-white font-extrabold flex-shrink-0"
             style={{
               width: 34,
               height: 34,

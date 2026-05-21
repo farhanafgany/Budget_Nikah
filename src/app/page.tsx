@@ -5,7 +5,6 @@ import { PainCards }          from '@/components/landing/PainCards'
 import { FeatureShowcase }    from '@/components/landing/FeatureShowcase'
 import { SimulationPreview }  from '@/components/landing/SimulationPreview'
 import { SocialProof }        from '@/components/landing/SocialProof'
-import { HowItWorks }         from '@/components/landing/HowItWorks'
 import { PricingSection }     from '@/components/landing/PricingSection'
 import { FAQSection }         from '@/components/landing/FAQSection'
 import { FinalCTA }           from '@/components/landing/FinalCTA'
@@ -18,12 +17,10 @@ export default function LandingPage() {
     <div className="landing-theme">
       <SmoothSectionScroll />
       <Navbar />
-      <main className="pb-20 md:pb-0">
+      <main>
         <HeroSection />
-        <div className="block md:hidden"><PainCards /></div>
         <TrustMetrics />
-        <div className="hidden md:block"><PainCards /></div>
-        <HowItWorks />
+        <PainCards />
         <FeatureShowcase />
         <SimulationPreview />
         <SocialProof />

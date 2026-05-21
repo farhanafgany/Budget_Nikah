@@ -368,9 +368,7 @@ export function DashboardClient({
         <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 20, marginBottom: 28 }}>
           <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} />
           <VendorPaymentTracker initialPayments={vendorPayments} />
-          <div className="hidden lg:block">
-            <DashboardNote initialNote={dashboardNote} />
-          </div>
+          <DashboardNote initialNote={dashboardNote} />
         </div>
 
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: '0 0 14px' }}>
@@ -380,7 +378,7 @@ export function DashboardClient({
         <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_0.95fr_0.95fr]" style={{ gap: 20 }}>
           <ChecklistPernikahan checkedIds={checklistChecked} />
           <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
-          <div className="hidden lg:block">{AllocationCard}</div>
+          {AllocationCard}
         </div>
       </main>
     </>
