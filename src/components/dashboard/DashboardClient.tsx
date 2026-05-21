@@ -59,6 +59,23 @@ const LABEL_COLORS: Record<string, string> = {
 const BAR_COLORS = ['#6E2638', '#C47986', '#B98C54', '#A87B68', '#8C4F62', '#A38C6C']
 const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
 
+function getTimeGreeting(): string {
+  const hour = new Date().getHours()
+  if (hour >= 4  && hour < 11) return 'Selamat pagi,'
+  if (hour >= 11 && hour < 15) return 'Selamat siang,'
+  if (hour >= 15 && hour < 19) return 'Selamat sore,'
+  return 'Selamat malam,'
+}
+
+function getCountdownNote(days: number | null): string | null {
+  if (days === null || days <= 0) return null
+  if (days <= 7)   return 'Hampir tiba — kalian pasti sudah siap.'
+  if (days <= 30)  return 'Satu bulan lagi — ini saatnya fokus ke detail terakhir.'
+  if (days <= 90)  return 'Tiga bulan ke depan jadi momen paling penting.'
+  if (days <= 180) return 'Masih ada waktu — tapi satu langkah hari ini selalu lebih baik.'
+  return 'Persiapan yang dimulai lebih awal terasa jauh lebih tenang.'
+}
+
 function ScoreRing({ score }: { score: number }) {
   const animatedRingScore = useAnimatedNumber(score, { duration: 900 })
   const pct = Math.min(100, Math.max(0, animatedRingScore))
@@ -113,7 +130,7 @@ function MobileScoreStrip({ score, label }: { score: number; label: string }) {
   return (
     <Link
       href="/dashboard/summary"
-      className="flex items-center bg-white border border-nikah-border"
+      className="flex items-center bg-white border border-nikah-border active:scale-[0.985] active:brightness-95 transition-all"
       style={{ borderRadius: 'var(--d-radius)', padding: '16px 18px', gap: 14, boxShadow: '0 2px 12px rgba(90,30,42,0.05)', textDecoration: 'none' }}
     >
       <div
@@ -298,7 +315,7 @@ export function DashboardClient({
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] items-end" style={{ gap: 24 }}>
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve" style={{ marginBottom: 8 }}>
-              Selamat datang kembali
+              {getTimeGreeting()}
             </p>
             <h1
               className="text-nikah-text"
@@ -312,37 +329,44 @@ export function DashboardClient({
                 margin: '0 0 12px',
               }}
             >
-              Hai, {userName1} &amp; {userName2}
+              {userName1} &amp; {userName2}
             </h1>
-            {timeLeftText && weddingDateText && (
-              <div
-                className="inline-flex items-center bg-white border border-nikah-border"
-                style={{ borderRadius: 999, padding: '7px 16px', gap: 9, marginTop: 2 }}
-              >
-                <span
-                  aria-hidden="true"
-                  style={{ width: 8, height: 8, borderRadius: '50%', background: '#C16E73', flexShrink: 0 }}
-                />
-                <span className="font-bold text-nikah-text" style={{ fontSize: 13.5 }}>
-                  {weddingDateText}
-                </span>
-                <span className="text-nikah-muted" style={{ fontSize: 13 }}>
-                  · {timeLeftText} lagi
-                </span>
-              </div>
-            )}
+            <div className="flex flex-col" style={{ gap: 8 }}>
+              {timeLeftText && weddingDateText && (
+                <div
+                  className="inline-flex items-center bg-white border border-nikah-border"
+                  style={{ borderRadius: 999, padding: '7px 16px', gap: 9 }}
+                >
+                  <span
+                    aria-hidden="true"
+                    style={{ width: 8, height: 8, borderRadius: '50%', background: '#C16E73', flexShrink: 0 }}
+                  />
+                  <span className="font-bold text-nikah-text" style={{ fontSize: 13.5 }}>
+                    {weddingDateText}
+                  </span>
+                  <span className="text-nikah-muted" style={{ fontSize: 13 }}>
+                    · {timeLeftText} lagi
+                  </span>
+                </div>
+              )}
+              {getCountdownNote(days) && (
+                <p className="text-nikah-muted" style={{ fontSize: 13.5, lineHeight: 1.45, margin: 0 }}>
+                  {getCountdownNote(days)}
+                </p>
+              )}
+            </div>
           </div>
           <div id="dashboard-actions" className="hidden lg:flex flex-wrap items-center justify-start lg:justify-end" style={{ gap: 10 }}>
             <Link
               href="/dashboard/summary"
-              className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm text-center hover:bg-nikah-bg transition"
+              className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm text-center hover:bg-nikah-bg transition-all active:scale-[0.97] active:brightness-90"
               style={{ padding: '13px 24px' }}
             >
               Lihat Ringkasan
             </Link>
             <Link
               href="/result"
-              className="hidden lg:inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition"
+              className="hidden lg:inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition-all active:scale-[0.97] active:brightness-90"
               style={{ padding: '13px 24px' }}
             >
               Buka Simulasi

@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import type { ReactNode } from 'react'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 
@@ -137,6 +138,13 @@ export function StepWrapper({
             >
               ← Kembali
             </button>
+          ) : stepIndex === 0 ? (
+            <Link
+              href="/"
+              className="text-nikah-muted text-sm font-medium hover:text-nikah-text transition-colors"
+            >
+              ← Beranda
+            </Link>
           ) : <div />}
           <span className="text-nikah-muted text-xs font-medium lg:hidden">
             {stepIndex + 1} dari {TOTAL_STEPS} · selesai dalam 2 menit
@@ -145,8 +153,8 @@ export function StepWrapper({
         </div>
 
         {/* Step content */}
-        <div className="flex-1 px-6 py-4 overflow-y-auto lg:px-12 lg:py-8 lg:flex lg:items-center">
-          <div className="w-full max-w-lg">
+        <div className="flex-1 px-6 py-4 overflow-y-auto lg:px-12 lg:py-8 lg:flex lg:items-center lg:justify-center">
+          <div className="w-full max-w-lg mx-auto">
             {children}
           </div>
         </div>
@@ -156,7 +164,7 @@ export function StepWrapper({
           className="px-6 border-t border-nikah-border lg:px-12 lg:py-8"
           style={{ background: 'var(--nikah-bg)', paddingTop: 20, paddingBottom: 'max(20px, env(safe-area-inset-bottom))' }}
         >
-          <div className="max-w-lg">
+          <div className="max-w-lg mx-auto">
             <button
               onClick={onNext}
               disabled={nextDisabled}

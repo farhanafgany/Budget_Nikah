@@ -178,8 +178,8 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
       <div className="grid" style={{ gap: 8 }}>
         {visiblePayments.length === 0 && (
           <div className="bg-nikah-bg text-center" style={{ borderRadius: 14, padding: '16px 14px' }}>
-            <p className="text-sm text-nikah-text font-bold" style={{ margin: 0 }}>Belum ada vendor.</p>
-            <p className="text-xs text-nikah-muted" style={{ margin: '4px 0 0' }}>Tambahkan vendor pertama untuk mulai tracking DP dan pelunasan.</p>
+            <p className="text-sm text-nikah-text font-bold" style={{ margin: 0 }}>Belum ada vendor yang dicatat.</p>
+            <p className="text-xs text-nikah-muted" style={{ margin: '4px 0 0' }}>Mulai dari satu — venue, catering, atau siapa saja yang sudah dihubungi.</p>
           </div>
         )}
         {visiblePayments.map(item => {
@@ -269,7 +269,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                     <button
                       type="button"
                       onClick={() => setInstallmentDraft({ vendorId: item.id, amount: '' })}
-                      className="text-nikah-deep font-bold"
+                      className="text-nikah-deep font-bold active:opacity-60 transition-opacity"
                       style={{ border: 0, background: 'transparent', fontSize: 11, padding: '6px 10px', margin: '-6px -10px' }}
                     >
                       Catat Bayar
@@ -277,7 +277,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                     <button
                       type="button"
                       onClick={() => markPaid(item.id)}
-                      className="text-nikah-deep font-bold"
+                      className="text-nikah-deep font-bold active:opacity-60 transition-opacity"
                       style={{ border: 0, background: 'transparent', fontSize: 11, padding: '6px 10px', margin: '-6px -10px' }}
                     >
                       Lunas
@@ -300,7 +300,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                   <button
                     type="button"
                     onClick={() => addInstallment(item.id)}
-                    className="bg-nikah-deep text-white font-bold"
+                    className="bg-nikah-deep text-white font-bold active:scale-[0.96] active:brightness-90 transition-all"
                     style={{ border: 0, borderRadius: 999, padding: '9px 12px', fontSize: 11 }}
                   >
                     Simpan
@@ -308,7 +308,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                   <button
                     type="button"
                     onClick={() => setInstallmentDraft({ vendorId: '', amount: '' })}
-                    className="text-nikah-deep font-bold"
+                    className="text-nikah-deep font-bold active:scale-[0.96] active:brightness-90 transition-all"
                     style={{ border: '1px solid var(--landing-border, var(--nikah-border))', background: 'transparent', borderRadius: 999, padding: '9px 12px', fontSize: 11 }}
                   >
                     Batal
@@ -329,7 +329,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
         type="button"
         onClick={() => setFormOpen(value => !value)}
         aria-expanded={formOpen}
-        className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-colors hover:bg-nikah-bg"
+        className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-all hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
         style={{
           gap: 6,
           marginTop: 12,
@@ -400,7 +400,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
               type="button"
               onClick={handleAdd}
               disabled={isPending}
-              className="bg-nikah-deep text-white font-bold disabled:opacity-50"
+              className="bg-nikah-deep text-white font-bold disabled:opacity-50 active:scale-[0.97] active:brightness-90 transition-all"
               style={{ border: 0, borderRadius: 999, padding: '12px 18px', fontSize: 13 }}
             >
               {isPending ? 'Menyimpan...' : 'Simpan Vendor'}
@@ -408,7 +408,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
             <button
               type="button"
               onClick={() => setFormOpen(false)}
-              className="text-nikah-deep font-bold hover:bg-white"
+              className="text-nikah-deep font-bold hover:bg-white active:scale-[0.97] active:brightness-90 transition-all"
               style={{ border: '1px solid var(--landing-border, var(--nikah-border))', borderRadius: 999, padding: '12px 16px', fontSize: 13, background: 'transparent' }}
             >
               Batal

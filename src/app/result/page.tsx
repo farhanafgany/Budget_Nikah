@@ -108,6 +108,8 @@ export default function ResultPage() {
           guestCount={sim.guestCount || onboarding.guestCount}
           weddingDate={onboarding.weddingDate}
           checklistCount={CHECKLIST_ITEMS.length}
+          partnerOneName={onboarding.partnerOneName}
+          weddingCity={onboarding.weddingCity}
         />
 
         <PremiumTease

@@ -7,6 +7,7 @@ import { StepBudget }        from '@/components/onboarding/StepBudget'
 import { StepGuests }        from '@/components/onboarding/StepGuests'
 import { StepStyle }         from '@/components/onboarding/StepStyle'
 import { StepEventPriority } from '@/components/onboarding/StepEventPriority'
+import { StepConfirmation }  from '@/components/onboarding/StepConfirmation'
 
 const STEPS = [
   StepNames,
@@ -16,6 +17,7 @@ const STEPS = [
   StepGuests,
   StepStyle,
   StepEventPriority,
+  StepConfirmation,
 ]
 
 export default function OnboardingPage() {

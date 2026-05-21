@@ -4,6 +4,20 @@ import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
 import { Circle } from 'lucide-react'
 
+function getRelativeDateLabel(dateStr: string): string {
+  const due = new Date(dateStr)
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  due.setHours(0, 0, 0, 0)
+  const diff = Math.round((due.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  if (diff < 0) return 'Terlambat'
+  if (diff === 0) return 'Hari ini'
+  if (diff === 1) return 'Besok'
+  if (diff <= 6) return due.toLocaleDateString('id-ID', { weekday: 'long' })
+  if (diff <= 13) return 'Minggu depan'
+  return `${Math.ceil(diff / 7)} minggu lagi`
+}
+
 interface Props {
   days: number | null
   checkedIds: string[]
@@ -36,18 +50,17 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
     .map(item => {
       const status = getVendorPaymentStatus(item)
       const dueDate = new Date(item.dueDate)
+      const relLabel = getRelativeDateLabel(item.dueDate)
+      const isOverdue = status.status === 'overdue'
+      const isDueSoon = status.status === 'dueSoon'
       return {
         id: `vendor-${item.id}`,
         title: `Bayar ${item.name}`,
         meta: `${item.category} · ${dueDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}`,
         urgency: status.daysUntilDue ?? 999,
-        color: status.status === 'overdue' ? '#B42318' : status.status === 'dueSoon' ? '#B98C54' : 'var(--landing-mauve, var(--nikah-mauve))',
+        color: isOverdue ? '#B42318' : isDueSoon ? '#B98C54' : 'var(--landing-mauve, var(--nikah-mauve))',
         badge: 'Vendor',
-        note: status.status === 'overdue'
-          ? 'Perlu dicek'
-          : status.status === 'dueSoon'
-            ? 'Minggu ini'
-            : 'Nanti',
+        note: relLabel,
       }
     })
 
@@ -88,65 +101,78 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
       style={{
         borderRadius: 'var(--d-radius)',
         padding: 0,
-        background: 'var(--landing-card, rgba(255,255,255,0.58))',
+        background: 'linear-gradient(160deg, #FEF2F2 0%, #FFF8F5 55%, #FFFFFF 100%)',
         borderColor: 'var(--landing-border, rgba(192,120,136,0.22))',
         overflow: 'hidden',
         boxShadow: '0 12px 34px rgba(90, 30, 42, 0.055)',
       }}
     >
-      <div className="flex items-center justify-between" style={{ padding: '20px 24px 17px', borderBottom: '1px solid var(--landing-border, rgba(237,228,230,0.82))', gap: 18 }}>
-        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: 0 }}>
-          Fokus Minggu Ini
+      {/* Header */}
+      <div style={{ padding: '20px 22px 14px' }}>
+        <div className="flex items-center justify-between" style={{ gap: 18, marginBottom: 10 }}>
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: 0 }}>
+            Fokus Minggu Ini
+          </p>
+          <span
+            className="text-xs font-extrabold rounded-full"
+            style={{ color: 'var(--landing-mauve, var(--nikah-mauve))', background: 'rgba(248,225,231,0.7)', padding: '6px 12px', whiteSpace: 'nowrap' }}
+          >
+            {items.length} hal
+          </span>
+        </div>
+        <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: 0 }}>
+          Mulai dari yang paling dekat. Tidak semua harus selesai sekarang.
         </p>
-        <span
-          className="text-xs font-extrabold rounded-full"
-          style={{ color: 'var(--landing-mauve, var(--nikah-mauve))', background: 'var(--landing-pink, #F8E1E7)', padding: '7px 13px', whiteSpace: 'nowrap' }}
-        >
-          {items.length} hal
-        </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2" style={{ padding: '8px 14px 15px', gap: 0 }}>
+      {/* Items */}
+      <div style={{ padding: '4px 0 4px' }}>
         {items.length > 0 ? items.map((item, index) => (
           <div
             key={item.id}
-            className={`flex items-center ${index % 2 === 0 ? 'md:border-r' : ''}`}
+            className="flex items-center"
             style={{
-              gap: 12,
-              minHeight: 72,
-              padding: '13px 12px',
-              borderBottom: index < 2 ? '1px solid var(--landing-border, rgba(237,228,230,0.82))' : '0',
-              borderColor: 'var(--landing-border, rgba(237,228,230,0.82))',
+              gap: 14,
+              padding: '14px 22px',
+              borderTop: index > 0 ? '1px solid rgba(237,228,230,0.7)' : 'none',
             }}
           >
             <span
               className="inline-flex items-center justify-center rounded-full flex-shrink-0"
-              style={{ width: 28, height: 28, color: 'var(--landing-border, var(--nikah-border))', background: 'rgba(255,255,255,0.36)' }}
+              style={{ width: 32, height: 32, color: 'rgba(192,120,136,0.35)', background: 'rgba(255,255,255,0.6)' }}
             >
-              <Circle size={28} strokeWidth={1.4} />
+              <Circle size={32} strokeWidth={1.2} />
             </span>
             <div className="min-w-0 flex-1">
-              <div className="font-extrabold text-nikah-text truncate" style={{ fontSize: 14.5, lineHeight: 1.25 }}>{item.title}</div>
-              <div className="text-nikah-muted" style={{ fontSize: 11.5, marginTop: 3 }}>{item.meta}</div>
+              <div className="font-extrabold text-nikah-text" style={{ fontSize: 14.5, lineHeight: 1.3 }}>{item.title}</div>
+              <div className="text-nikah-muted" style={{ fontSize: 12, marginTop: 3 }}>{item.meta}</div>
             </div>
             <span
-              className="font-extrabold rounded-full"
-              style={{ color: item.color, background: 'rgba(255,255,255,0.54)', fontSize: 11, padding: '6px 10px', whiteSpace: 'nowrap' }}
+              className="font-bold rounded-full flex-shrink-0"
+              style={{
+                color: item.note === 'Terlambat' ? '#B42318' : item.note === 'Hari ini' ? '#9A3B48' : 'var(--nikah-muted)',
+                background: item.note === 'Terlambat' ? '#FDECEA' : item.note === 'Hari ini' ? 'rgba(248,225,231,0.9)' : 'rgba(237,230,232,0.6)',
+                fontSize: 11.5,
+                padding: '6px 11px',
+                whiteSpace: 'nowrap',
+              }}
             >
               {item.note}
             </span>
           </div>
         )) : (
-          <p className="text-sm text-nikah-muted" style={{ margin: 0, padding: '18px 12px' }}>
+          <p className="text-sm text-nikah-muted" style={{ margin: 0, padding: '14px 22px 18px' }}>
             Belum ada prioritas dekat. Tambahkan vendor atau lanjutkan checklist agar dashboard bisa membantu menyusun fokus berikutnya.
           </p>
         )}
       </div>
-      <div style={{ padding: '12px 24px 14px', borderTop: '1px solid var(--landing-border, rgba(237,228,230,0.82))' }}>
+
+      {/* Footer */}
+      <div style={{ padding: '12px 22px 16px', borderTop: '1px solid rgba(237,228,230,0.7)' }}>
         <Link
           href="/dashboard"
-          className="text-nikah-mauve font-bold"
-          style={{ fontSize: 13 }}
+          className="text-nikah-deep font-bold active:opacity-60 transition-opacity"
+          style={{ fontSize: 13.5 }}
         >
           Lihat semua prioritas →
         </Link>

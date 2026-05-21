@@ -126,7 +126,7 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
         <button
           type="button"
           onClick={() => switchMode('add')}
-          className={`flex-1 font-bold rounded-full transition-all ${mode === 'add' ? 'bg-nikah-deep text-white' : 'text-nikah-deep hover:bg-nikah-bg'}`}
+          className={`flex-1 font-bold rounded-full transition-all active:scale-[0.96] active:brightness-90 ${mode === 'add' ? 'bg-nikah-deep text-white' : 'text-nikah-deep hover:bg-nikah-bg'}`}
           style={{ padding: '9px 14px', fontSize: 12, border: mode === 'add' ? 0 : '1px solid var(--landing-border, var(--nikah-border))', background: mode === 'add' ? undefined : 'transparent' }}
         >
           + Tambah
@@ -134,7 +134,7 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
         <button
           type="button"
           onClick={() => switchMode('subtract')}
-          className={`flex-1 font-bold rounded-full transition-all ${mode === 'subtract' ? 'bg-nikah-deep text-white' : 'text-nikah-deep hover:bg-nikah-bg'}`}
+          className={`flex-1 font-bold rounded-full transition-all active:scale-[0.96] active:brightness-90 ${mode === 'subtract' ? 'bg-nikah-deep text-white' : 'text-nikah-deep hover:bg-nikah-bg'}`}
           style={{ padding: '9px 14px', fontSize: 12, border: mode === 'subtract' ? 0 : '1px solid var(--landing-border, var(--nikah-border))', background: mode === 'subtract' ? undefined : 'transparent' }}
         >
           Koreksi saldo
@@ -161,7 +161,7 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
           type="button"
           onClick={handleSubmit}
           disabled={isPending || !inputRaw}
-          className="bg-nikah-deep text-white font-bold disabled:opacity-50"
+          className="bg-nikah-deep text-white font-bold disabled:opacity-50 active:scale-[0.96] active:brightness-90 transition-all"
           style={{
             display: 'inline-flex',
             alignItems: 'center',
@@ -172,7 +172,6 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
             padding: '14px 26px',
             fontSize: 14,
             boxShadow: '0 6px 16px rgba(110,38,56,0.18)',
-            transition: 'transform 0.12s ease, opacity 0.12s ease, background 0.12s ease',
           }}
         >
           {isPending ? '...' : mode === 'add' ? 'Tambah' : 'Kurangi'}
@@ -189,7 +188,7 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
         <button
           type="button"
           onClick={() => setHistoryOpen(value => !value)}
-          className="w-full inline-flex items-center justify-between text-nikah-muted font-bold hover:bg-nikah-bg hover:text-nikah-deep transition-colors"
+          className="w-full inline-flex items-center justify-between text-nikah-muted font-bold hover:bg-nikah-bg hover:text-nikah-deep transition-all active:scale-[0.98] active:brightness-90"
           style={{ border: '1px solid var(--landing-border, var(--nikah-border))', background: 'transparent', borderRadius: 999, padding: '9px 12px', fontSize: 12 }}
         >
           <span>Riwayat tabungan</span>

@@ -57,6 +57,15 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
   const activeDone = activeItems.filter(i => localChecked.includes(i.id)).length
   const visibleItems = expanded ? activeItems : activeItems.slice(0, PREVIEW_COUNT)
   const hiddenCount = Math.max(0, activeItems.length - PREVIEW_COUNT)
+  const phaseCompleted = activeItems.length > 0 && activeDone === activeItems.length
+
+  const PHASE_CELEBRATION: Record<ChecklistTimeline, string> = {
+    12: 'Fondasi sudah kuat. Langkah awal yang paling penting sudah terlewati.',
+    6:  'Pertengahan perjalanan — dan kalian melewatinya dengan baik.',
+    3:  'Detail sudah rapi. H-3 bulan bukan waktu yang mudah, tapi kalian melakukannya.',
+    1:  'Hampir tiba! Semua persiapan satu bulan sudah beres.',
+    0:  'Selesai semuanya. Kalian benar-benar siap untuk hari yang ditunggu.',
+  }
 
   function handleToggle(id: string) {
     const wasChecked = localChecked.includes(id)
@@ -118,7 +127,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
               setActive(timeline)
               setExpanded(false)
             }}
-            className={active === timeline ? 'bg-nikah-deep text-white' : 'text-nikah-muted'}
+            className={`active:scale-[0.95] active:brightness-90 ${active === timeline ? 'bg-nikah-deep text-white' : 'text-nikah-muted'}`}
             style={{
               flex: '1 1 86px',
               padding: '7px 12px',
@@ -143,6 +152,25 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
         <span className="text-nikah-muted" style={{ fontSize: 11 }}>{activeDone}/{activeItems.length}</span>
       </div>
 
+      {phaseCompleted && (
+        <div
+          style={{
+            borderRadius: 14,
+            padding: '12px 14px',
+            marginBottom: 10,
+            background: 'linear-gradient(135deg, #DCEAD9 0%, #EBF5E8 100%)',
+            border: '1px solid rgba(74,124,90,0.2)',
+          }}
+        >
+          <p className="font-bold" style={{ fontSize: 13, color: '#3A6B4A', margin: '0 0 2px' }}>
+            ✓ Fase ini selesai!
+          </p>
+          <p style={{ fontSize: 12, color: '#4A7C5A', margin: 0, lineHeight: 1.45 }}>
+            {PHASE_CELEBRATION[active]}
+          </p>
+        </div>
+      )}
+
       <div className="grid" style={{ gap: 3 }}>
         {visibleItems.map(item => {
           const checked = localChecked.includes(item.id)
@@ -151,7 +179,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
               key={item.id}
               onClick={() => handleToggle(item.id)}
               data-checked={checked}
-              className="w-full flex items-center text-left border-0 bg-transparent transition-colors hover:bg-nikah-bg"
+              className="w-full flex items-center text-left border-0 bg-transparent transition-all hover:bg-nikah-bg active:scale-[0.985] active:brightness-90"
               style={{ gap: 11, padding: '8px 10px', borderRadius: 10 }}
             >
               <span
@@ -181,7 +209,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
         <button
           type="button"
           onClick={() => setExpanded(value => !value)}
-          className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-colors hover:bg-nikah-bg"
+          className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-all hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
           style={{
             gap: 6,
             marginTop: 12,

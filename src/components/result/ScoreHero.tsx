@@ -46,6 +46,8 @@ interface Props {
   guestCount: number
   weddingDate: string
   checklistCount: number
+  partnerOneName?: string
+  weddingCity?: string
 }
 
 function monthCopy(months: number) {
@@ -60,7 +62,7 @@ function shortRupiah(value: number) {
   return `Rp ${value.toLocaleString('id-ID')}`
 }
 
-export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, checklistCount }: Props) {
+export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, checklistCount, partnerOneName, weddingCity }: Props) {
   const months = Math.max(0, monthsUntilDate(weddingDate || null))
   const animatedRingScore = useAnimatedNumber(score, { duration: 1100 })
   const scorePct = Math.min(100, Math.max(0, animatedRingScore))
@@ -184,7 +186,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
             className="text-nikah-muted"
             style={{ fontSize: 'clamp(16px, 1.7vw, 19px)', lineHeight: 1.6, margin: '0 0 28px' }}
           >
-            Dengan sisa {monthCopy(months)}, beberapa detail kecil mudah tercecer. Kami sudah siapkan rencana yang disesuaikan dari jawaban kalian — tinggal dibuka.
+            {partnerOneName ? `${partnerOneName}, ` : ''}rencana nikah{weddingCity ? ` di ${weddingCity}` : ''} dengan sisa {monthCopy(months)} — beberapa detail kecil mudah tercecer kalau tidak disusun dari sekarang. Kami sudah siapkan panduan khusus berdasarkan jawaban kalian.
           </p>
 
           {/* Desktop CTAs */}
@@ -275,7 +277,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
 
         {/* "Kami sudah siapkan" summary */}
         <p className="text-nikah-text font-bold" style={{ fontSize: 14, lineHeight: 1.4, margin: '0 0 14px' }}>
-          Berdasarkan jawaban kalian, kami sudah siapkan:
+          {partnerOneName ? `Buat ${partnerOneName} & pasangan, kami sudah siapkan:` : 'Berdasarkan jawaban kalian, kami sudah siapkan:'}
         </p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           {[
@@ -336,8 +338,8 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           position: 'relative',
           marginTop: 28,
           paddingBottom: 28,
-          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 26%, transparent 68%)',
-          maskImage: 'linear-gradient(to bottom, black 0%, black 26%, transparent 68%)',
+          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 32%, transparent 70%)',
+          maskImage: 'linear-gradient(to bottom, black 0%, black 32%, transparent 70%)',
         }}
       >
       <div

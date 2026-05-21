@@ -21,20 +21,13 @@ export function DashboardNavbar({ userEmail }: Props) {
           {/* Mobile: tombol Lihat Ringkasan sebagai pengganti avatar */}
           <Link
             href="/dashboard/summary"
-            className="sm:hidden inline-flex items-center rounded-full border border-nikah-border bg-white font-bold text-nikah-deep active:scale-95 transition-all"
-            style={{ padding: '9px 15px', fontSize: 12 }}
+            className="sm:hidden inline-flex items-center rounded-full font-bold text-white active:scale-95 active:brightness-90 transition-all"
+            style={{ padding: '9px 15px', fontSize: 12, background: 'var(--landing-deep, #5A1E2A)' }}
           >
             Lihat Ringkasan
           </Link>
 
-          {/* Desktop: Perbarui plan + avatar + email + logout */}
-          <a
-            href="/onboarding"
-            className="hidden sm:inline-flex items-center rounded-full border border-nikah-border bg-white font-bold text-nikah-deep hover:bg-nikah-bg transition"
-            style={{ gap: 7, padding: '10px 16px' }}
-          >
-            Perbarui plan
-          </a>
+          {/* Desktop: avatar + email + logout */}
           <div
             className="hidden sm:flex rounded-full items-center justify-center text-white font-extrabold flex-shrink-0"
             style={{

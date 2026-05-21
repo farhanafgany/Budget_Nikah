@@ -65,7 +65,7 @@ export function DashboardNote({ initialNote }: Props) {
       <textarea
         value={note}
         onChange={(e) => setNote(e.target.value.slice(0, 500))}
-        placeholder="Semua ide, keputusan kecil, dan hal random selama persiapan bisa disimpan di sini."
+        placeholder="Tulis apapun — ide venue, reminder vendor, atau sekadar perasaan hari ini."
         className="w-full resize-none border border-nikah-border bg-nikah-bg text-nikah-text outline-none transition-colors focus:border-nikah-mauve focus:bg-white"
         style={{
           minHeight: savedNote ? 84 : 116,
@@ -79,7 +79,7 @@ export function DashboardNote({ initialNote }: Props) {
       {!savedNote && !note && (
         <div className="bg-nikah-bg" style={{ borderRadius: 12, padding: '10px 12px', marginTop: 10 }}>
           <p className="text-xs text-nikah-muted" style={{ margin: 0, lineHeight: 1.45 }}>
-            Catat hal kecil yang tidak ingin terlupakan saat persiapan.
+            Catatan kecil bisa jadi pengingat besar nanti. Tidak ada format yang salah — tulis saja apa yang terlintas.
           </p>
         </div>
       )}

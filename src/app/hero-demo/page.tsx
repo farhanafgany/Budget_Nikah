@@ -6,7 +6,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
-const C = 2 * Math.PI * 48
 
 function ScoreRing({
   size = 130,
