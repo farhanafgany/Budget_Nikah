@@ -145,9 +145,12 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
       <div style={{ marginBottom: 14 }}>
         <div
           className="text-nikah-deep"
-          style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontSize: 30, lineHeight: 1 }}
+          style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 36, lineHeight: 1 }}
         >
-          {totalDone}/{totalItems} siap
+          {totalDone}/{totalItems}
+        </div>
+        <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.14em', marginTop: 5 }}>
+          item siap
         </div>
       </div>
 

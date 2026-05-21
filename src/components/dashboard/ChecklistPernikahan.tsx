@@ -96,60 +96,70 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
       </div>
 
       <div style={{ marginBottom: 14 }}>
-        <div>
-          <div
-            className="text-nikah-deep"
-            style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontSize: 30, lineHeight: 1 }}
-          >
-            {totalDone}/{totalCount} selesai
-          </div>
+        <div
+          className="text-nikah-deep"
+          style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 36, lineHeight: 1 }}
+        >
+          {totalDone}/{totalCount}
+        </div>
+        <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.14em', marginTop: 5 }}>
+          item selesai
         </div>
       </div>
 
       {error && <p className="text-xs text-red-600" style={{ margin: '0 0 10px' }}>{error}</p>}
 
+      {/* Tabs — horizontal scroll, no wrapping */}
       <div
         role="tablist"
-        className="flex flex-wrap bg-nikah-bg rounded-[18px]"
+        className="bg-nikah-bg rounded-[18px]"
         style={{
+          display: 'flex',
           gap: 4,
           padding: 4,
-          marginBottom: 12,
+          marginBottom: 14,
+          overflowX: 'auto',
+          scrollbarWidth: 'none',
         }}
       >
-        {TIMELINES.map(timeline => (
-          <button
-            key={timeline}
-            type="button"
-            role="tab"
-            aria-selected={active === timeline}
-            onClick={() => {
-              setActive(timeline)
-              setExpanded(false)
-            }}
-            className={`active:scale-[0.95] active:brightness-90 ${active === timeline ? 'bg-nikah-deep text-white' : 'text-nikah-muted'}`}
-            style={{
-              flex: '1 1 86px',
-              padding: '7px 12px',
-              border: 0,
-              borderRadius: 999,
-              fontSize: 11.5,
-              fontWeight: 700,
-              whiteSpace: 'nowrap',
-              transition: 'all 0.15s',
-            }}
-          >
-            {timeline === 0 ? 'H-1 mgg' : `${timeline} bln`}{' '}
-            <span style={{ opacity: 0.72 }}>
-              {CHECKLIST_ITEMS.filter(i => i.monthsBefore === timeline && localChecked.includes(i.id)).length}/{CHECKLIST_ITEMS.filter(i => i.monthsBefore === timeline).length}
-            </span>
-          </button>
-        ))}
+        {TIMELINES.map(timeline => {
+          const doneCnt = CHECKLIST_ITEMS.filter(i => i.monthsBefore === timeline && localChecked.includes(i.id)).length
+          const totalCnt = CHECKLIST_ITEMS.filter(i => i.monthsBefore === timeline).length
+          const isActive = active === timeline
+          return (
+            <button
+              key={timeline}
+              type="button"
+              role="tab"
+              aria-selected={isActive}
+              onClick={() => {
+                setActive(timeline)
+                setExpanded(false)
+              }}
+              className={`active:scale-[0.95] active:brightness-90 ${isActive ? 'bg-nikah-deep text-white' : 'text-nikah-muted'}`}
+              style={{
+                flexShrink: 0,
+                padding: '7px 14px',
+                border: 0,
+                borderRadius: 999,
+                fontSize: 12,
+                fontWeight: 700,
+                whiteSpace: 'nowrap',
+                transition: 'all 0.15s',
+              }}
+            >
+              {timeline === 0 ? 'H-1 mgg' : `${timeline} bln`}
+              {doneCnt === totalCnt && totalCnt > 0 && (
+                <span style={{ marginLeft: 4, opacity: 0.85 }}>✓</span>
+              )}
+            </button>
+          )
+        })}
       </div>
 
-      <div className="flex items-center justify-between" style={{ margin: '12px 0 4px' }}>
+      <div className="flex items-center justify-between" style={{ margin: '0 0 8px' }}>
         <h4 className="font-extrabold text-nikah-text" style={{ fontSize: 12, margin: 0 }}>{TIMELINE_LABELS[active]}</h4>
-        <span className="text-nikah-muted" style={{ fontSize: 11 }}>{activeDone}/{activeItems.length}</span>
+        <span className="text-nikah-muted" style={{ fontSize: 11 }}>{activeDone} dari {activeItems.length} selesai</span>
       </div>
 
       {phaseCompleted && (
@@ -171,8 +181,8 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
         </div>
       )}
 
-      <div className="grid" style={{ gap: 3 }}>
-        {visibleItems.map(item => {
+      <div style={{ borderTop: '1px solid var(--nikah-border)' }}>
+        {visibleItems.map((item, idx) => {
           const checked = localChecked.includes(item.id)
           return (
             <button
@@ -180,7 +190,11 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
               onClick={() => handleToggle(item.id)}
               data-checked={checked}
               className="w-full flex items-center text-left border-0 bg-transparent transition-all hover:bg-nikah-bg active:scale-[0.985] active:brightness-90"
-              style={{ gap: 11, padding: '8px 10px', borderRadius: 10 }}
+              style={{
+                gap: 12,
+                padding: '11px 8px',
+                borderBottom: idx < visibleItems.length - 1 ? '1px solid var(--nikah-border)' : 'none',
+              }}
             >
               <span
                 data-checked={checked}
@@ -189,7 +203,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
                     ? 'bg-nikah-deep border-nikah-deep'
                     : 'border-nikah-border bg-white'
                 }`}
-                style={{ width: 19, height: 19, borderRadius: 6 }}
+                style={{ width: 20, height: 20, borderRadius: 6 }}
               >
                 {checked && (
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -197,7 +211,15 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
                   </svg>
                 )}
               </span>
-              <span className={`flex-1 ${checked ? 'line-through text-nikah-muted' : 'text-nikah-text'}`} style={{ fontSize: 13.5, lineHeight: 1.35 }}>
+              <span
+                className={`flex-1 ${checked ? 'text-nikah-muted' : 'text-nikah-text'}`}
+                style={{
+                  fontSize: 13,
+                  lineHeight: 1.5,
+                  textDecoration: checked ? 'line-through' : 'none',
+                  textDecorationColor: 'var(--nikah-muted)',
+                }}
+              >
                 {item.label}
               </span>
             </button>

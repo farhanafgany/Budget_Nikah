@@ -145,11 +145,16 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
         </span>
       </div>
 
-      <div
-        className="text-nikah-deep"
-        style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 25, lineHeight: 1, marginBottom: 14 }}
-      >
-        {payments.length} vendor aktif
+      <div style={{ marginBottom: 14 }}>
+        <div
+          className="text-nikah-deep"
+          style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 36, lineHeight: 1 }}
+        >
+          {payments.length}
+        </div>
+        <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.14em', marginTop: 5 }}>
+          vendor aktif
+        </div>
       </div>
 
       <div

@@ -1,7 +1,6 @@
 'use client'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { StepWrapper } from './StepWrapper'
-import { useRouter } from 'next/navigation'
 
 const EVENT_TYPES = [
   { value: 'akad_resepsi', label: 'Akad + Resepsi', icon: '💍' },
@@ -17,20 +16,15 @@ const PRIORITIES = [
 ]
 
 export function StepEventPriority() {
-  const { eventType, planningPriority, setField, prevStep } = useOnboardingStore()
-  const router = useRouter()
+  const { eventType, planningPriority, setField, prevStep, nextStep } = useOnboardingStore()
   const canNext = !!eventType && !!planningPriority
-
-  function handleNext() {
-    router.push('/result')
-  }
 
   return (
     <StepWrapper
       stepIndex={6}
-      onNext={handleNext}
+      onNext={nextStep}
       onBack={prevStep}
-      nextLabel="Lihat Hasil →"
+      nextLabel="Lanjut →"
       nextDisabled={!canNext}
     >
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Terakhir</p>

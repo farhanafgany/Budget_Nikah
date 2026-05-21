@@ -404,6 +404,24 @@ export function DashboardClient({
           <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
           {AllocationCard}
         </div>
+
+        {/* Mobile: bottom action buttons */}
+        <div className="lg:hidden" style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <Link
+            href="/dashboard/summary"
+            className="w-full inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
+            style={{ padding: '15px 24px' }}
+          >
+            Lihat Ringkasan
+          </Link>
+          <Link
+            href="/result"
+            className="w-full inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
+            style={{ padding: '15px 24px' }}
+          >
+            Atur Ulang Data
+          </Link>
+        </div>
       </main>
     </>
   )

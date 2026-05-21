@@ -80,12 +80,17 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
         <span className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-nikah-mauve">
           Tabungan Nikah
         </span>
-        <span
-          className="text-nikah-mauve"
-          style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontSize: 24, lineHeight: 1 }}
-        >
-          {progress}%
-        </span>
+        <div className="text-right">
+          <div
+            className="text-nikah-mauve"
+            style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 28, lineHeight: 1 }}
+          >
+            {progress}%
+          </div>
+          <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9, letterSpacing: '0.12em', marginTop: 4 }}>
+            terkumpul
+          </div>
+        </div>
       </div>
 
       <div className="flex items-end justify-between flex-wrap" style={{ marginBottom: 10, gap: 12 }}>
