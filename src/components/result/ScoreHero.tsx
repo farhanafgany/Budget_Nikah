@@ -90,7 +90,7 @@ function shortRupiah(value: number) {
 
 export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, checklistCount, partnerOneName, weddingCity }: Props) {
   const months = Math.max(0, monthsUntilDate(weddingDate || null))
-  const animatedRingScore = useAnimatedNumber(score, { duration: 1100 })
+  const animatedRingScore = useAnimatedNumber(score, { duration: 700 })
   const scorePct = Math.min(100, Math.max(0, animatedRingScore))
   const status = STATUS_STYLE[label]
   const priorityPreviewItems = getPriorityPreviewItems(months)

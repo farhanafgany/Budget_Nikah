@@ -16,7 +16,7 @@ import { generateInsights }   from '@/lib/insights'
 function ResultSkeleton() {
   return (
     <main className="premium-theme min-h-screen bg-nikah-bg">
-      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
+      <header className="sticky top-0 z-40 bg-white border-b border-nikah-border">
         <div className="max-w-[1080px] mx-auto px-6 md:px-8 h-14 md:h-16 flex items-center justify-between">
           <div className="h-6 w-32 bg-nikah-border rounded-full animate-pulse" />
           <div className="h-8 w-24 bg-nikah-border rounded-full animate-pulse" />
@@ -44,7 +44,7 @@ function ResultSkeleton() {
 
 function ResultNavbar({ isSignedIn }: { isSignedIn: boolean }) {
   return (
-    <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
+    <header className="sticky top-0 z-40 bg-white border-b border-nikah-border">
       <div className="max-w-[1080px] mx-auto px-6 md:px-8 h-14 md:h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center">
           <BrandLogo size="sm" />

@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { ChevronRight } from 'lucide-react'
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber'
 import { TabunganNikah } from '@/components/dashboard/TabunganNikah'
@@ -77,7 +78,7 @@ function getCountdownNote(days: number | null): string | null {
 }
 
 function ScoreRing({ score }: { score: number }) {
-  const animatedRingScore = useAnimatedNumber(score, { duration: 900 })
+  const animatedRingScore = useAnimatedNumber(score, { duration: 700 })
   const pct = Math.min(100, Math.max(0, animatedRingScore))
 
   return (
@@ -192,6 +193,13 @@ export function DashboardClient({
   dashboardNote,
   vendorPayments,
 }: Props) {
+  // Inisialisasi hanya di client agar tidak menyebabkan hydration mismatch
+  // akibat perbedaan timezone server (UTC) vs device user (WIB/WITA/WIT).
+  const [greeting, setGreeting] = useState('')
+  useEffect(() => {
+    setGreeting(getTimeGreeting())
+  }, [])
+
   const allocEntries = alloc
     ? (Object.entries(alloc) as [string, AllocEntry][])
         .filter(([, v]) => typeof v?.percentage === 'number' && v.percentage > 0)
@@ -315,7 +323,7 @@ export function DashboardClient({
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] items-end" style={{ gap: 24 }}>
           <div>
             <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve" style={{ marginBottom: 8 }}>
-              {getTimeGreeting()}
+              {greeting}
             </p>
             <h1
               className="text-nikah-text"
@@ -349,11 +357,14 @@ export function DashboardClient({
                   </span>
                 </div>
               )}
-              {getCountdownNote(days) && (
-                <p className="text-nikah-muted" style={{ fontSize: 13.5, lineHeight: 1.45, margin: 0 }}>
-                  {getCountdownNote(days)}
-                </p>
-              )}
+              {(() => {
+                const countdownNote = getCountdownNote(days)
+                return countdownNote ? (
+                  <p className="text-nikah-muted" style={{ fontSize: 13.5, lineHeight: 1.45, margin: 0 }}>
+                    {countdownNote}
+                  </p>
+                ) : null
+              })()}
             </div>
           </div>
           <div id="dashboard-actions" className="hidden lg:flex flex-wrap items-center justify-start lg:justify-end" style={{ gap: 10 }}>

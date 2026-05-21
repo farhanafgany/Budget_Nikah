@@ -1,6 +1,3 @@
-'use client'
-import { useState } from 'react'
-
 const FAQS = [
   {
     q: 'Apakah data saya aman?',
@@ -20,9 +17,9 @@ const FAQS = [
   },
 ]
 
+// Server Component — tidak butuh JS untuk buka/tutup accordion.
+// <details>/<summary> native HTML: zero JS, aksesibel, dan keyboard-navigable.
 export function FAQSection() {
-  const [openIndex, setOpenIndex] = useState<number | null>(0)
-
   return (
     <section className="px-6 md:px-8 py-14 md:py-28 bg-nikah-bg">
       <div className="max-w-[660px] mx-auto">
@@ -35,28 +32,26 @@ export function FAQSection() {
         </h2>
         <div>
           {FAQS.map((faq, i) => (
-            <div key={i} className="border-b border-nikah-border overflow-hidden">
-              <button
-                onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between py-5 text-left"
-                aria-expanded={openIndex === i}
-                aria-controls={`faq-answer-${i}`}
-              >
+            <details
+              key={i}
+              className="border-b border-nikah-border overflow-hidden group"
+              open={i === 0}
+            >
+              <summary className="w-full flex items-center justify-between py-5 cursor-pointer list-none select-none">
                 <span className="text-base font-bold text-nikah-text pr-4">{faq.q}</span>
+                {/* Chevron: rotate via group-open Tailwind variant */}
                 <svg
-                  className={`w-4 h-4 text-nikah-mauve flex-shrink-0 transition-transform duration-200 ${openIndex === i ? 'rotate-180' : ''}`}
+                  className="w-4 h-4 text-nikah-mauve flex-shrink-0 transition-transform duration-200 group-open:rotate-180"
                   fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
                   aria-hidden="true"
                 >
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                 </svg>
-              </button>
-              {openIndex === i && (
-                <div id={`faq-answer-${i}`} className="pb-5 text-[15px] text-nikah-muted font-light leading-relaxed">
-                  {faq.a}
-                </div>
-              )}
-            </div>
+              </summary>
+              <p className="pb-5 text-[15px] text-nikah-muted font-light leading-relaxed">
+                {faq.a}
+              </p>
+            </details>
           ))}
         </div>
       </div>
