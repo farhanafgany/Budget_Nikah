@@ -28,39 +28,35 @@ BudgetNikah adalah mobile-first wedding planning web app untuk pasangan Indonesi
 
 ## Current Safe Restore Point
 
-Design terakhir yang disetujui dari sesi Codex ini pernah dikembalikan ke commit:
-
-```text
-a4e194b Polish premium payment flow and mobile UX
-```
-
 Progress terbaru yang sudah menjadi `main`:
 
 ```text
+c9a629d Performance audit pass — 8 mobile-first optimizations
+```
+
+Restore point sebelumnya yang masih aman kalau perlu rollback:
+
+```text
+5a16a70 Optimize mobile performance quick wins
 878312a Polish landing hero preview spacing
 ```
 
-Perubahan desain besar dari Claude Code yang terjadi setelah itu sudah dibackup di branch:
+Backup perubahan desain lama (jangan diambil tanpa review):
 
 ```text
 backup/claude-misfire-20260518
 ```
 
-Jangan mengambil perubahan dari backup branch itu tanpa review dan konfirmasi user.
-
-## Latest Status (2026-05-18)
+## Latest Status (2026-05-22)
 
 - Branch aktif: `main`.
 - Folder utama: `/Users/m/Projects/Budget_Nikah`.
-- Folder lama/copy sudah dipindahkan ke `/Users/m/Projects/_BudgetNikah_archive_20260518`.
-- Worktree bersih setelah project dijadikan folder utama.
-- Landing, onboarding, result, premium, payment popup, success, dan dashboard sudah pernah dicek di localhost pada sesi Codex ini.
-- Mobile visual pass sudah pernah dicek di viewport `390px` dan `430px`.
+- Folder lama sudah diarsipkan di `/Users/m/Projects/_BudgetNikah_archive_20260518`.
 - Verifikasi terakhir:
   - `npm run build` pass
   - `npx tsc --noEmit` pass
-  - `npm test -- --runInBand` pass, 47 tests
-- Setelah restore, dev server project ini belum tentu aktif. Jalankan `npm run dev` dan ikuti port yang muncul di terminal.
+  - `npm test -- --runInBand` pass, **66 tests**
+- Setelah restore, dev server belum tentu aktif. Jalankan `npm run dev` dan ikuti port di terminal.
 
 ## Adaptive Layout Hybrid Strategy
 
@@ -165,7 +161,9 @@ src/stores/
 
 src/components/
   landing/
-    HeroSection.tsx
+    HeroSection.tsx       # Server Component — hanya layout + DashboardPreview
+    MobileHero.tsx        # Client Component — interactive slider (dipisah dari HeroSection)
+    FAQSection.tsx        # Server Component — <details>/<summary> native, zero JS
     PricingSection.tsx
     FloatingWhatsApp.tsx  # hidden on mobile to avoid crowding sticky CTA
   result/
@@ -185,6 +183,13 @@ src/app/api/payments/midtrans/
   create/route.ts
   webhook/route.ts
   confirm/route.ts
+
+public/images/
+  dashboard-preview.webp  # Hero image — WebP, 104KB (was 297KB PNG)
+  dashboard-preview.png   # Source asli, tidak dipakai langsung
+  result-preview.png      # Hanya dipakai di /hero-demo (dev page)
+  result-mobile.png       # Hanya dipakai di /hero-demo (dev page)
+  dashboard-mobile.png    # Hanya dipakai di /hero-demo (dev page)
 ```
 
 ## Database
@@ -246,6 +251,23 @@ clamp(0, 100)
 - `MidtransPaymentButton` mencoba confirm payment di frontend success callback, lalu tetap redirect ke `/premium/success`.
 - `clearOnboardingStore()` menulis persisted onboarding state kosong agar data pre-auth tidak nyangkut setelah sync.
 
+## Performance Notes (2026-05-22)
+
+Audit performa mobile-first sudah selesai. Semua quick wins sudah diimplementasi:
+
+- **Hero image** pakai `priority` prop + sumber WebP (104KB, dari 297KB PNG).
+- **`backdrop-blur`** dihapus dari sticky header `/result` — cegah GPU scroll jank Android.
+- **`getTimeGreeting()`** di `DashboardClient` diinisialisasi via `useEffect` — cegah hydration mismatch server UTC vs client WIB/WITA/WIT.
+- **`recharts`** di-uninstall (library 500KB+ tidak pernah diimport, 35 packages hilang).
+- **`HeroSection`** dipecah: parent jadi Server Component, slider interaktif pindah ke `MobileHero.tsx`.
+- **`FAQSection`** jadi Server Component murni pakai `<details>/<summary>` — zero JS untuk accordion.
+- **`useAnimatedNumber`** duration diturunkan dari 1100ms/900ms ke 700ms.
+
+Yang **sengaja tidak diubah** (keputusan sadar):
+- `tw-animate-css` — 15KB, dibutuhkan `select.tsx` untuk `animate-in`/`fade-in` class, ~2-3KB gzipped.
+- Dashboard lazy load widget — chunk 68KB acceptable karena gated premium content.
+- `/result` full client — trade-off yang disengaja karena data dari localStorage.
+
 ## Docs & References
 
 - README terbaru: `README.md`
@@ -259,7 +281,7 @@ clamp(0, 100)
 
 ## Next Suggested Work
 
-1. Manual QA di browser asli dari landing sampai payment popup.
-2. Deploy preview dan test Midtrans sandbox dari URL publik.
-3. Final copy pass: `kamu` vs `kalian`, `subscription` vs `langganan`, `akses seumur hidup` vs `sampai hari H`.
-4. Production payment readiness: production keys, public webhook URL, pending/close/error QA.
+1. **Manual QA di browser asli** dari landing sampai payment popup — terutama verifikasi accordion FAQ, hero slider mobile, dan scroll `/result` di Android.
+2. **Deploy preview** dan test Midtrans sandbox dari URL publik.
+3. **Final copy pass**: `kamu` vs `kalian`, `subscription` vs `langganan`, `akses seumur hidup` vs `sampai hari H`.
+4. **Production payment readiness**: production keys, public webhook URL, pending/close/error QA.
