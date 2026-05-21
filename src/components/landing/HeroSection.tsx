@@ -335,31 +335,6 @@ export function HeroSection() {
 
       </div>
 
-      {/* Sticky CTA — mobile only */}
-      <div
-        className="block fixed bottom-0 left-0 right-0 z-50 md:hidden"
-        style={{
-          padding: '10px 16px',
-          paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
-          background: 'rgba(251,246,241,0.92)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          borderTop: '1px solid var(--landing-border, #E8DACF)',
-        }}
-      >
-        <Link
-          href="/onboarding"
-          className="block w-full text-white font-bold text-center rounded-[12px] active:opacity-80 active:scale-[0.98] transition-all"
-          style={{
-            padding: '13px 16px',
-            fontSize: 14,
-            background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)',
-            boxShadow: '0 4px 14px rgba(90,30,42,0.22)',
-          }}
-        >
-          Hitung lengkap — Gratis →
-        </Link>
-      </div>
     </section>
   )
 }
