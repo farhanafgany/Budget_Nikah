@@ -56,11 +56,13 @@ export function StepGuests() {
           style={{ background: 'linear-gradient(135deg, #FFFCF8 0%, #F8F1EA 100%)' }}
         >
           <p className="text-xs font-bold text-nikah-muted uppercase tracking-widest mb-1">Estimasi budget per tamu</p>
-          <p className={`text-2xl font-extrabold ${getBudgetPerGuestColor(perGuest)}`} style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic' }}>
-            {formatRupiah(perGuest)}
-            <span className="text-base font-bold text-nikah-muted">/orang</span>
-          </p>
-          <p className="text-nikah-muted text-xs mt-1">{getBudgetPerGuestLabel(perGuest)}</p>
+          <div className="flex items-baseline gap-2 mt-1 mb-1">
+            <span className={`text-2xl font-extrabold ${getBudgetPerGuestColor(perGuest)}`} style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic' }}>
+              {formatRupiah(perGuest)}
+            </span>
+            <span className="text-sm font-semibold text-nikah-muted">per tamu</span>
+          </div>
+          <p className="text-nikah-muted text-xs">{getBudgetPerGuestLabel(perGuest)}</p>
         </div>
       )}
     </StepWrapper>
