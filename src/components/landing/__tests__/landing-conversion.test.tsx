@@ -101,15 +101,26 @@ describe('PricingSection', () => {
 import { SocialProof } from '../SocialProof'
 
 describe('SocialProof', () => {
-  it('menampilkan heading utama dengan pesan emosional', () => {
+  it('menampilkan heading utama', () => {
     render(<SocialProof />)
-    expect(screen.getByText(/Persiapan yang lebih tenang/i)).toBeInTheDocument()
+    expect(screen.getByText(/Bukan spreadsheet kering/i)).toBeInTheDocument()
   })
 
-  it('copy body tidak membuat klaim kompetitif tentang aplikasi lain', () => {
+  it('menampilkan eyebrow jujur tanpa klaim palsu', () => {
     render(<SocialProof />)
-    expect(screen.queryByText(/tidak ada alat/i)).toBeNull()
-    expect(screen.queryByText(/lebih baik dari/i)).toBeNull()
+    expect(screen.getByText(/Dibangun jujur untuk pasangan Indonesia/i)).toBeInTheDocument()
+  })
+
+  it('menampilkan fakta produk nyata: checklist, kota, score', () => {
+    render(<SocialProof />)
+    expect(screen.getByText(/checklist item/i)).toBeInTheDocument()
+    expect(screen.getByText(/tier kota/i)).toBeInTheDocument()
+    expect(screen.getByText(/readiness score/i)).toBeInTheDocument()
+  })
+
+  it('menampilkan garansi 3 hari di fact card', () => {
+    render(<SocialProof />)
+    expect(screen.getByText(/garansi refund/i)).toBeInTheDocument()
   })
 
   it('menampilkan guarantee strip 3 hari tanpa pertanyaan', () => {
@@ -117,16 +128,10 @@ describe('SocialProof', () => {
     expect(screen.getByText(/3 hari tanpa pertanyaan/i)).toBeInTheDocument()
   })
 
-  it('menampilkan minimal 3 testimonial', () => {
+  it('tidak menampilkan nama orang fiktif', () => {
     render(<SocialProof />)
-    // Setiap testimonial punya lokasi sebagai identifier
-    expect(screen.getByText('Jakarta')).toBeInTheDocument()
-    expect(screen.getByText('Bandung')).toBeInTheDocument()
-    expect(screen.getByText('Surabaya')).toBeInTheDocument()
-  })
-
-  it('menampilkan eyebrow social proof', () => {
-    render(<SocialProof />)
-    expect(screen.getByText(/Dari pasangan yang sudah pakai/i)).toBeInTheDocument()
+    expect(screen.queryByText(/Rania/i)).toBeNull()
+    expect(screen.queryByText(/Dewi/i)).toBeNull()
+    expect(screen.queryByText(/Nisa/i)).toBeNull()
   })
 })

@@ -1,23 +1,25 @@
 const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
 
-const TESTIMONIALS = [
+const FACTS = [
   {
-    quote: 'Akhirnya ada angka yang masuk akal. Kami pakai ini untuk meyakinkan orang tua soal jumlah tamu — dan berhasil.',
-    name: 'Rania & Fadhil',
-    location: 'Jakarta',
-    initials: 'RF',
+    value: '50+',
+    label: 'checklist item',
+    body: 'Tersusun dari H-12 bulan sampai H-1 minggu, berdasarkan urutan prioritas nyata.',
   },
   {
-    quote: 'Checklistnya bantu banget. Kami baru sadar ada 12 hal yang belum dikerjakan padahal 3 bulan lagi nikah.',
-    name: 'Dewi & Arya',
-    location: 'Bandung',
-    initials: 'DA',
+    value: '3',
+    label: 'tier kota',
+    body: 'Estimasi menyesuaikan Jakarta, kota besar, dan kota kecil — bukan pakai satu rumus untuk semua.',
   },
   {
-    quote: 'Tadinya merasa budget kami terlalu kecil. Setelah simulasi, ternyata cukup — asal prioritasnya bener.',
-    name: 'Nisa & Rizky',
-    location: 'Surabaya',
-    initials: 'NR',
+    value: '0–100',
+    label: 'readiness score',
+    body: 'Deterministik dan bisa dijelaskan — bukan angka acak, bukan AI. Kamu tahu kenapa skornya segitu.',
+  },
+  {
+    value: '3 hari',
+    label: 'garansi refund',
+    body: 'Tidak cocok? Uang kembali penuh tanpa pertanyaan. Cukup hubungi kami dalam 3 hari pertama.',
   },
 ]
 
@@ -26,13 +28,12 @@ export function SocialProof() {
     <section className="px-6 md:px-8" style={{ paddingTop: 72, paddingBottom: 80, background: '#FDFAF7' }}>
       <div className="max-w-[900px] mx-auto">
 
-        {/* Counter */}
         <div className="text-center" style={{ marginBottom: 48 }}>
           <p
             className="text-nikah-mauve font-extrabold uppercase"
             style={{ fontSize: 11, letterSpacing: '0.18em', margin: '0 0 14px' }}
           >
-            Dari pasangan yang sudah pakai
+            Dibangun jujur untuk pasangan Indonesia
           </p>
           <h2
             className="text-nikah-deep"
@@ -40,20 +41,20 @@ export function SocialProof() {
               fontFamily: SERIF,
               fontStyle: 'italic',
               fontWeight: 500,
-              fontSize: 'clamp(30px, 5vw, 46px)',
-              lineHeight: 1.08,
-              margin: 0,
+              fontSize: 'clamp(28px, 4.8vw, 44px)',
+              lineHeight: 1.1,
+              margin: '0 auto',
+              maxWidth: 620,
             }}
           >
-            Persiapan yang lebih tenang dimulai dari angka yang jelas.
+            Bukan spreadsheet kering. Bukan angka tebak-tebakan.
           </h2>
         </div>
 
-        {/* Testimonial cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3" style={{ gap: 16 }}>
-          {TESTIMONIALS.map(t => (
+        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
+          {FACTS.map(f => (
             <div
-              key={t.name}
+              key={f.label}
               className="bg-white border border-nikah-border"
               style={{
                 borderRadius: 20,
@@ -61,45 +62,27 @@ export function SocialProof() {
                 boxShadow: '0 2px 12px rgba(90,30,42,0.05)',
               }}
             >
-              {/* Quote mark */}
-              <div
-                className="text-nikah-mauve"
-                style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 48, lineHeight: 1, marginBottom: 8, opacity: 0.35 }}
-                aria-hidden="true"
-              >
-                "
-              </div>
-              <p
-                className="text-nikah-text"
-                style={{ fontSize: 14.5, lineHeight: 1.6, margin: '0 0 20px', fontStyle: 'italic' }}
-              >
-                {t.quote}
-              </p>
-              <div className="flex items-center" style={{ gap: 10 }}>
-                {/* Avatar initials */}
-                <div
-                  className="flex-shrink-0 flex items-center justify-center text-white font-extrabold"
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: '50%',
-                    background: 'linear-gradient(135deg, var(--nikah-mauve) 0%, var(--nikah-deep) 100%)',
-                    fontSize: 12,
-                  }}
-                  aria-hidden="true"
+              <div style={{ marginBottom: 10 }}>
+                <span
+                  className="text-nikah-deep"
+                  style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 36, lineHeight: 1 }}
                 >
-                  {t.initials}
-                </div>
-                <div>
-                  <p className="text-nikah-text font-extrabold" style={{ fontSize: 13, margin: 0 }}>{t.name}</p>
-                  <p className="text-nikah-muted" style={{ fontSize: 11, margin: 0 }}>{t.location}</p>
-                </div>
+                  {f.value}
+                </span>
+                <span
+                  className="text-nikah-mauve font-extrabold uppercase"
+                  style={{ fontSize: 11, letterSpacing: '0.12em', marginLeft: 8 }}
+                >
+                  {f.label}
+                </span>
               </div>
+              <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+                {f.body}
+              </p>
             </div>
           ))}
         </div>
 
-        {/* Microcopy bawah */}
         <p className="text-center text-nikah-muted" style={{ fontSize: 12.5, marginTop: 28, lineHeight: 1.5 }}>
           ✓ Tanpa subscription &nbsp;·&nbsp; ✓ Garansi 3 hari tanpa pertanyaan &nbsp;·&nbsp; ✓ Sekali bayar, akses seumur hidup
         </p>
