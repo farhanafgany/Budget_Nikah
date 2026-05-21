@@ -24,7 +24,7 @@ export function FinalCTA() {
             className="text-white mb-3 text-[28px] md:text-[36px]"
             style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, lineHeight: 1.08, textWrap: 'balance' } as React.CSSProperties}
           >
-            Mulai Cek Wedding Plan Kamu
+            Mulai Rencanakan Bersama
           </h2>
           <p className="font-light mb-6 leading-relaxed" style={{ color: 'rgba(232,192,204,0.85)', fontSize: 15 }}>
             Selesai dalam 2 menit, tanpa login. Gratis.

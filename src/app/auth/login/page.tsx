@@ -19,7 +19,7 @@ function getLoginErrorMessage(err: { message?: string; status?: number }) {
     return 'Password salah. Periksa kembali, lalu coba lagi.'
   }
   if (message.includes('email not confirmed')) {
-    return 'Akun ini belum bisa masuk karena email confirmation masih aktif di Supabase.'
+    return 'Email ini sudah terdaftar tapi belum bisa digunakan. Hubungi kami untuk bantuan.'
   }
   if (message.includes('too many requests') || err.status === 429) {
     return 'Terlalu banyak percobaan login. Tunggu sebentar, lalu coba lagi.'

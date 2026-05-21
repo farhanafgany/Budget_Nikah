@@ -14,6 +14,12 @@ const STATUS_STYLE: Record<ReadinessLabel, { background: string; color: string; 
   'High Risk': { background: '#F5D6D8', color: '#A9414C', dot: '#C16E73' },
 }
 
+const DISPLAY_LABEL: Record<ReadinessLabel, string> = {
+  Healthy:     'Healthy',
+  Moderate:    'Moderate',
+  'High Risk': 'Perlu Perhatian',
+}
+
 const HEADLINE: Record<ReadinessLabel, string> = {
   Healthy:     'Rencana kalian sudah berada di jalur yang aman.',
   Moderate:    'Rencana kalian masih bisa dibuat lebih aman.',
@@ -32,12 +38,32 @@ const SUPPORT_COPY: Record<ReadinessLabel, string> = {
   'High Risk': 'Gunakan hasil ini sebagai titik awal untuk mengurangi beban budget dan menyusun ulang prioritas.',
 }
 
-const PRIORITY_PREVIEW_ITEMS = [
-  { title: 'Konfirmasi jumlah tamu final ke katering', meta: 'Katering · 1 Bulan Sebelum' },
-  { title: 'Trial makeup dan hairdo',                  meta: 'MUA · 1 Bulan Sebelum' },
-  { title: 'Final fitting baju pengantin',             meta: 'Baju · 1 Bulan Sebelum' },
-  { title: 'Gladi resik / rehearsal acara',            meta: 'Perencanaan · 1 Bulan Sebelum' },
-]
+const PRIORITY_PREVIEW_BY_HORIZON = {
+  far: [
+    { title: 'Tentukan dan booking venue utama', meta: 'Venue · 12–9 Bulan Sebelum' },
+    { title: 'Susun daftar tamu kasar', meta: 'Perencanaan · 12–9 Bulan Sebelum' },
+    { title: 'Tentukan konsep dan tema acara', meta: 'Dekor · 12–9 Bulan Sebelum' },
+    { title: 'Riset dan hubungi catering pilihan', meta: 'Katering · 12–9 Bulan Sebelum' },
+  ],
+  mid: [
+    { title: 'Booking fotografer dan videografer', meta: 'Dokumentasi · 6–3 Bulan Sebelum' },
+    { title: 'Fitting baju pertama dengan perancang', meta: 'Busana · 6–3 Bulan Sebelum' },
+    { title: 'Finalisasi katering dan menu', meta: 'Katering · 6–3 Bulan Sebelum' },
+    { title: 'Kirim undangan digital ke tamu utama', meta: 'Undangan · 3 Bulan Sebelum' },
+  ],
+  near: [
+    { title: 'Konfirmasi jumlah tamu final ke katering', meta: 'Katering · 1 Bulan Sebelum' },
+    { title: 'Trial makeup dan hairdo', meta: 'MUA · 1 Bulan Sebelum' },
+    { title: 'Final fitting baju pengantin', meta: 'Busana · 1 Bulan Sebelum' },
+    { title: 'Gladi resik / rehearsal acara', meta: 'Perencanaan · 1 Bulan Sebelum' },
+  ],
+}
+
+function getPriorityPreviewItems(months: number) {
+  if (months > 6) return PRIORITY_PREVIEW_BY_HORIZON.far
+  if (months > 2) return PRIORITY_PREVIEW_BY_HORIZON.mid
+  return PRIORITY_PREVIEW_BY_HORIZON.near
+}
 
 interface Props {
   score: number
@@ -67,6 +93,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
   const animatedRingScore = useAnimatedNumber(score, { duration: 1100 })
   const scorePct = Math.min(100, Math.max(0, animatedRingScore))
   const status = STATUS_STYLE[label]
+  const priorityPreviewItems = getPriorityPreviewItems(months)
 
   const metrics = [
     { label: 'Estimasi',  value: shortRupiah(totalBudget) },
@@ -110,7 +137,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           style={{ gap: 7, padding: '6px 11px', fontSize: 12, background: status.background, color: status.color }}
         >
           <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: '50%', background: status.dot }} />
-          {label}
+          {DISPLAY_LABEL[label]}
         </span>
       </div>
 
@@ -246,7 +273,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
               style={{ gap: 6, padding: '5px 10px', fontSize: 12, background: status.background, color: status.color }}
             >
               <span style={{ width: 6, height: 6, borderRadius: '50%', background: status.dot }} />
-              {label}
+              {DISPLAY_LABEL[label]}
             </span>
             <span className="block text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.1em', marginTop: 5 }}>
               Readiness
@@ -367,7 +394,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           style={{ gap: 10 }}
           aria-hidden="true"
         >
-          {PRIORITY_PREVIEW_ITEMS.map((item, i) => (
+          {priorityPreviewItems.map((item, i) => (
             <div
               key={item.title}
               className={`flex items-start${i >= 3 ? ' hidden md:flex' : ''}`}
@@ -398,7 +425,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           style={{ gap: 8, borderRadius: 999, padding: '12px 20px', fontSize: 13.5, boxShadow: '0 8px 28px rgba(90,30,42,0.14)' }}
         >
           <Lock size={13} strokeWidth={1.8} aria-hidden="true" style={{ color: '#5A1E2A' }} />
-          Buka untuk lanjut tracking sampai hari H
+          Buka akses lengkap — Rp 149rb, sekali bayar
         </div>
       </div>
 

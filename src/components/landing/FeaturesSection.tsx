@@ -1,23 +1,23 @@
 const FEATURES = [
   {
     icon: '📊',
-    title: 'Wedding Readiness Score',
-    desc: 'Skor deterministik yang menunjukkan seberapa siap rencana wedding kamu secara finansial.',
+    title: 'Skor Kesiapan Nikah',
+    desc: 'Angka 0–100 yang menunjukkan seberapa siap rencana kalian secara finansial — deterministik, bisa dijelaskan.',
   },
   {
     icon: '💰',
-    title: 'Smart Budget Allocation',
-    desc: 'Estimasi alokasi realistis untuk setiap kategori pengeluaran pernikahan.',
+    title: 'Estimasi Biaya Per Kategori',
+    desc: 'Alokasi realistis untuk catering, venue, dekor, dokumentasi, dan pos penting lainnya.',
   },
   {
     icon: '🎛️',
-    title: 'Scenario Simulation',
-    desc: 'Ubah jumlah tamu atau gaya wedding dan lihat dampaknya secara real-time.',
+    title: 'Coba-Ubah Skenario',
+    desc: 'Ubah jumlah tamu atau gaya acara dan lihat langsung dampaknya ke total biaya dan skor.',
   },
   {
     icon: '💡',
-    title: 'Smart Recommendations',
-    desc: 'Insight berbasis aturan yang membantu kamu melihat risiko tersembunyi dalam rencana.',
+    title: 'Yang Perlu Diperhatikan',
+    desc: 'Catatan berbasis jawaban kalian — risiko nyata yang mudah tercecer kalau tidak disusun dari sekarang.',
   },
 ]
 
@@ -25,10 +25,10 @@ export function FeaturesSection() {
   return (
     <section className="px-6 py-16 bg-nikah-bg">
       <p className="text-center text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-2">
-        Fitur Utama
+        Apa yang Kalian Dapat
       </p>
       <h2 className="text-2xl font-extrabold text-center text-nikah-text mb-8">
-        Semua yang kamu butuhkan
+        Semua yang kalian butuhkan
       </h2>
       <div className="flex flex-col gap-4 max-w-md mx-auto">
         {FEATURES.map((f) => (
