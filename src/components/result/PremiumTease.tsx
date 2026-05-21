@@ -71,7 +71,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             Lanjutkan persiapan dengan lebih tenang.
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.76)', margin: '10px 0 0', fontSize: 14, lineHeight: 1.55, maxWidth: 640 }}>
-            Rp 149rb · sekali bayar · akses sampai hari H · garansi 3 hari uang kembali
+            Rp 149rb · sekali bayar · akses sampai hari H · garansi 3 hari tanpa pertanyaan
           </p>
         </div>
         <div className="flex justify-end" style={{ gap: 12 }}>
@@ -103,7 +103,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         {!isSignedIn && (
           <Link
             href={saveHref}
-            className="block w-full text-center text-nikah-muted font-bold text-sm mt-3"
+            className="block w-full text-center text-nikah-muted font-bold text-sm mt-3 active:opacity-60 transition-opacity"
           >
             Simpan hasil dulu — lihat lagi nanti
           </Link>
@@ -165,7 +165,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         {!isSignedIn ? (
           <Link
             href={saveHref}
-            className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full transition hover:bg-nikah-bg"
+            className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full transition hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
             style={{ padding: '14px 28px', fontSize: 14 }}
           >
             Kirim hasil ke email
@@ -173,14 +173,14 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         ) : (
           <Link
             href={continueHref}
-            className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full transition hover:opacity-90"
+            className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full transition hover:opacity-90 active:scale-[0.97] active:brightness-90"
             style={{ padding: '14px 28px', fontSize: 14 }}
           >
             Lanjutkan sekarang →
           </Link>
         )}
         <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: '14px 0 0' }}>
-          ✓ Tanpa subscription · ✓ Garansi 3 hari refund
+          ✓ Tanpa subscription · ✓ Garansi 3 hari tanpa pertanyaan
         </p>
       </div>
 
@@ -197,8 +197,6 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           {[
             { text: 'Fitur', href: '/#fitur' },
             { text: 'FAQ', href: '/#faq' },
-            { text: 'Privasi', href: '#' },
-            { text: 'Refund', href: '#' },
           ].map(link => (
             <a key={link.text} href={link.href} className="text-nikah-muted hover:text-nikah-text transition-colors" style={{ fontSize: 12 }}>
               {link.text}

@@ -212,7 +212,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
             </a>
           </div>
           <p className="hidden lg:block text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.45, margin: 0 }}>
-            Sekali bayar · akses sampai hari H · garansi 3 hari refund.
+            Sekali bayar · akses sampai hari H · garansi 3 hari tanpa pertanyaan.
           </p>
 
         </div>
@@ -381,7 +381,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
               className={`flex items-start${i >= 3 ? ' hidden md:flex' : ''}`}
               style={{ gap: 12, borderRadius: 12, background: '#F8F0EA', padding: '12px 14px' }}
             >
-              <Lock size={12} strokeWidth={1.8} className="text-nikah-rose shrink-0" style={{ marginTop: 3 }} />
+              <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--nikah-mauve)', flexShrink: 0, marginTop: 5, display: 'inline-block' }} />
               <div>
                 <p className="text-nikah-text font-extrabold" style={{ fontSize: 13.5, lineHeight: 1.3, margin: '0 0 2px' }}>
                   {item.title}
