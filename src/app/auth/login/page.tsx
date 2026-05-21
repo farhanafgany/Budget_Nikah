@@ -49,6 +49,7 @@ function LoginContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const nextPath = getSafeNextPath(searchParams.get('next'))
+  const authError = searchParams.get('auth_error') ?? ''
   const signupHref = `/auth/signup?next=${encodeURIComponent(nextPath)}`
   const onboarding = useOnboardingStore()
   const isPremiumContinuation = nextPath === '/premium'
@@ -221,6 +222,12 @@ function LoginContent() {
                 <span className="text-nikah-muted">Sekali bayar</span>
                 <span className="text-nikah-muted">·</span>
                 <span className="text-nikah-muted">Garansi 3 hari</span>
+              </div>
+            )}
+
+            {authError && (
+              <div className="bg-amber-50 border border-amber-200 text-amber-800 text-sm rounded-xl px-4 py-3 mb-4" role="alert">
+                {authError}
               </div>
             )}
 

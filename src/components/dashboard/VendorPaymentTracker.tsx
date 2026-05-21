@@ -34,6 +34,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
   const [installmentDraft, setInstallmentDraft] = useState({ vendorId: '', amount: '' })
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
+  const [retryPayload, setRetryPayload] = useState<VendorPaymentInput[] | null>(null)
   const handleActionError = useHandleActionError()
 
   const total = payments.reduce((sum, item) => sum + item.totalAmount, 0)
@@ -48,10 +49,14 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
   function persist(next: VendorPaymentInput[]) {
     setPayments(next)
     setError('')
+    setRetryPayload(null)
     startTransition(async () => {
       const result = await updateVendorPayments(next)
       const err = handleActionError(result.error)
-      if (err) setError('Pembayaran vendor belum tersimpan.')
+      if (err) {
+        setError('Pembayaran vendor belum tersimpan.')
+        setRetryPayload(next)
+      }
     })
   }
 
@@ -186,7 +191,21 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
         ))}
       </div>
 
-      {error && <p className="text-xs text-red-600" style={{ margin: '0 0 8px' }}>{error}</p>}
+      {error && (
+        <div className="flex items-center justify-between bg-red-50 border border-red-100 rounded-xl px-3 py-2" style={{ margin: '0 0 8px', gap: 8 }}>
+          <p className="text-xs text-red-700 font-medium" style={{ margin: 0 }}>{error}</p>
+          {retryPayload && (
+            <button
+              type="button"
+              onClick={() => persist(retryPayload)}
+              disabled={isPending}
+              className="text-xs font-bold text-red-700 underline underline-offset-2 hover:no-underline flex-shrink-0 disabled:opacity-50"
+            >
+              Coba lagi
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="grid" style={{ gap: 8 }}>
         {visiblePayments.length === 0 && (

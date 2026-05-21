@@ -49,6 +49,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
   const [active, setActive] = useState<ChecklistTimeline>(12)
   const [expanded, setExpanded] = useState(false)
   const [error, setError] = useState('')
+  const [retryFn, setRetryFn] = useState<(() => void) | null>(null)
   const [, startTransition] = useTransition()
   const handleActionError = useHandleActionError()
   // Ref untuk rollback delta per-item, aman terhadap concurrent toggles.
@@ -72,6 +73,25 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
     0:  'Selesai semuanya. Kalian benar-benar siap untuk hari yang ditunggu.',
   }
 
+  function saveChecked(target: string[], onFail: () => void) {
+    startTransition(async () => {
+      const result = await updateChecklistItems(target)
+      const err = handleActionError(result.error)
+      if (err) {
+        onFail()
+        setError('Checklist belum tersimpan.')
+        setRetryFn(() => () => {
+          setLocalChecked(target)
+          setError('')
+          setRetryFn(null)
+          saveChecked(target, onFail)
+        })
+      } else {
+        setRetryFn(null)
+      }
+    })
+  }
+
   function handleToggle(id: string) {
     const wasChecked = localCheckedRef.current.includes(id)
     const newChecked = wasChecked
@@ -79,16 +99,12 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
       : [...localCheckedRef.current, id]
     setLocalChecked(newChecked)
     setError('')
-    startTransition(async () => {
-      const result = await updateChecklistItems(newChecked)
-      const err = handleActionError(result.error)
-      if (err) {
-        // Undo hanya perubahan item ini — aman meski ada toggle lain yang concurrent.
-        setLocalChecked(prev =>
-          wasChecked ? [...prev, id] : prev.filter(i => i !== id)
-        )
-        setError('Checklist belum tersimpan. Coba centang ulang.')
-      }
+    setRetryFn(null)
+    saveChecked(newChecked, () => {
+      // Undo hanya perubahan item ini — aman meski ada toggle lain yang concurrent.
+      setLocalChecked(prev =>
+        wasChecked ? [...prev, id] : prev.filter(i => i !== id)
+      )
     })
   }
 
@@ -116,7 +132,20 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
         </div>
       </div>
 
-      {error && <p className="text-xs text-red-600" style={{ margin: '0 0 10px' }}>{error}</p>}
+      {error && (
+        <div className="flex items-center justify-between bg-red-50 border border-red-100 rounded-xl px-3 py-2" style={{ margin: '0 0 10px', gap: 8 }}>
+          <p className="text-xs text-red-700 font-medium" style={{ margin: 0 }}>{error}</p>
+          {retryFn && (
+            <button
+              type="button"
+              onClick={retryFn}
+              className="text-xs font-bold text-red-700 underline underline-offset-2 hover:no-underline flex-shrink-0"
+            >
+              Coba lagi
+            </button>
+          )}
+        </div>
+      )}
 
       {/* Tabs — horizontal scroll, no wrapping */}
       <div

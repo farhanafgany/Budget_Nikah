@@ -66,7 +66,9 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
         // Undo hanya delta ini — aman meski ada submit lain yang concurrent.
         setLocalCollected(prev => Math.max(0, prev - delta))
         setLocalHistory(prev => prev.filter(item => item.id !== entryId))
-        setError('Riwayat tabungan belum tersimpan. Coba input ulang.')
+        // Kembalikan nilai ke input agar user bisa coba lagi tanpa ketik ulang.
+        setInputRaw(formatInputRp(n))
+        setError('Belum tersimpan — coba simpan lagi.')
       }
     })
   }
@@ -197,7 +199,11 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
           Mode koreksi akan mengurangi saldo terkumpul. Gunakan jika ada input yang salah sebelumnya.
         </p>
       )}
-      {error && <p className="text-xs text-red-600" style={{ marginTop: 10 }}>{error}</p>}
+      {error && (
+        <div className="flex items-center bg-red-50 border border-red-100 rounded-xl px-3 py-2" style={{ marginTop: 10, gap: 8 }}>
+          <p className="text-xs text-red-700 font-medium flex-1" style={{ margin: 0 }}>{error}</p>
+        </div>
+      )}
 
       <div style={{ marginTop: 12 }}>
         <button
