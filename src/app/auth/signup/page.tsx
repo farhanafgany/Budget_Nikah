@@ -211,7 +211,7 @@ function SignupContent() {
         className="w-full max-w-[940px] min-w-0 grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] bg-white border border-nikah-border overflow-hidden"
         style={{ borderRadius: 'var(--d-radius)', boxShadow: '0 24px 70px rgba(110,38,56,0.08)' }}
       >
-        <section className="min-w-0 p-6 sm:p-8 lg:p-10 flex flex-col justify-between" style={{ background: 'var(--landing-band, #EFE4DE)' }}>
+        <section className="hidden lg:flex min-w-0 p-6 sm:p-8 lg:p-10 flex-col justify-between" style={{ background: 'var(--landing-band, #EFE4DE)' }}>
           <div className="min-w-0">
             <BrandLogo size="lg" />
             <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve" style={{ margin: '34px 0 10px' }}>
@@ -262,7 +262,16 @@ function SignupContent() {
             </div>
             <p className="text-center text-xs font-bold uppercase tracking-widest text-nikah-mauve" style={{ marginBottom: 8 }}>Buat akun</p>
             <h2 className="text-2xl font-extrabold text-nikah-text text-center mb-1">{formTitle}</h2>
-            <p className="text-nikah-muted text-sm text-center mb-7 font-light">{formCopy}</p>
+            <p className="text-nikah-muted text-sm text-center font-light" style={{ marginBottom: isPremiumContinuation ? 12 : 28 }}>{formCopy}</p>
+            {isPremiumContinuation && (
+              <div className="flex items-center justify-center gap-2 mb-6 px-3 py-2 rounded-full border border-nikah-border bg-nikah-bg" style={{ fontSize: 12 }}>
+                <span className="font-extrabold text-nikah-deep">Rp 149rb</span>
+                <span className="text-nikah-muted">·</span>
+                <span className="text-nikah-muted">Sekali bayar</span>
+                <span className="text-nikah-muted">·</span>
+                <span className="text-nikah-muted">Garansi 3 hari</span>
+              </div>
+            )}
 
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 text-sm rounded-xl px-4 py-3 mb-4" role="alert">

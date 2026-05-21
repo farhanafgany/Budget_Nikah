@@ -25,6 +25,7 @@ interface StepWrapperProps {
   nextLabel?: string
   nextDisabled?: boolean
   stepIndex: number
+  hideStepCounter?: boolean
 }
 
 export function StepWrapper({
@@ -34,6 +35,7 @@ export function StepWrapper({
   nextLabel = 'Lanjut →',
   nextDisabled = false,
   stepIndex,
+  hideStepCounter = false,
 }: StepWrapperProps) {
   const progress = ((stepIndex + 1) / TOTAL_STEPS) * 100
 
@@ -143,17 +145,13 @@ export function StepWrapper({
             >
               ← Kembali
             </button>
-          ) : stepIndex === 0 ? (
-            <Link
-              href="/"
-              className="text-nikah-muted text-sm font-medium hover:text-nikah-text transition-colors"
-            >
-              ← Beranda
-            </Link>
           ) : <div />}
-          <span className="text-nikah-muted text-xs font-medium lg:hidden">
-            {stepIndex + 1} dari {TOTAL_STEPS} · selesai dalam 2 menit
-          </span>
+          {!hideStepCounter && (
+            <span className="text-nikah-muted text-xs font-medium lg:hidden">
+              {stepIndex + 1} dari {TOTAL_STEPS} · selesai dalam 2 menit
+            </span>
+          )}
+          {hideStepCounter && <div />}
           <div className="hidden lg:block" />
         </div>
 

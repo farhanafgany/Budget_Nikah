@@ -1,7 +1,7 @@
 'use client'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { StepWrapper } from './StepWrapper'
-import { TIER_A_CITIES, TIER_B_CITIES, TIER_C_CITIES } from '@/lib/cityTiers'
+import { CitySearchSelect } from './CitySearchSelect'
 
 export function StepCity() {
   const { weddingCity, setField, nextStep, prevStep } = useOnboardingStore()
@@ -13,24 +13,16 @@ export function StepCity() {
       <p className="text-nikah-muted text-sm mb-6 font-light">Harga layanan berbeda di tiap kota.</p>
 
       <div>
-        <label htmlFor="weddingCity" className="block text-xs font-bold text-nikah-text mb-1.5">Kota pernikahan</label>
-        <select
-          id="weddingCity"
+        <label className="block text-xs font-bold text-nikah-text mb-1.5">Kota pernikahan</label>
+        <CitySearchSelect
           value={weddingCity}
-          onChange={e => setField('weddingCity', e.target.value)}
-          className="w-full bg-white border border-nikah-border rounded-xl px-4 py-3 text-sm text-nikah-text focus:outline-none focus:border-nikah-mauve transition"
-        >
-          <option value="">Pilih kota...</option>
-          <optgroup label="Kota Besar (Tier A)">
-            {TIER_A_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </optgroup>
-          <optgroup label="Kota Menengah (Tier B)">
-            {TIER_B_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </optgroup>
-          <optgroup label="Kota Lainnya">
-            {TIER_C_CITIES.map(c => <option key={c} value={c}>{c}</option>)}
-          </optgroup>
-        </select>
+          onChange={city => setField('weddingCity', city)}
+        />
+        {weddingCity && (
+          <p className="text-nikah-muted text-xs mt-2">
+            ✓ Kalkulasi disesuaikan untuk {weddingCity}
+          </p>
+        )}
       </div>
     </StepWrapper>
   )

@@ -72,6 +72,7 @@ export function StepConfirmation() {
       onNext={() => router.push('/result')}
       onBack={prevStep}
       nextLabel="Lihat hasilnya →"
+      hideStepCounter
     >
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Hampir selesai</p>
       <h2 className="text-2xl font-extrabold text-nikah-text mb-1">
@@ -110,7 +111,13 @@ export function StepConfirmation() {
       </div>
 
       <p className="text-xs text-nikah-muted" style={{ marginTop: 14, lineHeight: 1.5 }}>
-        Kalian bisa mengubah detail ini kapan saja setelah melihat hasil.
+        Ingin ubah sesuatu?{' '}
+        <button
+          onClick={prevStep}
+          className="text-nikah-deep font-semibold underline underline-offset-2"
+        >
+          ← Kembali edit
+        </button>
       </p>
     </StepWrapper>
   )
