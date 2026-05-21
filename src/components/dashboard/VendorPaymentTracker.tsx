@@ -270,12 +270,12 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                 </div>
 
                 {itemRemaining > 0 && installmentDraft.vendorId !== item.id && (
-                  <div className="grid grid-cols-2" style={{ gap: 6, marginTop: 10 }}>
+                  <div className="flex items-center" style={{ gap: 8, marginTop: 10 }}>
                     <button
                       type="button"
                       onClick={() => setInstallmentDraft({ vendorId: item.id, amount: '' })}
                       className="font-bold active:scale-[0.96] active:brightness-90 transition-all"
-                      style={{ border: '1px solid var(--landing-border, var(--nikah-border))', background: 'white', borderRadius: 999, fontSize: 12, padding: '10px 12px', color: 'var(--nikah-deep)' }}
+                      style={{ border: '1px solid var(--landing-border, var(--nikah-border))', background: 'white', borderRadius: 10, fontSize: 12, padding: '10px 14px', color: 'var(--nikah-deep)', whiteSpace: 'nowrap' }}
                     >
                       Catat Bayar
                     </button>
@@ -283,7 +283,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                       type="button"
                       onClick={() => markPaid(item.id)}
                       className="text-white font-bold active:scale-[0.96] active:brightness-90 transition-all"
-                      style={{ border: 0, background: 'var(--nikah-deep)', borderRadius: 999, fontSize: 12, padding: '10px 12px' }}
+                      style={{ border: 0, background: 'var(--nikah-deep)', borderRadius: 10, fontSize: 12, padding: '10px 14px', whiteSpace: 'nowrap' }}
                     >
                       Lunas
                     </button>

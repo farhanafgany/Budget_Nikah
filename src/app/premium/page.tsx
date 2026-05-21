@@ -418,7 +418,7 @@ export default async function PremiumPage() {
         className="px-6 text-center text-white"
         style={{
           paddingTop: 64,
-          paddingBottom: 'max(66px, calc(66px + env(safe-area-inset-bottom)))',
+          paddingBottom: 66,
           background: 'linear-gradient(160deg, var(--landing-deep, #5A1E2A) 0%, var(--landing-deep-dark, #3D1419) 100%)',
         }}
       >
@@ -460,24 +460,6 @@ export default async function PremiumPage() {
         </p>
       </section>
 
-      {/* Sticky CTA — mobile only */}
-      <div
-        className="md:hidden fixed bottom-0 left-0 right-0 z-50"
-        style={{
-          padding: '10px 16px',
-          paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
-          background: 'rgba(251,246,241,0.95)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          borderTop: '1px solid var(--landing-border, #E8DACF)',
-        }}
-      >
-        <PremiumAccessButton
-          isProduction={isProduction}
-          loginChildren={<span>Mulai Premium — Rp 149rb →</span>}
-          paymentChildren={<span>Mulai Premium — Rp 149rb →</span>}
-        />
-      </div>
     </main>
   )
 }
