@@ -139,7 +139,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
               className={`active:scale-[0.95] active:brightness-90 ${isActive ? 'bg-nikah-deep text-white' : 'text-nikah-muted'}`}
               style={{
                 flexShrink: 0,
-                padding: '7px 14px',
+                padding: '10px 14px',
                 border: 0,
                 borderRadius: 999,
                 fontSize: 12,
@@ -192,7 +192,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
               className="w-full flex items-center text-left border-0 bg-transparent transition-all hover:bg-nikah-bg active:scale-[0.985] active:brightness-90"
               style={{
                 gap: 12,
-                padding: '11px 8px',
+                padding: '13px 8px',
                 borderBottom: idx < visibleItems.length - 1 ? '1px solid var(--nikah-border)' : 'none',
               }}
             >
@@ -203,7 +203,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
                     ? 'bg-nikah-deep border-nikah-deep'
                     : 'border-nikah-border bg-white'
                 }`}
-                style={{ width: 20, height: 20, borderRadius: 6 }}
+                style={{ width: 24, height: 24, borderRadius: 7 }}
               >
                 {checked && (
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>

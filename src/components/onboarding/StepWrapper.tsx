@@ -123,7 +123,7 @@ export function StepWrapper({
       <div className="flex-1 flex flex-col min-w-0">
 
         {/* Progress bar — mobile only */}
-        <div className="lg:hidden w-full" style={{ height: 4, background: 'var(--nikah-border)' }}>
+        <div className="lg:hidden w-full" style={{ height: 6, background: 'var(--nikah-border)' }}>
           <div
             style={{
               height: '100%',
@@ -141,7 +141,7 @@ export function StepWrapper({
             <button
               onClick={onBack}
               aria-label="Kembali ke langkah sebelumnya"
-              className="text-nikah-muted text-sm font-medium hover:text-nikah-text transition-colors"
+              className="text-nikah-muted text-sm font-medium hover:text-nikah-text transition-colors py-2 pr-3 -my-2"
             >
               ← Kembali
             </button>

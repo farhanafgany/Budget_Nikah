@@ -10,14 +10,14 @@ const PAYMENT_METHODS = ['QRIS', 'GoPay', 'OVO', 'Dana', 'BCA', 'Mandiri', 'BNI'
 function PaymentMethodsRow() {
   return (
     <div className="flex flex-wrap items-center justify-center" style={{ gap: '6px 8px', marginTop: 14 }}>
-      <span className="text-nikah-muted" style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', marginRight: 2 }}>
+      <span className="text-nikah-muted" style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.06em', marginRight: 2 }}>
         Tersedia via:
       </span>
       {PAYMENT_METHODS.map(method => (
         <span
           key={method}
           className="inline-flex items-center border border-nikah-border bg-white text-nikah-text font-bold"
-          style={{ fontSize: 10, padding: '3px 8px', borderRadius: 6 }}
+          style={{ fontSize: 11, padding: '4px 9px', borderRadius: 6 }}
         >
           {method}
         </span>
@@ -223,10 +223,10 @@ export default async function PremiumPage() {
             <div className="grid grid-cols-3 border-t border-nikah-border" style={{ gap: 10, marginTop: 20, paddingTop: 16 }}>
               {TRUST_ITEMS.map(item => (
                 <div key={item.label} className="text-center">
-                  <p className="text-nikah-text font-extrabold" style={{ fontSize: 11, lineHeight: 1.3, margin: '0 0 2px' }}>
+                  <p className="text-nikah-text font-extrabold" style={{ fontSize: 12, lineHeight: 1.3, margin: '0 0 2px' }}>
                     {item.value}
                   </p>
-                  <p className="text-nikah-muted" style={{ fontSize: 10, lineHeight: 1.3, margin: 0 }}>
+                  <p className="text-nikah-muted" style={{ fontSize: 11, lineHeight: 1.3, margin: 0 }}>
                     {item.label}
                   </p>
                 </div>
@@ -418,7 +418,7 @@ export default async function PremiumPage() {
         className="px-6 text-center text-white"
         style={{
           paddingTop: 64,
-          paddingBottom: 66,
+          paddingBottom: 'max(66px, calc(66px + env(safe-area-inset-bottom)))',
           background: 'linear-gradient(160deg, var(--landing-deep, #5A1E2A) 0%, var(--landing-deep-dark, #3D1419) 100%)',
         }}
       >
@@ -459,6 +459,25 @@ export default async function PremiumPage() {
           Pembayaran diproses aman melalui Midtrans Snap
         </p>
       </section>
+
+      {/* Sticky CTA — mobile only */}
+      <div
+        className="md:hidden fixed bottom-0 left-0 right-0 z-50"
+        style={{
+          padding: '10px 16px',
+          paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
+          background: 'rgba(251,246,241,0.95)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          borderTop: '1px solid var(--landing-border, #E8DACF)',
+        }}
+      >
+        <PremiumAccessButton
+          isProduction={isProduction}
+          loginChildren={<span>Mulai Premium — Rp 149rb →</span>}
+          paymentChildren={<span>Mulai Premium — Rp 149rb →</span>}
+        />
+      </div>
     </main>
   )
 }

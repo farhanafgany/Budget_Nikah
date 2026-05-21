@@ -36,13 +36,11 @@ export function StepGuests() {
         <label htmlFor="guestCount" className="block text-xs font-bold text-nikah-text mb-1.5">Jumlah tamu</label>
         <input
           id="guestCount"
-          type="number"
+          type="text"
           inputMode="numeric"
           value={guestCount || ''}
-          onChange={e => setField('guestCount', parseInt(e.target.value, 10) || 0)}
+          onChange={e => setField('guestCount', parseInt(e.target.value.replace(/\D/g, ''), 10) || 0)}
           placeholder="300"
-          min={1}
-          max={3000}
           className="w-full bg-white border border-nikah-border rounded-xl px-4 py-3 text-sm text-nikah-text placeholder:text-nikah-muted focus:outline-none focus:border-nikah-mauve transition"
         />
         <p className="text-nikah-muted text-xs mt-2">

@@ -165,7 +165,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         {!isSignedIn ? (
           <Link
             href={saveHref}
-            className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full transition hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
+            className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full transition hover:bg-nikah-bg active:scale-[0.97] active:brightness-90 w-full md:w-auto"
             style={{ padding: '14px 28px', fontSize: 14 }}
           >
             Simpan hasil ke akun →
@@ -173,7 +173,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         ) : (
           <Link
             href={continueHref}
-            className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full transition hover:opacity-90 active:scale-[0.97] active:brightness-90"
+            className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full transition hover:opacity-90 active:scale-[0.97] active:brightness-90 w-full md:w-auto"
             style={{ padding: '14px 28px', fontSize: 14 }}
           >
             Lanjutkan sekarang →

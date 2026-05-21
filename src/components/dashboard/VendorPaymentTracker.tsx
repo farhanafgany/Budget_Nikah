@@ -270,20 +270,20 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                 </div>
 
                 {itemRemaining > 0 && installmentDraft.vendorId !== item.id && (
-                  <div className="flex items-center" style={{ gap: 8, flexShrink: 0 }}>
+                  <div className="grid grid-cols-2" style={{ gap: 6, marginTop: 10 }}>
                     <button
                       type="button"
                       onClick={() => setInstallmentDraft({ vendorId: item.id, amount: '' })}
-                      className="text-nikah-deep font-bold active:opacity-60 transition-opacity"
-                      style={{ border: 0, background: 'transparent', fontSize: 11, padding: '6px 10px', margin: '-6px -10px' }}
+                      className="font-bold active:scale-[0.96] active:brightness-90 transition-all"
+                      style={{ border: '1px solid var(--landing-border, var(--nikah-border))', background: 'white', borderRadius: 999, fontSize: 12, padding: '10px 12px', color: 'var(--nikah-deep)' }}
                     >
                       Catat Bayar
                     </button>
                     <button
                       type="button"
                       onClick={() => markPaid(item.id)}
-                      className="text-nikah-deep font-bold active:opacity-60 transition-opacity"
-                      style={{ border: 0, background: 'transparent', fontSize: 11, padding: '6px 10px', margin: '-6px -10px' }}
+                      className="text-white font-bold active:scale-[0.96] active:brightness-90 transition-all"
+                      style={{ border: 0, background: 'var(--nikah-deep)', borderRadius: 999, fontSize: 12, padding: '10px 12px' }}
                     >
                       Lunas
                     </button>
@@ -365,7 +365,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
             className="w-full border border-nikah-border bg-white text-nikah-text outline-none focus:border-nikah-mauve"
             style={{ borderRadius: 12, padding: '11px 12px', fontSize: 13 }}
           />
-          <div className="grid grid-cols-2" style={{ gap: 8 }}>
+          <div className="grid grid-cols-1" style={{ gap: 8 }}>
             <select
               value={draft.category}
               onChange={(e) => setDraft({ ...draft, category: e.target.value })}
@@ -379,10 +379,10 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
               value={draft.dueDate}
               onChange={(e) => setDraft({ ...draft, dueDate: e.target.value })}
               className="w-full border border-nikah-border bg-white text-nikah-text outline-none focus:border-nikah-mauve"
-              style={{ borderRadius: 12, padding: '10px 12px', fontSize: 13 }}
+              style={{ borderRadius: 12, padding: '11px 12px', fontSize: 13 }}
             />
           </div>
-          <div className="grid grid-cols-2" style={{ gap: 8 }}>
+          <div className="grid grid-cols-1" style={{ gap: 8 }}>
             <input
               inputMode="numeric"
               value={draft.totalAmount}

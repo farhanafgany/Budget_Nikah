@@ -100,13 +100,8 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           aria-label={`Readiness score ${score}`}
         >
           <div className="bg-white" style={{ width: 60, height: 60, borderRadius: '50%', display: 'grid', placeItems: 'center' }}>
-            <div className="text-center">
-              <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 24, lineHeight: 1, color: '#3D1419' }}>
-                {score}
-              </div>
-              <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 8, letterSpacing: '0.14em', marginTop: 3 }}>
-                Score
-              </div>
+            <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 24, lineHeight: 1, color: '#3D1419' }}>
+              {score}
             </div>
           </div>
         </div>
@@ -242,10 +237,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
             }}
           >
             <div className="bg-white" style={{ width: 54, height: 54, borderRadius: '50%', display: 'grid', placeItems: 'center' }}>
-              <div className="text-center">
-                <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 22, lineHeight: 1, color: '#3D1419' }}>{score}</div>
-                <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 7, letterSpacing: '0.12em', marginTop: 2 }}>SCORE</div>
-              </div>
+              <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 22, lineHeight: 1, color: '#3D1419' }}>{score}</div>
             </div>
           </div>
           <div>

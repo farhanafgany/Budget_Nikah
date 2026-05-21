@@ -159,7 +159,7 @@ function MobileHero() {
                 key={g}
                 onClick={() => setGaya(g)}
                 style={{
-                  padding: '8px 0',
+                  padding: '12px 0',
                   borderRadius: 999,
                   fontSize: 13,
                   fontWeight: 600,
@@ -337,7 +337,7 @@ export function HeroSection() {
 
       {/* Sticky CTA — mobile only */}
       <div
-        className="hidden fixed bottom-0 left-0 right-0 z-50 md:hidden"
+        className="block fixed bottom-0 left-0 right-0 z-50 md:hidden"
         style={{
           padding: '10px 16px',
           paddingBottom: 'max(10px, env(safe-area-inset-bottom))',

@@ -25,7 +25,6 @@ export function StepNames() {
           <input
             id="partnerOneName"
             type="text"
-            autoFocus
             value={partnerOneName}
             onChange={e => { setField('partnerOneName', e.target.value); setShowHint(false) }}
             placeholder="Contoh: Siti Nurhaliza"
