@@ -3,6 +3,8 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 
+const AUTH_ERROR = '__AUTH_EXPIRED__'
+
 function formatDashboardError(error: { message?: string; code?: string }) {
   const message = error.message ?? 'Unknown error'
   if (
@@ -17,6 +19,8 @@ function formatDashboardError(error: { message?: string; code?: string }) {
   }
   return message
 }
+
+export { AUTH_ERROR }
 
 export async function updateTabungan(collected: number): Promise<{ error?: string }> {
   return updateTabunganWithHistory(collected, [])
@@ -36,7 +40,7 @@ export async function updateTabunganWithHistory(
 ): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  if (!user) return { error: AUTH_ERROR }
 
   const sanitizedHistory = history
     .map(item => ({
@@ -76,7 +80,7 @@ export async function toggleChecklistItem(
 export async function updateChecklistItems(checkedIds: string[]): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  if (!user) return { error: AUTH_ERROR }
 
   const sanitized = Array.from(new Set(checkedIds.filter(Boolean)))
 
@@ -105,7 +109,7 @@ export async function toggleSeserahanItem(
 export async function updateSeserahanItems(checkedIds: string[]): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  if (!user) return { error: AUTH_ERROR }
 
   const sanitized = Array.from(new Set(checkedIds.filter(Boolean)))
 
@@ -127,7 +131,7 @@ export interface CustomSeserahanInput {
 export async function updateCustomSeserahanItems(items: CustomSeserahanInput[]): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  if (!user) return { error: AUTH_ERROR }
 
   const sanitized = items
     .map(item => ({
@@ -149,7 +153,7 @@ export async function updateCustomSeserahanItems(items: CustomSeserahanInput[]):
 export async function updateHiddenSeserahanItems(ids: string[]): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  if (!user) return { error: AUTH_ERROR }
 
   const sanitized = Array.from(new Set(ids.filter(Boolean)))
 
@@ -166,7 +170,7 @@ export async function updateHiddenSeserahanItems(ids: string[]): Promise<{ error
 export async function updateDashboardNote(note: string): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  if (!user) return { error: AUTH_ERROR }
 
   const { error } = await supabase
     .from('wedding_profiles')
@@ -195,7 +199,7 @@ export interface VendorPaymentInput {
 export async function updateVendorPayments(payments: VendorPaymentInput[]): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: 'Not authenticated' }
+  if (!user) return { error: AUTH_ERROR }
 
   const sanitized = payments.map(item => ({
     id: item.id,

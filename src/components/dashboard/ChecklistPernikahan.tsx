@@ -2,6 +2,7 @@
 import { useState, useTransition } from 'react'
 import { CHECKLIST_ITEMS, type ChecklistTimeline } from '@/lib/checklistItems'
 import { updateChecklistItems } from '@/app/dashboard/actions'
+import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { ChevronDown } from 'lucide-react'
 
 const TIMELINE_LABELS: Record<ChecklistTimeline, string> = {
@@ -49,6 +50,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
   const [expanded, setExpanded] = useState(false)
   const [error, setError] = useState('')
   const [, startTransition] = useTransition()
+  const handleActionError = useHandleActionError()
 
   const totalDone = localChecked.length
   const totalCount = CHECKLIST_ITEMS.length
@@ -76,7 +78,8 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
     setError('')
     startTransition(async () => {
       const result = await updateChecklistItems(newChecked)
-      if (result.error) {
+      const err = handleActionError(result.error)
+      if (err) {
         setLocalChecked(localChecked)
         setError('Checklist belum tersimpan. Coba centang ulang.')
       }

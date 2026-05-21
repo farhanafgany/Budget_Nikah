@@ -1,6 +1,7 @@
 'use client'
 import { useState, useTransition } from 'react'
 import { updateTabunganWithHistory, type SavingsHistoryInput } from '@/app/dashboard/actions'
+import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
 import { formatRupiah } from '@/lib/utils'
 import { ChevronDown } from 'lucide-react'
@@ -20,6 +21,7 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
   const [historyOpen, setHistoryOpen] = useState(false)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
+  const handleActionError = useHandleActionError()
 
   const months   = monthsUntilDate(weddingDate)
   const monthly  = calculateMonthlySavings(target, localCollected, months)
@@ -58,7 +60,8 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
     setError('')
     startTransition(async () => {
       const result = await updateTabunganWithHistory(next, nextHistory)
-      if (result.error) {
+      const err = handleActionError(result.error)
+      if (err) {
         setLocalCollected(localCollected)
         setLocalHistory(localHistory)
         setError('Riwayat tabungan belum tersimpan. Coba input ulang.')

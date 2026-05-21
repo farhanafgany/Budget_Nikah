@@ -67,6 +67,19 @@ function LoginContent() {
   async function syncAndRedirect(userId: string) {
     if (onboarding.isComplete()) {
       const supabase = createClient()
+
+      // Jangan timpa data user yang sudah premium — protect dashboard data mereka.
+      const { data: account } = await supabase
+        .from('app_users')
+        .select('is_premium')
+        .eq('id', userId)
+        .single()
+
+      if (account?.is_premium) {
+        router.replace(nextPath)
+        return
+      }
+
       const { getCityTier } = await import('@/lib/cityTiers')
       const { calculateAllocation } = await import('@/lib/allocation')
       const { calculateScore, calculatePressureLevel } = await import('@/lib/scoring')

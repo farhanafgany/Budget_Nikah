@@ -19,6 +19,7 @@ export function PremiumAccessButton({
   paymentChildren,
 }: PremiumAccessButtonProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
 
   useEffect(() => {
     let active = true
@@ -29,14 +30,17 @@ export function PremiumAccessButton({
       .then(({ data }) => {
         if (!active) return
         setIsLoggedIn(Boolean(data.session?.user))
+        setIsCheckingAuth(false)
       })
       .catch(() => {
         if (!active) return
         setIsLoggedIn(false)
+        setIsCheckingAuth(false)
       })
 
     const { data } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsLoggedIn(Boolean(session?.user))
+      setIsCheckingAuth(false)
     })
 
     return () => {
@@ -64,6 +68,27 @@ export function PremiumAccessButton({
         padding: '17px 24px',
         boxShadow: '0 10px 22px rgba(90, 30, 42, 0.12)',
       }
+
+  // Tampilkan skeleton selama pengecekan auth agar tidak ada flash tombol yang salah.
+  if (isCheckingAuth) {
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          opacity: 0.45,
+          pointerEvents: 'none',
+          background: variant === 'gold'
+            ? 'linear-gradient(180deg, #E8D7A8 0%, #C9A961 100%)'
+            : 'var(--nikah-deep)',
+          color: 'transparent',
+        }}
+        aria-hidden="true"
+      >
+        {paymentChildren}
+      </div>
+    )
+  }
 
   if (isLoggedIn) {
     return (

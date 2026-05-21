@@ -1,6 +1,7 @@
 'use client'
 import { useState, useTransition } from 'react'
 import { updateVendorPayments, type VendorPaymentInput } from '@/app/dashboard/actions'
+import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { formatRupiah } from '@/lib/utils'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
 import { ChevronDown, Plus, Trash2 } from 'lucide-react'
@@ -33,6 +34,7 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
   const [installmentDraft, setInstallmentDraft] = useState({ vendorId: '', amount: '' })
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
+  const handleActionError = useHandleActionError()
 
   const total = payments.reduce((sum, item) => sum + item.totalAmount, 0)
   const paid = payments.reduce((sum, item) => sum + item.paidAmount, 0)
@@ -48,7 +50,8 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
     setError('')
     startTransition(async () => {
       const result = await updateVendorPayments(next)
-      if (result.error) setError('Pembayaran vendor belum tersimpan.')
+      const err = handleActionError(result.error)
+      if (err) setError('Pembayaran vendor belum tersimpan.')
     })
   }
 
@@ -240,7 +243,8 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                   <button
                     type="button"
                     onClick={() => removePayment(item.id)}
-                    className="inline-flex text-nikah-muted opacity-45 transition-opacity hover:text-nikah-deep hover:opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                    disabled={isPending}
+                    className="inline-flex text-nikah-muted opacity-45 transition-opacity hover:text-nikah-deep hover:opacity-100 md:opacity-0 md:group-hover:opacity-100 disabled:pointer-events-none"
                     style={{ border: 0, background: 'transparent', padding: 2 }}
                     aria-label={`Hapus ${item.name}`}
                   >
@@ -274,7 +278,8 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                     <button
                       type="button"
                       onClick={() => setInstallmentDraft({ vendorId: item.id, amount: '' })}
-                      className="font-bold active:scale-[0.96] active:brightness-90 transition-all"
+                      disabled={isPending}
+                      className="font-bold active:scale-[0.96] active:brightness-90 transition-all disabled:opacity-50"
                       style={{ border: '1px solid var(--landing-border, var(--nikah-border))', background: 'white', borderRadius: 10, fontSize: 12, padding: '10px 14px', color: 'var(--nikah-deep)', whiteSpace: 'nowrap' }}
                     >
                       Catat Bayar
@@ -282,10 +287,11 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
                     <button
                       type="button"
                       onClick={() => markPaid(item.id)}
-                      className="text-white font-bold active:scale-[0.96] active:brightness-90 transition-all"
+                      disabled={isPending}
+                      className="text-white font-bold active:scale-[0.96] active:brightness-90 transition-all disabled:opacity-50"
                       style={{ border: 0, background: 'var(--nikah-deep)', borderRadius: 10, fontSize: 12, padding: '10px 14px', whiteSpace: 'nowrap' }}
                     >
-                      Lunas
+                      {isPending ? '...' : 'Lunas'}
                     </button>
                   </div>
                 )}

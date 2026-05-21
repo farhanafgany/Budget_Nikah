@@ -1,7 +1,7 @@
 'use client'
 
 import Script from 'next/script'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 declare global {
   interface MidtransPaymentResult {
@@ -31,10 +31,15 @@ interface Props {
   children?: React.ReactNode
 }
 
+const PAYMENT_TIMEOUT_MS = 25_000
+
 export function MidtransPaymentButton({ isProduction = false, loginRedirectHref = '/auth/login?next=/premium', className, style, children }: Props) {
   const [loading, setLoading] = useState(false)
   const [scriptReady, setScriptReady] = useState(false)
   const [error, setError] = useState('')
+
+  // Reuse snap token across open/close cycles to avoid duplicate order rows.
+  const cachedTokenRef = useRef<{ snapToken: string; orderId: string } | null>(null)
 
   const clientKey = process.env.NEXT_PUBLIC_MIDTRANS_CLIENT_KEY
   const snapScriptUrl = isProduction
@@ -43,23 +48,45 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
 
   async function handlePay() {
     setError('')
-
     setLoading(true)
 
     try {
-      const response = await fetch('/api/payments/midtrans/create', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-      })
-      const data = await response.json() as { order_id?: string; snap_token?: string; error?: string }
+      let snapToken: string
+      let orderId: string
 
-      if (response.status === 401) {
-        window.location.href = loginRedirectHref
-        return
-      }
+      if (cachedTokenRef.current) {
+        // Reuse existing token so we don't create another orphan payment row.
+        snapToken = cachedTokenRef.current.snapToken
+        orderId = cachedTokenRef.current.orderId
+      } else {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), PAYMENT_TIMEOUT_MS)
 
-      if (!response.ok || !data.snap_token) {
-        throw new Error(data.error || 'Gagal membuat transaksi.')
+        let response: Response
+        try {
+          response = await fetch('/api/payments/midtrans/create', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+          })
+        } finally {
+          clearTimeout(timeoutId)
+        }
+
+        const data = await response.json() as { order_id?: string; snap_token?: string; error?: string }
+
+        if (response.status === 401) {
+          window.location.href = loginRedirectHref
+          return
+        }
+
+        if (!response.ok || !data.snap_token) {
+          throw new Error(data.error || 'Gagal membuat transaksi.')
+        }
+
+        snapToken = data.snap_token
+        orderId = data.order_id ?? ''
+        cachedTokenRef.current = { snapToken, orderId }
       }
 
       if (!clientKey) {
@@ -70,29 +97,39 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
         throw new Error('Midtrans Snap belum siap. Tunggu sebentar lalu coba lagi.')
       }
 
-      window.snap.pay(data.snap_token, {
+      window.snap.pay(snapToken, {
         onSuccess: async (result) => {
-          const orderId = result.order_id ?? data.order_id
+          cachedTokenRef.current = null
+          const finalOrderId = result.order_id ?? orderId
 
-          if (orderId) {
+          if (finalOrderId) {
             await fetch('/api/payments/midtrans/confirm', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ order_id: orderId }),
+              body: JSON.stringify({ order_id: finalOrderId }),
             }).catch(() => null)
           }
 
           window.location.replace('/premium/success')
         },
-        onPending: () => window.location.replace('/premium'),
+        onPending: () => {
+          cachedTokenRef.current = null
+          setLoading(false)
+          window.location.replace('/premium')
+        },
         onError: () => {
+          cachedTokenRef.current = null
           setError('Pembayaran belum berhasil. Silakan coba lagi.')
           setLoading(false)
         },
         onClose: () => setLoading(false),
       })
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Gagal memulai pembayaran.')
+      const isTimeout = err instanceof Error && err.name === 'AbortError'
+      setError(isTimeout
+        ? 'Koneksi lambat. Periksa internet kamu, lalu coba lagi.'
+        : (err instanceof Error ? err.message : 'Gagal memulai pembayaran.')
+      )
       setLoading(false)
     }
   }

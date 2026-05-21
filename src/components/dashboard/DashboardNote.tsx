@@ -1,6 +1,7 @@
 'use client'
 import { useState, useTransition } from 'react'
 import { updateDashboardNote } from '@/app/dashboard/actions'
+import { useHandleActionError } from '@/hooks/useDashboardAction'
 
 interface Props {
   initialNote: string
@@ -11,6 +12,7 @@ export function DashboardNote({ initialNote }: Props) {
   const [savedNote, setSavedNote] = useState(initialNote)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
+  const handleActionError = useHandleActionError()
 
   const hasChanges = note !== savedNote
 
@@ -18,8 +20,9 @@ export function DashboardNote({ initialNote }: Props) {
     setError('')
     startTransition(async () => {
       const result = await updateDashboardNote(note)
-      if (result.error) {
-        setError(result.error)
+      const err = handleActionError(result.error)
+      if (err) {
+        setError(err)
         return
       }
       setSavedNote(note)
