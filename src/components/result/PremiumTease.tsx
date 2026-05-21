@@ -100,6 +100,9 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         >
           Buka rencana — Rp 149rb ›
         </Link>
+        <p className="text-center text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.5, marginTop: 8 }}>
+          ✓ Garansi 3 hari — tidak cocok, uang kembali penuh.
+        </p>
         {!isSignedIn && (
           <Link
             href={saveHref}

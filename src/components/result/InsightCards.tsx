@@ -16,7 +16,7 @@ export function InsightCards({ insights }: { insights: Insight[] }) {
             <Lightbulb size={15} strokeWidth={1.8} />
           </span>
           <span className="text-xs font-bold uppercase tracking-widest text-nikah-mauve">
-            Smart Insights
+            Catatan untuk Kalian
           </span>
         </span>
       </div>

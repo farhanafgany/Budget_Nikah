@@ -44,10 +44,13 @@ export default function PremiumSuccessPage() {
             margin: '0 0 12px',
           }}
         >
-          Premium berhasil diaktifkan.
+          Akses kalian sudah siap.
         </h1>
+        <p className="text-nikah-muted font-light" style={{ fontSize: 14, lineHeight: 1.6, margin: '0 0 6px' }}>
+          Selamat — kalian sudah ambil langkah yang tepat.
+        </p>
         <p className="text-nikah-muted font-light" style={{ fontSize: 14, lineHeight: 1.6, margin: '0 0 24px' }}>
-          Akses premium kalian sudah aktif. Sekarang semua hasil dan persiapan bisa dilanjutkan dari dashboard BudgetNikah.
+          Sekarang persiapan bisa berjalan lebih tenang, dari satu tempat, sampai hari H.
         </p>
         <div
           className="border border-nikah-border bg-nikah-bg text-left"

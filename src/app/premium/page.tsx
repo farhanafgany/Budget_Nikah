@@ -219,8 +219,11 @@ export default async function PremiumPage() {
                 </span>
               )}
             />
+            <p className="text-center text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.5, marginTop: 10 }}>
+              ✓ Garansi 3 hari — tidak cocok, uang kembali penuh. Tanpa pertanyaan.
+            </p>
 
-            <div className="grid grid-cols-3 border-t border-nikah-border" style={{ gap: 10, marginTop: 20, paddingTop: 16 }}>
+            <div className="grid grid-cols-3 border-t border-nikah-border" style={{ gap: 10, marginTop: 16, paddingTop: 16 }}>
               {TRUST_ITEMS.map(item => (
                 <div key={item.label} className="text-center">
                   <p className="text-nikah-text font-extrabold" style={{ fontSize: 12, lineHeight: 1.3, margin: '0 0 2px' }}>
@@ -282,16 +285,16 @@ export default async function PremiumPage() {
                 )}
                 paymentChildren={(
                   <span className="inline-flex items-center justify-center" style={{ gap: 10 }}>
-                    Lanjut ke Pembayaran
+                    Mulai Premium — Rp 149rb
                     <ChevronRight size={18} strokeWidth={2.4} />
                   </span>
                 )}
               />
-              {!isSignedIn && (
-                <p className="text-nikah-muted" style={{ fontSize: 12.5, lineHeight: 1.45, margin: '11px 0 0' }}>
-                  Kalian akan masuk dulu agar hasil simulasi tersimpan sebelum pembayaran.
-                </p>
-              )}
+              <p className="text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.45, margin: '10px 0 0' }}>
+                {!isSignedIn
+                  ? 'Kalian akan masuk dulu agar hasil simulasi tersimpan sebelum pembayaran.'
+                  : '✓ Garansi 3 hari — tidak cocok, uang kembali penuh. Tanpa pertanyaan.'}
+              </p>
 
               <div className="grid grid-cols-3 border-t border-nikah-border" style={{ gap: 12, marginTop: 26, paddingTop: 17 }}>
                 {TRUST_ITEMS.map(item => (
@@ -455,8 +458,11 @@ export default async function PremiumPage() {
             </span>
           )}
         />
-        <p style={{ color: 'rgba(255,255,255,0.66)', fontSize: 13, lineHeight: 1.5, margin: '18px 0 0' }}>
-          Pembayaran diproses aman melalui Midtrans Snap
+        <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: 13, lineHeight: 1.5, margin: '14px 0 0' }}>
+          ✓ Garansi 3 hari — tidak cocok, uang kembali penuh. Tanpa pertanyaan.
+        </p>
+        <p style={{ color: 'rgba(255,255,255,0.48)', fontSize: 12, lineHeight: 1.5, margin: '8px 0 0' }}>
+          Pembayaran aman via QRIS, GoPay, OVO, Dana, BCA, dan Mandiri
         </p>
       </section>
 

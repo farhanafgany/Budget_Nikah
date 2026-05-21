@@ -40,18 +40,18 @@ export function PricingSection() {
 
             <div className="flex flex-col gap-3">
               <Link
-                href="/onboarding"
+                href="/premium"
                 className="inline-flex w-full md:w-auto items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm text-center transition-colors active:scale-95 hover:opacity-90"
                 style={{ padding: '16px 28px' }}
               >
-                Mulai Sekarang — Gratis →
+                Beli Akses Premium — Rp 149rb →
               </Link>
               <Link
-                href="/premium"
+                href="/onboarding"
                 className="inline-flex w-full md:w-auto items-center justify-center text-nikah-deep font-semibold text-sm text-center hover:underline"
                 style={{ padding: '8px 0' }}
               >
-                Langsung Beli Akses Premium
+                Coba gratis dulu →
               </Link>
             </div>
           </div>
