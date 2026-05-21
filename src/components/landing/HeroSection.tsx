@@ -1,7 +1,28 @@
+'use client'
+
 import Link from 'next/link'
 import Image from 'next/image'
+import { useState, useMemo } from 'react'
 
 const CLAUDE_SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
+
+const GAYA_OPTIONS = ['Simple', 'Elegant', 'Mewah'] as const
+type Gaya = typeof GAYA_OPTIONS[number]
+
+const BASE_COST = 22_000_000
+const GAYA_RATE: Record<Gaya, number> = {
+  Simple:  150_000,
+  Elegant: 185_000,
+  Mewah:   280_000,
+}
+
+function calcEstimate(guests: number, gaya: Gaya): number {
+  return BASE_COST + guests * GAYA_RATE[gaya]
+}
+
+function formatRpJt(amount: number): string {
+  return `Rp ${Math.round(amount / 1_000_000)}jt`
+}
 
 function DashboardPreview() {
   return (
@@ -29,16 +50,218 @@ function DashboardPreview() {
   )
 }
 
+function MobileHero() {
+  const [guests, setGuests] = useState(350)
+  const [gaya, setGaya] = useState<Gaya>('Elegant')
+
+  const estimate = useMemo(() => calcEstimate(guests, gaya), [guests, gaya])
+  const simpleEstimate = useMemo(() => calcEstimate(guests, 'Simple'), [guests])
+  const delta = estimate - simpleEstimate
+
+  return (
+    <div className="md:hidden">
+
+      {/* Badge */}
+      <div style={{ marginBottom: 16 }}>
+        <span
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 8,
+            background: 'white',
+            border: '1px solid var(--landing-border, #E8DACF)',
+            borderRadius: 999,
+            padding: '6px 14px',
+            fontSize: 13,
+            color: 'var(--landing-muted, #A38B89)',
+          }}
+        >
+          <span
+            style={{
+              width: 7,
+              height: 7,
+              borderRadius: '50%',
+              background: '#6B3545',
+              display: 'inline-block',
+              flexShrink: 0,
+            }}
+          />
+          Tanpa daftar · 2 menit
+        </span>
+      </div>
+
+      {/* Headline */}
+      <h1
+        style={{
+          fontFamily: CLAUDE_SERIF,
+          fontStyle: 'italic',
+          fontWeight: 500,
+          fontSize: 'clamp(38px, 10vw, 54px)',
+          lineHeight: 1.1,
+          letterSpacing: '-0.02em',
+          color: 'var(--landing-deep-dark, #3D1419)',
+          margin: '0 0 12px',
+        }}
+      >
+        Berapa biaya nikah yang realistis untuk kalian?
+      </h1>
+
+      {/* Subtitle */}
+      <p
+        style={{
+          fontSize: 15,
+          color: 'var(--landing-muted, #A38B89)',
+          lineHeight: 1.5,
+          margin: '0 0 18px',
+        }}
+      >
+        Coba sekarang — geser dua parameter, lihat estimasinya berubah.
+      </p>
+
+      {/* Interactive card */}
+      <div
+        style={{
+          background: 'linear-gradient(160deg, #FFF7F2 0%, #F2E2D4 100%)',
+          borderRadius: 24,
+          padding: '16px 14px',
+          marginBottom: 14,
+          border: '1px solid var(--landing-border, #E8DACF)',
+        }}
+      >
+        {/* Jumlah tamu */}
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontSize: 14, color: 'var(--landing-muted, #A38B89)' }}>Jumlah tamu</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--landing-deep-dark, #3D1419)' }}>
+              {guests} orang
+            </span>
+          </div>
+          <input
+            type="range"
+            min={50}
+            max={1000}
+            step={10}
+            value={guests}
+            onChange={e => setGuests(Number(e.target.value))}
+            style={{ width: '100%', accentColor: '#3D1419', cursor: 'pointer' }}
+          />
+        </div>
+
+        {/* Gaya */}
+        <div style={{ marginBottom: 14 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+            <span style={{ fontSize: 14, color: 'var(--landing-muted, #A38B89)' }}>Gaya</span>
+            <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--landing-deep-dark, #3D1419)' }}>{gaya}</span>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
+            {GAYA_OPTIONS.map(g => (
+              <button
+                key={g}
+                onClick={() => setGaya(g)}
+                style={{
+                  padding: '8px 0',
+                  borderRadius: 999,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  border: gaya === g ? 'none' : '1px solid var(--landing-border, #E8DACF)',
+                  background: gaya === g ? 'var(--landing-deep-dark, #3D1419)' : 'transparent',
+                  color: gaya === g ? 'white' : 'var(--landing-muted, #A38B89)',
+                  cursor: 'pointer',
+                  transition: 'all 0.15s',
+                }}
+              >
+                {g}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div style={{ borderTop: '1px solid var(--landing-border, #E8DACF)', marginBottom: 12 }} />
+
+        {/* Estimasi */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+          <div>
+            <p
+              style={{
+                fontSize: 10,
+                fontWeight: 700,
+                letterSpacing: '0.12em',
+                textTransform: 'uppercase',
+                color: 'var(--landing-muted, #A38B89)',
+                margin: '0 0 4px',
+              }}
+            >
+              Estimasi Awal
+            </p>
+            <p
+              style={{
+                fontFamily: CLAUDE_SERIF,
+                fontStyle: 'italic',
+                fontSize: 34,
+                fontWeight: 400,
+                color: 'var(--landing-deep-dark, #3D1419)',
+                margin: 0,
+                lineHeight: 1,
+              }}
+            >
+              {formatRpJt(estimate)}
+            </p>
+          </div>
+          {gaya !== 'Simple' && delta > 0 && (
+            <p
+              style={{
+                fontSize: 12,
+                color: '#C0392B',
+                fontStyle: 'italic',
+                fontFamily: CLAUDE_SERIF,
+                margin: 0,
+              }}
+            >
+              ↑ {Math.round(delta / 1_000_000)}jt dari Simple
+            </p>
+          )}
+        </div>
+      </div>
+
+      {/* CTA */}
+      <Link
+        href="/onboarding"
+        className="block w-full text-white font-bold text-center active:opacity-80 active:scale-[0.98] transition-all"
+        style={{
+          padding: '16px 20px',
+          fontSize: 15,
+          borderRadius: 999,
+          background: 'var(--landing-deep-dark, #3D1419)',
+          boxShadow: '0 6px 18px rgba(90,30,42,0.22)',
+          marginBottom: 10,
+        }}
+      >
+        Hitung lengkap — Gratis &rsaquo;
+      </Link>
+
+      {/* Disclaimer */}
+      <p
+        style={{
+          textAlign: 'center',
+          fontSize: 11,
+          color: 'var(--landing-muted, #A38B89)',
+          margin: 0,
+        }}
+      >
+        Estimasi di atas indikatif · hasil personal akan lebih akurat
+      </p>
+
+    </div>
+  )
+}
+
 export function HeroSection() {
   return (
     <section
       aria-label="Hero"
-      className="relative overflow-hidden pt-10 pb-32 md:pt-[62px] md:pb-[72px]"
-      style={{
-        paddingLeft: 'var(--d-pad-page)',
-        paddingRight: 'var(--d-pad-page)',
-        background: 'var(--landing-bg, #FAF5F5)',
-      }}
+      className="relative overflow-hidden pt-8 pb-10 md:pt-[62px] md:pb-[72px] px-6 md:px-8"
+      style={{ background: 'var(--landing-bg, #FAF5F5)' }}
     >
       <div
         className="relative z-10 max-w-[1128px] mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,545px)_minmax(0,519px)] items-center min-w-0"
@@ -54,99 +277,7 @@ export function HeroSection() {
             <span>2 menit · tanpa daftar</span>
           </div>
 
-          {/* Mobile layout */}
-          <div className="md:hidden" style={{ marginBottom: 28 }}>
-
-            {/* Eyebrow */}
-            <p
-              style={{
-                fontSize: 11,
-                fontWeight: 800,
-                letterSpacing: '0.18em',
-                textTransform: 'uppercase',
-                color: '#B98C54',
-                margin: '0 0 12px',
-              }}
-            >
-              Wedding financial planner
-            </p>
-
-            {/* Headline */}
-            <h1
-              style={{
-                fontFamily: CLAUDE_SERIF,
-                fontStyle: 'italic',
-                fontWeight: 500,
-                fontSize: 'clamp(38px, 10vw, 54px)',
-                lineHeight: 1.04,
-                letterSpacing: '-0.03em',
-                color: 'var(--landing-deep-dark, #3D1419)',
-                margin: '0 0 16px',
-              }}
-            >
-              Jangan tebak-tebak soal budget nikahmu.
-            </h1>
-
-            {/* Subtitle */}
-            <p
-              className="text-nikah-muted"
-              style={{ fontSize: 15, lineHeight: 1.55, fontWeight: 400, marginBottom: 28 }}
-            >
-              Cek apakah rencana kalian realistis — selesai dalam 2 menit, tanpa login.
-            </p>
-
-            {/* Label konteks */}
-            <p
-              style={{
-                fontSize: 10,
-                fontWeight: 700,
-                letterSpacing: '0.16em',
-                textTransform: 'uppercase',
-                color: 'var(--landing-muted, #A38B89)',
-                marginBottom: 10,
-              }}
-            >
-              Begini hasilnya
-            </p>
-
-            {/* Screenshots — 2 kolom */}
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gap: 10,
-                marginBottom: 0,
-              }}
-            >
-              <div
-                className="overflow-hidden border border-nikah-border"
-                style={{ borderRadius: 10, boxShadow: '0 4px 16px rgba(90,30,42,0.10)' }}
-              >
-                <Image
-                  src="/images/result-preview.png"
-                  alt="Halaman hasil analisa BudgetNikah"
-                  width={1280}
-                  height={800}
-                  style={{ width: '100%', height: 'auto', display: 'block' }}
-                  priority
-                />
-              </div>
-              <div
-                className="overflow-hidden border border-nikah-border"
-                style={{ borderRadius: 10, boxShadow: '0 4px 16px rgba(90,30,42,0.10)' }}
-              >
-                <Image
-                  src="/images/dashboard-preview.png"
-                  alt="Tampilan dashboard BudgetNikah"
-                  width={1280}
-                  height={700}
-                  style={{ width: '100%', height: 'auto', display: 'block' }}
-                  priority
-                />
-              </div>
-            </div>
-
-          </div>
+          <MobileHero />
 
           {/* Desktop headline */}
           <h1
@@ -174,7 +305,6 @@ export function HeroSection() {
           </p>
 
           <div className="flex flex-col items-start w-full" style={{ gap: 14 }}>
-            {/* Desktop: inline button row */}
             <div className="hidden md:flex flex-wrap items-center" style={{ gap: 12 }}>
               <Link
                 href="/onboarding"
@@ -206,7 +336,7 @@ export function HeroSection() {
 
       {/* Sticky CTA — mobile only */}
       <div
-        className="fixed bottom-0 left-0 right-0 z-50 md:hidden"
+        className="hidden fixed bottom-0 left-0 right-0 z-50 md:hidden"
         style={{
           padding: '10px 16px',
           paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
@@ -226,7 +356,7 @@ export function HeroSection() {
             boxShadow: '0 4px 14px rgba(90,30,42,0.22)',
           }}
         >
-          Cek Sekarang — Gratis →
+          Hitung lengkap — Gratis →
         </Link>
       </div>
     </section>

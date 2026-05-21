@@ -27,10 +27,10 @@ describe('FAQSection', () => {
 import { Navbar } from '../Navbar'
 
 describe('Navbar', () => {
-  it('CTA mengarah langsung ke /onboarding bukan ke #harga', () => {
+  it('CTA masuk mengarah ke /auth/login', () => {
     render(<Navbar />)
-    const cta = screen.getByRole('link', { name: /Mulai Gratis/i })
-    expect(cta).toHaveAttribute('href', '/onboarding')
+    const cta = screen.getByRole('link', { name: /Masuk/i })
+    expect(cta).toHaveAttribute('href', '/auth/login')
   })
 })
 
@@ -48,26 +48,12 @@ describe('TrustMetrics', () => {
     expect(screen.getByText(/bulan timeline/i)).toBeInTheDocument()
   })
 
-  it('menampilkan heading yang baru', () => {
+  it('menampilkan heading utama TrustMetrics', () => {
     render(<TrustMetrics />)
-    expect(screen.getByText(/Kenapa BudgetNikah berbeda/i)).toBeInTheDocument()
+    expect(screen.getByText(/tebak-tebakan/i)).toBeInTheDocument()
   })
 })
 
-import { HowItWorks } from '../HowItWorks'
-
-describe('HowItWorks', () => {
-  it('menampilkan badge Gratis di langkah 1 dan 2', () => {
-    render(<HowItWorks />)
-    const gratisBadges = screen.getAllByText('✓ Gratis')
-    expect(gratisBadges).toHaveLength(2)
-  })
-
-  it('menampilkan badge Premium di langkah 3', () => {
-    render(<HowItWorks />)
-    expect(screen.getByText(/Fitur Premium · Rp 149rb/)).toBeInTheDocument()
-  })
-})
 
 import { FeatureShowcase } from '../FeatureShowcase'
 

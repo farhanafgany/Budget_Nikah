@@ -14,8 +14,7 @@ export function Footer() {
         <div className="flex items-center gap-5 text-xs">
           <a href="#fitur" className="hover:text-white transition-colors">Fitur</a>
           <a href="#harga" className="hover:text-white transition-colors">Harga</a>
-          <a href="#cara-kerja" className="hover:text-white transition-colors">Cara Kerja</a>
-          <a href="/auth/login" className="hover:text-white transition-colors">Masuk</a>
+<a href="/auth/login" className="hover:text-white transition-colors">Masuk</a>
         </div>
 
       </div>
