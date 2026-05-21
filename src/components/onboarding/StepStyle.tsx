@@ -1,4 +1,5 @@
 'use client'
+import { useEffect, useRef } from 'react'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { StepWrapper } from './StepWrapper'
 
@@ -12,6 +13,19 @@ const STYLES = [
 
 export function StepStyle() {
   const { weddingStyle, setField, nextStep, prevStep } = useOnboardingStore()
+  // Hanya auto-advance jika user baru saja memilih di step ini (bukan dari pre-filled state)
+  const justSelected = useRef(false)
+
+  useEffect(() => {
+    if (!weddingStyle || !justSelected.current) return
+    const timer = setTimeout(() => nextStep(), 320)
+    return () => clearTimeout(timer)
+  }, [weddingStyle, nextStep])
+
+  function handleSelect(value: string) {
+    justSelected.current = true
+    setField('weddingStyle', value)
+  }
 
   return (
     <StepWrapper stepIndex={5} onNext={nextStep} onBack={prevStep} nextDisabled={!weddingStyle}>
@@ -23,7 +37,7 @@ export function StepStyle() {
         {STYLES.map(s => (
           <button
             key={s.value}
-            onClick={() => setField('weddingStyle', s.value)}
+            onClick={() => handleSelect(s.value)}
             aria-pressed={weddingStyle === s.value}
             className={`w-full flex items-center gap-4 bg-white border-2 rounded-2xl px-4 py-3.5 text-left transition ${
               weddingStyle === s.value

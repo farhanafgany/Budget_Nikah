@@ -27,7 +27,7 @@ function getSignupErrorMessage(err: { message?: string; status?: number }) {
   if (message.includes('network') || message.includes('fetch')) {
     return 'Koneksi ke server bermasalah. Periksa internet kamu, lalu coba lagi.'
   }
-  return `Pendaftaran gagal: ${err.message ?? 'penyebab tidak diketahui.'}`
+  return 'Pendaftaran gagal. Coba lagi atau gunakan email yang berbeda.'
 }
 
 function SignupContent() {

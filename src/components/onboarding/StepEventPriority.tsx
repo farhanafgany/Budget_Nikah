@@ -1,4 +1,5 @@
 'use client'
+import { useEffect, useRef } from 'react'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { StepWrapper } from './StepWrapper'
 
@@ -18,6 +19,18 @@ const PRIORITIES = [
 export function StepEventPriority() {
   const { eventType, planningPriority, setField, prevStep, nextStep } = useOnboardingStore()
   const canNext = !!eventType && !!planningPriority
+  const interacted = useRef(false)
+
+  useEffect(() => {
+    if (!canNext || !interacted.current) return
+    const timer = setTimeout(() => nextStep(), 360)
+    return () => clearTimeout(timer)
+  }, [canNext, nextStep])
+
+  function handleSet<K extends 'eventType' | 'planningPriority'>(key: K, value: string) {
+    interacted.current = true
+    setField(key, value as never)
+  }
 
   return (
     <StepWrapper
@@ -37,7 +50,7 @@ export function StepEventPriority() {
           {EVENT_TYPES.map(e => (
             <button
               key={e.value}
-              onClick={() => setField('eventType', e.value)}
+              onClick={() => handleSet('eventType', e.value)}
               aria-pressed={eventType === e.value}
               className={`flex flex-col items-center gap-1.5 bg-white border-2 rounded-2xl p-3 transition ${
                 eventType === e.value ? 'border-nikah-deep bg-[#F5E8EC]' : 'border-nikah-border hover:border-nikah-mauve'
@@ -56,7 +69,7 @@ export function StepEventPriority() {
           {PRIORITIES.map(p => (
             <button
               key={p.value}
-              onClick={() => setField('planningPriority', p.value)}
+              onClick={() => handleSet('planningPriority', p.value)}
               aria-pressed={planningPriority === p.value}
               className={`w-full flex flex-col bg-white border-2 rounded-2xl px-4 py-3 text-left transition ${
                 planningPriority === p.value ? 'border-nikah-deep bg-[#F5E8EC]' : 'border-nikah-border hover:border-nikah-mauve'

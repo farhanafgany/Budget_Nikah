@@ -4,6 +4,28 @@ import { BrandLogo } from '@/components/ui/BrandLogo'
 import { PremiumAccessButton } from '@/components/payment/PremiumAccessButton'
 import { createClient } from '@/lib/supabase/server'
 
+// Label metode pembayaran yang dikenal pengguna Indonesia
+const PAYMENT_METHODS = ['QRIS', 'GoPay', 'OVO', 'Dana', 'BCA', 'Mandiri', 'BNI']
+
+function PaymentMethodsRow() {
+  return (
+    <div className="flex flex-wrap items-center justify-center" style={{ gap: '6px 8px', marginTop: 14 }}>
+      <span className="text-nikah-muted" style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.06em', marginRight: 2 }}>
+        Tersedia via:
+      </span>
+      {PAYMENT_METHODS.map(method => (
+        <span
+          key={method}
+          className="inline-flex items-center border border-nikah-border bg-white text-nikah-text font-bold"
+          style={{ fontSize: 10, padding: '3px 8px', borderRadius: 6 }}
+        >
+          {method}
+        </span>
+      ))}
+    </div>
+  )
+}
+
 const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
 
 const COMPARISON_ROWS = [
@@ -139,9 +161,13 @@ export default async function PremiumPage() {
                 padding: '4px 11px',
                 borderRadius: 999,
                 whiteSpace: 'nowrap',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 6,
               }}
             >
-              Harga peluncuran
+              <s style={{ opacity: 0.55, fontWeight: 400 }}>Rp 249rb</s>
+              Rp 149rb — Harga peluncuran
             </span>
           </div>
 
@@ -207,6 +233,7 @@ export default async function PremiumPage() {
                 </div>
               ))}
             </div>
+            <PaymentMethodsRow />
           </div>
 
           {/* Desktop layout: two-column side by side */}
@@ -280,6 +307,7 @@ export default async function PremiumPage() {
                   </div>
                 ))}
               </div>
+              <PaymentMethodsRow />
             </div>
 
             <div

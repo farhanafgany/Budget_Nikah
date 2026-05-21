@@ -27,7 +27,7 @@ function getLoginErrorMessage(err: { message?: string; status?: number }) {
   if (message.includes('network') || message.includes('fetch')) {
     return 'Koneksi ke server bermasalah. Periksa internet kamu, lalu coba lagi.'
   }
-  return `Login gagal: ${err.message ?? 'penyebab tidak diketahui.'}`
+  return 'Login gagal. Periksa email dan password kamu, lalu coba lagi.'
 }
 
 async function getInvalidCredentialMessage(email: string) {

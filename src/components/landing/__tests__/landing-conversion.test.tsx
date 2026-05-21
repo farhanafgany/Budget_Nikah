@@ -101,9 +101,9 @@ describe('PricingSection', () => {
 import { SocialProof } from '../SocialProof'
 
 describe('SocialProof', () => {
-  it('menampilkan heading utama', () => {
+  it('menampilkan heading utama dengan pesan emosional', () => {
     render(<SocialProof />)
-    expect(screen.getByText(/Bukan spreadsheet kering/i)).toBeInTheDocument()
+    expect(screen.getByText(/Persiapan yang lebih tenang/i)).toBeInTheDocument()
   })
 
   it('copy body tidak membuat klaim kompetitif tentang aplikasi lain', () => {
@@ -117,14 +117,16 @@ describe('SocialProof', () => {
     expect(screen.getByText(/3 hari tanpa pertanyaan/i)).toBeInTheDocument()
   })
 
-  it('CTA Coba Gratis mengarah ke /onboarding', () => {
+  it('menampilkan minimal 3 testimonial', () => {
     render(<SocialProof />)
-    const cta = screen.getByRole('link', { name: /Coba Gratis Dulu/i })
-    expect(cta).toHaveAttribute('href', '/onboarding')
+    // Setiap testimonial punya lokasi sebagai identifier
+    expect(screen.getByText('Jakarta')).toBeInTheDocument()
+    expect(screen.getByText('Bandung')).toBeInTheDocument()
+    expect(screen.getByText('Surabaya')).toBeInTheDocument()
   })
 
-  it('menampilkan eyebrow konteks Indonesia', () => {
+  it('menampilkan eyebrow social proof', () => {
     render(<SocialProof />)
-    expect(screen.getByText(/Dibangun untuk konteks Indonesia/i)).toBeInTheDocument()
+    expect(screen.getByText(/Dari pasangan yang sudah pakai/i)).toBeInTheDocument()
   })
 })
