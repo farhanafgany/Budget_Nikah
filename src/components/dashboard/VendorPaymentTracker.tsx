@@ -57,9 +57,14 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
 
   function handleAdd() {
     const totalAmount = parseAmount(draft.totalAmount)
-    const paidAmount = Math.min(parseAmount(draft.paidAmount), totalAmount)
+    const rawPaid = parseAmount(draft.paidAmount)
+    const paidAmount = Math.min(rawPaid, totalAmount)
     if (!draft.name.trim() || totalAmount <= 0) {
       setError('Isi nama vendor dan total biaya dulu.')
+      return
+    }
+    if (rawPaid > totalAmount) {
+      setError('DP tidak boleh melebihi total biaya.')
       return
     }
 

@@ -14,6 +14,35 @@ import { BrandLogo }          from '@/components/ui/BrandLogo'
 import { createClient }       from '@/lib/supabase/client'
 import { generateInsights }   from '@/lib/insights'
 
+function ResultSkeleton() {
+  return (
+    <main className="premium-theme min-h-screen bg-nikah-bg">
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
+        <div className="max-w-[1080px] mx-auto px-6 md:px-8 h-14 md:h-16 flex items-center justify-between">
+          <div className="h-6 w-32 bg-nikah-border rounded-full animate-pulse" />
+          <div className="h-8 w-24 bg-nikah-border rounded-full animate-pulse" />
+        </div>
+      </header>
+      <div className="max-w-[1040px] mx-auto px-6 pb-12" style={{ paddingTop: 58 }}>
+        <div className="bg-white border border-nikah-border rounded-3xl p-8 animate-pulse" style={{ marginBottom: 28 }}>
+          <div className="h-4 w-48 bg-nikah-border rounded-full mb-4" />
+          <div className="h-16 w-24 bg-nikah-border rounded-full mb-3" />
+          <div className="h-4 w-64 bg-nikah-border rounded-full" />
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[1, 2].map(i => (
+            <div key={i} className="bg-white border border-nikah-border rounded-2xl p-6 animate-pulse">
+              <div className="h-4 w-32 bg-nikah-border rounded-full mb-3" />
+              <div className="h-3 w-full bg-nikah-border rounded-full mb-2" />
+              <div className="h-3 w-4/5 bg-nikah-border rounded-full" />
+            </div>
+          ))}
+        </div>
+      </div>
+    </main>
+  )
+}
+
 function ResultNavbar({ isSignedIn }: { isSignedIn: boolean }) {
   return (
     <header className="sticky top-0 z-40 bg-white/90 backdrop-blur border-b border-nikah-border">
@@ -121,7 +150,7 @@ export default function ResultPage() {
   }, [onboarding.totalBudget, onboarding.guestCount, onboarding.weddingStyle, onboarding.planningPriority, onboarding.weddingCity,
       onboarding.weddingDate, sim.guestCount, sim.weddingStyle])
 
-  if (!mounted || !isComplete) return null
+  if (!mounted || !isComplete) return <ResultSkeleton />
 
   return (
     <main className="premium-theme min-h-screen bg-nikah-bg">

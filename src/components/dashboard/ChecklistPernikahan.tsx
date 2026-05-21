@@ -1,5 +1,5 @@
 'use client'
-import { useState, useTransition } from 'react'
+import { useRef, useState, useTransition } from 'react'
 import { CHECKLIST_ITEMS, type ChecklistTimeline } from '@/lib/checklistItems'
 import { updateChecklistItems } from '@/app/dashboard/actions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
@@ -51,6 +51,9 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
   const [error, setError] = useState('')
   const [, startTransition] = useTransition()
   const handleActionError = useHandleActionError()
+  // Ref untuk rollback delta per-item, aman terhadap concurrent toggles.
+  const localCheckedRef = useRef<string[]>(checkedIds)
+  localCheckedRef.current = localChecked
 
   const totalDone = localChecked.length
   const totalCount = CHECKLIST_ITEMS.length
@@ -70,17 +73,20 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
   }
 
   function handleToggle(id: string) {
-    const wasChecked = localChecked.includes(id)
+    const wasChecked = localCheckedRef.current.includes(id)
     const newChecked = wasChecked
-      ? localChecked.filter(i => i !== id)
-      : [...localChecked, id]
+      ? localCheckedRef.current.filter(i => i !== id)
+      : [...localCheckedRef.current, id]
     setLocalChecked(newChecked)
     setError('')
     startTransition(async () => {
       const result = await updateChecklistItems(newChecked)
       const err = handleActionError(result.error)
       if (err) {
-        setLocalChecked(localChecked)
+        // Undo hanya perubahan item ini — aman meski ada toggle lain yang concurrent.
+        setLocalChecked(prev =>
+          wasChecked ? [...prev, id] : prev.filter(i => i !== id)
+        )
         setError('Checklist belum tersimpan. Coba centang ulang.')
       }
     })

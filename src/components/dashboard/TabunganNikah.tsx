@@ -43,17 +43,18 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
 
   function handleSubmit() {
     const n = parseInt(inputRaw.replace(/\D/g, ''), 10) || 0
-    const next = mode === 'add' ? localCollected + n : Math.max(0, localCollected - n)
-    const nextHistory = [
-      {
-        id: crypto.randomUUID(),
-        type: mode,
-        amount: n,
-        balanceAfter: next,
-        date: new Date().toISOString(),
-      },
-      ...localHistory,
-    ].slice(0, 20)
+    if (n <= 0) return
+    const delta = mode === 'add' ? n : -n
+    const next = Math.max(0, localCollected + delta)
+    const entryId = crypto.randomUUID()
+    const newEntry: SavingsHistoryInput = {
+      id: entryId,
+      type: mode,
+      amount: n,
+      balanceAfter: next,
+      date: new Date().toISOString(),
+    }
+    const nextHistory = [newEntry, ...localHistory].slice(0, 20)
     setLocalCollected(next)
     setLocalHistory(nextHistory)
     setInputRaw('')
@@ -62,8 +63,9 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
       const result = await updateTabunganWithHistory(next, nextHistory)
       const err = handleActionError(result.error)
       if (err) {
-        setLocalCollected(localCollected)
-        setLocalHistory(localHistory)
+        // Undo hanya delta ini — aman meski ada submit lain yang concurrent.
+        setLocalCollected(prev => Math.max(0, prev - delta))
+        setLocalHistory(prev => prev.filter(item => item.id !== entryId))
         setError('Riwayat tabungan belum tersimpan. Coba input ulang.')
       }
     })
@@ -106,15 +108,20 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
           </div>
           <div className="text-nikah-muted" style={{ fontSize: 12, marginTop: 4 }}>dari target {formatRupiah(target)}</div>
         </div>
-        <div className="text-right">
-          <div
-            className="text-nikah-mauve font-extrabold"
-            style={{ fontSize: 14 }}
-          >
-            {formatRupiah(monthly)}/bln
+        {months > 0 ? (
+          <div className="text-right">
+            <div className="text-nikah-mauve font-extrabold" style={{ fontSize: 14 }}>
+              {formatRupiah(monthly)}/bln
+            </div>
+            <div className="text-nikah-muted font-normal" style={{ fontSize: 11, marginTop: 4 }}>selama {months} bln lagi</div>
           </div>
-          <div className="text-nikah-muted font-normal" style={{ fontSize: 11, marginTop: 4 }}>selama {months} bln lagi</div>
-        </div>
+        ) : (
+          <div className="text-right">
+            <div className="text-nikah-muted font-light" style={{ fontSize: 12, lineHeight: 1.4 }}>
+              Atur tanggal nikah<br />untuk target bulanan
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Progress bar */}
