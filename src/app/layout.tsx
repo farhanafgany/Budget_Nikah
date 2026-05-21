@@ -26,11 +26,20 @@ export const metadata: Metadata = {
     siteName: 'BudgetNikah',
     locale: 'id_ID',
     type: 'website',
+    images: [
+      {
+        url: '/images/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'BudgetNikah — Cek Apakah Rencana Weddingmu Sudah Realistis',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'BudgetNikah — Cek Apakah Rencana Weddingmu Sudah Realistis',
     description: 'Dapatkan Wedding Readiness Score, estimasi budget riil, dan rencana nabung bulanan. Gratis, tanpa login.',
+    images: ['/images/og-image.png'],
   },
   metadataBase: new URL('https://budgetnikah.com'),
 }

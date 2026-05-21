@@ -1,4 +1,4 @@
-import { createHash } from 'crypto'
+import { createHash, timingSafeEqual } from 'crypto'
 
 export function isMidtransProduction() {
   return process.env.MIDTRANS_IS_PRODUCTION === 'true'
@@ -46,5 +46,9 @@ export function verifyMidtransSignature({
     .update(`${orderId}${statusCode}${grossAmount}${getMidtransServerKey()}`)
     .digest('hex')
 
-  return expected === signatureKey
+  try {
+    return timingSafeEqual(Buffer.from(expected, 'hex'), Buffer.from(signatureKey, 'hex'))
+  } catch {
+    return false
+  }
 }

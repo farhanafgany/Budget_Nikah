@@ -43,6 +43,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Incomplete Midtrans notification.' }, { status: 400 })
   }
 
+  // Validate order_id format to reject unexpected inputs early
+  if (!/^BN-\d+-[a-f0-9]{8}$/i.test(orderId)) {
+    return NextResponse.json({ error: 'Invalid order_id format.' }, { status: 400 })
+  }
+
   if (!verifyMidtransSignature({ orderId, statusCode, grossAmount, signatureKey })) {
     return NextResponse.json({ error: 'Invalid Midtrans signature.' }, { status: 403 })
   }
@@ -94,7 +99,6 @@ export async function POST(request: Request) {
         fraud_status: fraudStatus,
         payment_type: paymentType,
         transaction_id: transactionId,
-        raw_notification: verified,
       })
       .eq('order_id', orderId)
 
@@ -103,6 +107,7 @@ export async function POST(request: Request) {
     }
 
     if (isSuccessfulPayment(transactionStatus, fraudStatus)) {
+      // Only update if not already premium — makes this idempotent for Midtrans retries
       const { error: premiumError } = await admin
         .from('app_users')
         .update({
@@ -111,6 +116,7 @@ export async function POST(request: Request) {
           payment_reference: orderId,
         })
         .eq('id', payment.user_id)
+        .eq('is_premium', false)
 
       if (premiumError) {
         return NextResponse.json({ error: premiumError.message }, { status: 500 })
