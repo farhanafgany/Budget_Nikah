@@ -52,11 +52,33 @@ export function FeatureShowcase() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
-              className="bg-white border border-nikah-border rounded-[16px] p-4"
-              style={{ boxShadow: '0 1px 4px rgba(90,30,42,0.04)' }}
+              className="bg-white border border-nikah-border rounded-[16px]"
+              style={{
+                padding: '16px 18px',
+                boxShadow: '0 1px 4px rgba(90,30,42,0.04)',
+                borderLeftWidth: 3,
+                borderLeftColor: f.tier === 'free' ? '#4A7C5A' : 'var(--nikah-mauve)',
+              }}
             >
-              <h3 className="text-base font-extrabold text-nikah-text mb-1">{f.title}</h3>
-              <p className="text-sm text-nikah-muted leading-relaxed font-light">{f.desc}</p>
+              <div className="flex items-center justify-between" style={{ marginBottom: 6, gap: 8 }}>
+                <h3 className="font-extrabold text-nikah-text" style={{ fontSize: 14.5, lineHeight: 1.3 }}>{f.title}</h3>
+                {f.tier === 'free' ? (
+                  <span
+                    className="flex-shrink-0 text-[10px] font-extrabold rounded-full"
+                    style={{ background: '#EEF7EE', color: '#2F7A3F', padding: '3px 9px', border: '1px solid #C8E6C9' }}
+                  >
+                    Gratis
+                  </span>
+                ) : (
+                  <span
+                    className="flex-shrink-0 text-[10px] font-extrabold rounded-full"
+                    style={{ background: 'var(--landing-pink, #FBECEF)', color: '#7D3F5A', padding: '3px 9px', border: '1px solid #E8D0C0' }}
+                  >
+                    Premium
+                  </span>
+                )}
+              </div>
+              <p className="text-nikah-muted font-light leading-relaxed" style={{ fontSize: 13.5 }}>{f.desc}</p>
             </div>
           ))}
         </div>

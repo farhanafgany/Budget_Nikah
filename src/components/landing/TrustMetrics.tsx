@@ -43,18 +43,23 @@ export function TrustMetrics() {
           {METRICS.map(metric => (
             <div
               key={metric.label}
-              className="rounded-[18px] p-4 lg:p-6"
-              style={{ background: CARD_BG, border: `1px solid ${CARD_BORDER}`, boxShadow: '0 2px 8px rgba(90,30,42,0.06)' }}
+              className="rounded-[18px]"
+              style={{
+                background: CARD_BG,
+                border: `1px solid ${CARD_BORDER}`,
+                boxShadow: '0 2px 8px rgba(90,30,42,0.06)',
+                padding: '18px 16px',
+              }}
             >
               <div
                 className="leading-none mb-3"
-                style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 34, fontWeight: 500, color: CARD_NUM_COLOR }}
+                style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 36, fontWeight: 500, color: CARD_NUM_COLOR }}
               >
                 {metric.value}
               </div>
               <div>
-                <h3 className="text-sm font-extrabold text-nikah-text mb-1">{metric.label}</h3>
-                <p className="text-xs text-nikah-muted leading-relaxed font-light">{metric.desc}</p>
+                <h3 className="font-extrabold text-nikah-text mb-1" style={{ fontSize: 13 }}>{metric.label}</h3>
+                <p className="text-nikah-muted font-light leading-relaxed" style={{ fontSize: 12.5 }}>{metric.desc}</p>
               </div>
             </div>
           ))}

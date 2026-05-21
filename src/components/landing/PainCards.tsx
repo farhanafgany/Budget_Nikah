@@ -39,10 +39,11 @@ export function PainCards() {
           {PAINS.map((item) => (
             <div
               key={item.q}
-              className="bg-nikah-bg border border-nikah-border border-l-4 border-l-nikah-mauve rounded-[20px] px-7 py-6 hover:border-l-nikah-deep hover:translate-x-0.5 transition-all duration-150"
+              className="bg-nikah-bg border border-nikah-border border-l-4 border-l-nikah-mauve rounded-[20px] hover:border-l-nikah-deep hover:translate-x-0.5 transition-all duration-150"
+              style={{ padding: '18px 20px' }}
             >
-              <p className="text-[17px] font-bold text-nikah-text leading-snug mb-1">{item.q}</p>
-              <p className="text-sm text-nikah-muted font-light leading-relaxed">{item.note}</p>
+              <p className="font-bold text-nikah-text leading-snug mb-1.5" style={{ fontSize: 16 }}>{item.q}</p>
+              <p className="text-nikah-muted font-light leading-relaxed" style={{ fontSize: 14 }}>{item.note}</p>
             </div>
           ))}
         </div>

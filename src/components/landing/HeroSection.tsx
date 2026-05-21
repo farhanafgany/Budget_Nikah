@@ -244,9 +244,10 @@ function MobileHero() {
       <p
         style={{
           textAlign: 'center',
-          fontSize: 11,
+          fontSize: 13,
           color: 'var(--landing-muted, #A38B89)',
           margin: 0,
+          lineHeight: 1.5,
         }}
       >
         Estimasi di atas indikatif · hasil personal akan lebih akurat
