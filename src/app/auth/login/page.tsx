@@ -65,59 +65,15 @@ function LoginContent() {
     ? 'Hasil kalian akan disimpan dulu, lalu kalian kembali ke halaman premium.'
     : 'Masuk untuk menyimpan hasil simulasi dan melanjutkan persiapan.'
 
-  async function syncAndRedirect(userId: string) {
+  async function syncAndRedirect() {
     if (onboarding.isComplete()) {
-      const supabase = createClient()
-
-      // Jangan timpa data user yang sudah premium — protect dashboard data mereka.
-      const { data: account } = await supabase
-        .from('app_users')
-        .select('is_premium')
-        .eq('id', userId)
-        .single()
-
-      if (account?.is_premium) {
-        router.replace(nextPath)
-        return
-      }
-
-      const { getCityTier } = await import('@/lib/cityTiers')
-      const { calculateAllocation } = await import('@/lib/allocation')
-      const { calculateScore, calculatePressureLevel } = await import('@/lib/scoring')
-
-      const alloc = calculateAllocation({
-        totalBudget: onboarding.totalBudget,
-        guestCount: onboarding.guestCount,
-        weddingStyle: onboarding.weddingStyle,
-        planningPriority: onboarding.planningPriority,
-      })
-      const sr = calculateScore({
-        totalBudget: onboarding.totalBudget,
-        guestCount: onboarding.guestCount,
-        weddingStyle: onboarding.weddingStyle,
-        planningPriority: onboarding.planningPriority,
-        weddingCity: onboarding.weddingCity,
-        allocation: alloc,
+      const response = await fetch('/api/onboarding/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ onboarding }),
       })
 
-      const { error: upsertErr } = await supabase.from('wedding_profiles').upsert({
-        user_id: userId,
-        partner_one_name: onboarding.partnerOneName,
-        partner_two_name: onboarding.partnerTwoName,
-        wedding_city: onboarding.weddingCity,
-        city_tier: getCityTier(onboarding.weddingCity),
-        wedding_date: onboarding.weddingDate || null,
-        total_budget: onboarding.totalBudget,
-        guest_count: onboarding.guestCount,
-        wedding_style: onboarding.weddingStyle,
-        event_type: onboarding.eventType,
-        planning_priority: onboarding.planningPriority,
-        readiness_score: sr.score,
-        pressure_level: calculatePressureLevel(sr.score),
-        allocation_result: alloc,
-      }, { onConflict: 'user_id' })
-
-      if (upsertErr) {
+      if (!response.ok) {
         setError('Gagal menyimpan data. Silakan coba lagi.')
         setLoading(false)
         return
@@ -132,15 +88,19 @@ function LoginContent() {
   async function handleEmail(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true); setError('')
-    const supabase = createClient()
-    const { data, error: err } = await supabase.auth.signInWithPassword({ email, password })
-    if (err) {
-      const message = err.message?.toLowerCase().includes('invalid login credentials')
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
+    const data = await response.json()
+    if (!response.ok) {
+      const message = data.error?.toLowerCase().includes('invalid login credentials')
         ? await getInvalidCredentialMessage(email)
-        : getLoginErrorMessage(err)
+        : getLoginErrorMessage({ message: data.error, status: data.status ?? response.status })
       setError(message); setLoading(false); return
     }
-    await syncAndRedirect(data.user.id)
+    await syncAndRedirect()
   }
 
   async function handleGoogle() {

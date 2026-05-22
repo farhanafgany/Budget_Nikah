@@ -54,46 +54,15 @@ function SignupContent() {
     ? 'Hasil kalian akan disimpan dulu, lalu kalian kembali ke halaman premium.'
     : 'Buat akun untuk menyimpan hasil simulasi dan melanjutkan persiapan.'
 
-  async function syncAndRedirect(userId: string) {
+  async function syncAndRedirect() {
     if (onboarding.isComplete()) {
-      const supabase = createClient()
-      const { getCityTier } = await import('@/lib/cityTiers')
-      const { calculateAllocation } = await import('@/lib/allocation')
-      const { calculateScore, calculatePressureLevel } = await import('@/lib/scoring')
-
-      const alloc = calculateAllocation({
-        totalBudget: onboarding.totalBudget,
-        guestCount: onboarding.guestCount,
-        weddingStyle: onboarding.weddingStyle,
-        planningPriority: onboarding.planningPriority,
-      })
-      const sr = calculateScore({
-        totalBudget: onboarding.totalBudget,
-        guestCount: onboarding.guestCount,
-        weddingStyle: onboarding.weddingStyle,
-        planningPriority: onboarding.planningPriority,
-        weddingCity: onboarding.weddingCity,
-        allocation: alloc,
+      const response = await fetch('/api/onboarding/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ onboarding }),
       })
 
-      const { error: upsertErr } = await supabase.from('wedding_profiles').upsert({
-        user_id: userId,
-        partner_one_name: onboarding.partnerOneName,
-        partner_two_name: onboarding.partnerTwoName,
-        wedding_city: onboarding.weddingCity,
-        city_tier: getCityTier(onboarding.weddingCity),
-        wedding_date: onboarding.weddingDate || null,
-        total_budget: onboarding.totalBudget,
-        guest_count: onboarding.guestCount,
-        wedding_style: onboarding.weddingStyle,
-        event_type: onboarding.eventType,
-        planning_priority: onboarding.planningPriority,
-        readiness_score: sr.score,
-        pressure_level: calculatePressureLevel(sr.score),
-        allocation_result: alloc,
-      }, { onConflict: 'user_id' })
-
-      if (upsertErr) {
+      if (!response.ok) {
         setError('Gagal menyimpan data. Silakan coba lagi.')
         setLoading(false)
         return
@@ -107,21 +76,26 @@ function SignupContent() {
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true); setError('')
-    const supabase = createClient()
-    const { data, error: err } = await supabase.auth.signUp({
-      email, password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+    const response = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
     })
-    if (err) { setError(getSignupErrorMessage(err)); setLoading(false); return }
+    const data = await response.json()
+    if (!response.ok) {
+      setError(getSignupErrorMessage({ message: data.error, status: data.status ?? response.status }))
+      setLoading(false)
+      return
+    }
 
-    if (data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+    if (data.identities_count === 0) {
       setError('Email ini sudah terdaftar. Masuk dengan email tersebut atau gunakan email lain.')
       setLoading(false)
       return
     }
 
-    if (data.session) {
-      await syncAndRedirect(data.session.user.id)
+    if (data.has_session && data.user_id) {
+      await syncAndRedirect()
       return
     }
 

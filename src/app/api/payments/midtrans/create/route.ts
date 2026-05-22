@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { checkRateLimit } from '@/lib/rateLimit'
+import { captureApiError } from '@/lib/sentry'
 import {
   getMidtransBasicAuthHeader,
   getMidtransSnapBaseUrl,
@@ -15,13 +17,21 @@ interface SnapResponse {
   error_messages?: string[]
 }
 
-export async function POST() {
+export async function POST(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
     return NextResponse.json({ error: 'Login diperlukan sebelum pembayaran.' }, { status: 401 })
   }
+
+  const limited = await checkRateLimit(request, {
+    key: 'payment:create',
+    limit: 5,
+    window: '10 m',
+    identifier: user.id,
+  })
+  if (limited) return limited
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL
   if (!appUrl) {
@@ -107,6 +117,7 @@ export async function POST() {
       redirect_url: snap.redirect_url,
     })
   } catch (error) {
+    captureApiError(error, '/api/payments/midtrans/create')
     const message = error instanceof Error ? error.message : 'Gagal membuat transaksi.'
     return NextResponse.json({ error: message }, { status: 500 })
   }

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { captureApiError } from '@/lib/sentry'
 import { createAdminClient } from '@/lib/supabase/admin'
 import {
   getMidtransApiBaseUrl,
@@ -125,6 +126,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ ok: true })
   } catch (error) {
+    captureApiError(error, '/api/payments/midtrans/webhook')
     const message = error instanceof Error ? error.message : 'Webhook failed.'
     return NextResponse.json({ error: message }, { status: 500 })
   }

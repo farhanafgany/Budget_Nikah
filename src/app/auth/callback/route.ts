@@ -1,7 +1,17 @@
 import { NextResponse } from 'next/server'
+import { checkRateLimit } from '@/lib/rateLimit'
 import { createClient }  from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(request: Request) {
+  const limited = await checkRateLimit(request, {
+    key: 'auth:callback',
+    limit: 20,
+    window: '10 m',
+  })
+  if (limited) return limited
+
   const { searchParams, origin } = new URL(request.url)
   const code = searchParams.get('code')
   const next = searchParams.get('next')

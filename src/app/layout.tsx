@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import * as Sentry from '@sentry/nextjs'
 import { Plus_Jakarta_Sans, Playfair_Display } from 'next/font/google'
 import './globals.css'
 
@@ -16,7 +17,7 @@ const playfair = Playfair_Display({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
+const metadataConfig: Metadata = {
   title: 'BudgetNikah — Cek Apakah Rencana Weddingmu Sudah Realistis',
   description: 'Dapatkan Wedding Readiness Score, estimasi budget riil per kategori, checklist 50+ item, dan rencana nabung bulanan. Gratis, tanpa login.',
   keywords: ['wedding budget', 'budget nikah', 'perencana pernikahan', 'wedding planner indonesia', 'checklist pernikahan'],
@@ -42,6 +43,15 @@ export const metadata: Metadata = {
     images: ['/images/og-image.png'],
   },
   metadataBase: new URL('https://budgetnikah.com'),
+}
+
+export function generateMetadata(): Metadata {
+  return {
+    ...metadataConfig,
+    other: {
+      ...Sentry.getTraceData(),
+    },
+  }
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

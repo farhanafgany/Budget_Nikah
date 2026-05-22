@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
+import { checkRateLimit } from '@/lib/rateLimit'
+import { captureApiError } from '@/lib/sentry'
 import {
   getMidtransApiBaseUrl,
   getMidtransBasicAuthHeader,
@@ -30,6 +32,14 @@ export async function POST(request: Request) {
   if (!user) {
     return NextResponse.json({ error: 'Login diperlukan sebelum konfirmasi pembayaran.' }, { status: 401 })
   }
+
+  const limited = await checkRateLimit(request, {
+    key: 'payment:confirm',
+    limit: 10,
+    window: '10 m',
+    identifier: user.id,
+  })
+  if (limited) return limited
 
   let body: { order_id?: string }
 
@@ -118,6 +128,7 @@ export async function POST(request: Request) {
       is_premium: isSuccessfulPayment(transactionStatus, fraudStatus),
     })
   } catch (error) {
+    captureApiError(error, '/api/payments/midtrans/confirm')
     const message = error instanceof Error ? error.message : 'Konfirmasi pembayaran gagal.'
     return NextResponse.json({ error: message }, { status: 500 })
   }
