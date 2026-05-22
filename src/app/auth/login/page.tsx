@@ -3,6 +3,7 @@ import { Suspense, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
+import { track } from '@/lib/analytics'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { AlarmClock, BriefcaseBusiness, Coins } from 'lucide-react'
@@ -88,6 +89,11 @@ function LoginContent() {
   async function handleEmail(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true); setError('')
+    track('auth_started', {
+      method: 'email',
+      next_path: nextPath,
+      source: isPremiumContinuation ? 'premium' : 'auth',
+    })
     const response = await fetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -98,12 +104,27 @@ function LoginContent() {
       const message = data.error?.toLowerCase().includes('invalid login credentials')
         ? await getInvalidCredentialMessage(email)
         : getLoginErrorMessage({ message: data.error, status: data.status ?? response.status })
+      track('auth_failed', {
+        method: 'email',
+        next_path: nextPath,
+        status: response.status,
+      })
       setError(message); setLoading(false); return
     }
+    track('auth_success', {
+      method: 'email',
+      next_path: nextPath,
+      source: isPremiumContinuation ? 'premium' : 'auth',
+    })
     await syncAndRedirect()
   }
 
   async function handleGoogle() {
+    track('auth_started', {
+      method: 'google',
+      next_path: nextPath,
+      source: isPremiumContinuation ? 'premium' : 'auth',
+    })
     const supabase = createClient()
     const finishPath = `/auth/finish?next=${encodeURIComponent(nextPath)}`
     await supabase.auth.signInWithOAuth({

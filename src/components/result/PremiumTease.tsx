@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { TrackedLink } from '@/components/analytics/TrackedLink'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 
 interface Props {
@@ -75,8 +75,10 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           </p>
         </div>
         <div className="flex justify-end" style={{ gap: 12 }}>
-          <Link
+          <TrackedLink
             href={continueHref}
+            event="result_premium_cta_clicked"
+            eventProps={{ cta_location: 'result_banner_desktop', is_signed_in: isSignedIn }}
             className="inline-flex items-center justify-center font-extrabold transition hover:brightness-105 active:scale-[0.99]"
             style={{
               borderRadius: 999,
@@ -87,29 +89,33 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             }}
           >
             Buka rencana — Rp 149rb ›
-          </Link>
+          </TrackedLink>
         </div>
       </div>
 
       {/* Mobile inline CTA buttons */}
       <div className="lg:hidden" style={{ marginBottom: 32 }}>
-        <Link
+        <TrackedLink
           href={continueHref}
+          event="result_premium_cta_clicked"
+          eventProps={{ cta_location: 'result_inline_mobile', is_signed_in: isSignedIn }}
           className="block w-full text-white font-bold py-4 rounded-full text-center text-sm active:opacity-75 active:scale-[0.98] transition-all"
           style={{ background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)', boxShadow: '0 6px 20px rgba(90,30,42,0.22)' }}
         >
           Buka rencana — Rp 149rb ›
-        </Link>
+        </TrackedLink>
         <p className="text-center text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.5, marginTop: 8 }}>
           ✓ Garansi 3 hari — tidak cocok, uang kembali penuh.
         </p>
         {!isSignedIn && (
-          <Link
+          <TrackedLink
             href={saveHref}
+            event="save_result_clicked"
+            eventProps={{ cta_location: 'result_inline_mobile', target: 'auth_login' }}
             className="block w-full text-center text-nikah-muted font-bold text-sm mt-3 active:opacity-60 transition-opacity"
           >
             Simpan hasil ke akun dulu →
-          </Link>
+          </TrackedLink>
         )}
       </div>
 
@@ -166,21 +172,25 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           Buat akun gratis untuk menyimpan hasil ini. Bisa dibuka lagi kapan saja dari perangkat mana pun.
         </p>
         {!isSignedIn ? (
-          <Link
+          <TrackedLink
             href={saveHref}
+            event="save_result_clicked"
+            eventProps={{ cta_location: 'result_bottom', target: 'auth_login' }}
             className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full transition hover:bg-nikah-bg active:scale-[0.97] active:brightness-90 w-full md:w-auto"
             style={{ padding: '14px 28px', fontSize: 14 }}
           >
             Simpan hasil ke akun →
-          </Link>
+          </TrackedLink>
         ) : (
-          <Link
+          <TrackedLink
             href={continueHref}
+            event="result_premium_cta_clicked"
+            eventProps={{ cta_location: 'result_bottom', is_signed_in: true }}
             className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full transition hover:opacity-90 active:scale-[0.97] active:brightness-90 w-full md:w-auto"
             style={{ padding: '14px 28px', fontSize: 14 }}
           >
             Lanjutkan sekarang →
-          </Link>
+          </TrackedLink>
         )}
         <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: '14px 0 0' }}>
           ✓ Tanpa subscription · ✓ Garansi 3 hari tanpa pertanyaan

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { TrackedLink } from '@/components/analytics/TrackedLink'
 
 const WHAT_YOU_GET = [
   { label: 'Tahu prioritas yang harus dibereskan dulu', note: 'tugas dan deadline paling dekat' },
@@ -39,20 +39,24 @@ export function PricingSection() {
             </div>
 
             <div className="flex flex-col gap-3">
-              <Link
+              <TrackedLink
                 href="/premium"
+                event="landing_cta_clicked"
+                eventProps={{ cta_location: 'pricing', target: 'premium' }}
                 className="inline-flex w-full md:w-auto items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm text-center transition-colors active:scale-95 hover:opacity-90"
                 style={{ padding: '16px 28px' }}
               >
                 Beli Akses Premium — Rp 149rb →
-              </Link>
-              <Link
+              </TrackedLink>
+              <TrackedLink
                 href="/onboarding"
+                event="landing_cta_clicked"
+                eventProps={{ cta_location: 'pricing', target: 'onboarding' }}
                 className="inline-flex w-full md:w-auto items-center justify-center text-nikah-deep font-semibold text-sm text-center hover:underline"
                 style={{ padding: '8px 0' }}
               >
                 Coba gratis dulu →
-              </Link>
+              </TrackedLink>
             </div>
           </div>
 

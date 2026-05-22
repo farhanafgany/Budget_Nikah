@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { ChevronRight } from 'lucide-react'
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber'
+import { bucketBudget, bucketGuests, scoreBand, track } from '@/lib/analytics'
 import { TabunganNikah } from '@/components/dashboard/TabunganNikah'
 import { ChecklistPernikahan } from '@/components/dashboard/ChecklistPernikahan'
 import { SeserahanList } from '@/components/dashboard/SeserahanList'
@@ -199,6 +200,15 @@ export function DashboardClient({
   useEffect(() => {
     setGreeting(getTimeGreeting())
   }, [])
+
+  useEffect(() => {
+    track('dashboard_viewed', {
+      score_band: scoreBand(score),
+      budget_bucket: bucketBudget(totalBudget),
+      guest_bucket: bucketGuests(guestCount),
+      has_wedding_date: Boolean(weddingDate),
+    })
+  }, [score, totalBudget, guestCount, weddingDate])
 
   const allocEntries = alloc
     ? (Object.entries(alloc) as [string, AllocEntry][])

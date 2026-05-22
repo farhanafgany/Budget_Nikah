@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { checkRateLimit } from '@/lib/rateLimit'
+import { trackServer } from '@/lib/analytics'
 import { captureApiError } from '@/lib/sentry'
 import {
   getMidtransApiBaseUrl,
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
+    await trackServer('payment_confirm_failed', { reason: 'unauthenticated' })
     return NextResponse.json({ error: 'Login diperlukan sebelum konfirmasi pembayaran.' }, { status: 401 })
   }
 
@@ -50,6 +52,7 @@ export async function POST(request: Request) {
   }
 
   if (!body.order_id) {
+    await trackServer('payment_confirm_failed', { reason: 'missing_order_id' })
     return NextResponse.json({ error: 'order_id diperlukan.' }, { status: 400 })
   }
 
@@ -63,6 +66,7 @@ export async function POST(request: Request) {
       .single()
 
     if (paymentError || !payment) {
+      await trackServer('payment_confirm_failed', { reason: 'order_not_found' })
       return NextResponse.json({ error: 'Payment order tidak ditemukan.' }, { status: 404 })
     }
 
@@ -75,6 +79,7 @@ export async function POST(request: Request) {
     })
 
     if (!statusResponse.ok) {
+      await trackServer('payment_confirm_failed', { reason: 'midtrans_status_failed', status: statusResponse.status })
       return NextResponse.json({ error: 'Gagal memverifikasi status Midtrans.' }, { status: 502 })
     }
 
@@ -82,6 +87,7 @@ export async function POST(request: Request) {
     const verifiedGrossAmount = Number(verified.gross_amount)
 
     if (Number.isFinite(verifiedGrossAmount) && Math.round(verifiedGrossAmount) !== payment.amount) {
+      await trackServer('payment_confirm_failed', { reason: 'amount_mismatch' })
       return NextResponse.json({ error: 'Nominal pembayaran tidak sesuai.' }, { status: 400 })
     }
 
@@ -104,6 +110,7 @@ export async function POST(request: Request) {
       .eq('order_id', body.order_id)
 
     if (updatePaymentError) {
+      await trackServer('payment_confirm_failed', { reason: 'payment_update_failed' })
       return NextResponse.json({ error: updatePaymentError.message }, { status: 500 })
     }
 
@@ -118,16 +125,23 @@ export async function POST(request: Request) {
         .eq('id', user.id)
 
       if (premiumError) {
+        await trackServer('payment_confirm_failed', { reason: 'premium_update_failed' })
         return NextResponse.json({ error: premiumError.message }, { status: 500 })
       }
     }
 
+    await trackServer('payment_confirm_succeeded', {
+      provider: 'midtrans',
+      payment_status: nextStatus,
+      is_premium: isSuccessfulPayment(transactionStatus, fraudStatus),
+    })
     return NextResponse.json({
       ok: true,
       status: nextStatus,
       is_premium: isSuccessfulPayment(transactionStatus, fraudStatus),
     })
   } catch (error) {
+    await trackServer('payment_confirm_failed', { reason: 'exception' })
     captureApiError(error, '/api/payments/midtrans/confirm')
     const message = error instanceof Error ? error.message : 'Konfirmasi pembayaran gagal.'
     return NextResponse.json({ error: message }, { status: 500 })

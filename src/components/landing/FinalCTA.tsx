@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { TrackedLink } from '@/components/analytics/TrackedLink'
 
 export function FinalCTA() {
   return (
@@ -29,8 +29,10 @@ export function FinalCTA() {
           <p className="font-light mb-6 leading-relaxed" style={{ color: 'rgba(232,192,204,0.85)', fontSize: 15 }}>
             Selesai dalam 2 menit, tanpa login. Gratis.
           </p>
-          <Link
+          <TrackedLink
             href="/onboarding"
+            event="landing_cta_clicked"
+            eventProps={{ cta_location: 'final', target: 'onboarding' }}
             className="block w-full text-nikah-deep font-extrabold rounded-full text-center transition-colors hover:bg-nikah-pink"
             style={{
               background: '#fff',
@@ -40,7 +42,7 @@ export function FinalCTA() {
             }}
           >
             Mulai Sekarang →
-          </Link>
+          </TrackedLink>
         </div>
       </div>
     </section>

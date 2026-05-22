@@ -2,6 +2,9 @@
 
 import type { ReactNode } from 'react'
 import { BrandLogo } from '@/components/ui/BrandLogo'
+import { bucketBudget, bucketGuests, track } from '@/lib/analytics'
+import { getCityTier } from '@/lib/cityTiers'
+import { useOnboardingStore } from '@/stores/onboardingStore'
 
 const TOTAL_STEPS = 7
 
@@ -14,6 +17,8 @@ const STEP_LABELS = [
   { label: 'Gaya',      hint: 'Visi dan karakter acara' },
   { label: 'Prioritas', hint: 'Yang paling penting buat kalian' },
 ]
+
+const STEP_NAMES = ['names', 'city', 'date', 'budget', 'guests', 'style', 'event_priority']
 
 const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
 
@@ -37,6 +42,20 @@ export function StepWrapper({
   hideStepCounter = false,
 }: StepWrapperProps) {
   const progress = ((stepIndex + 1) / TOTAL_STEPS) * 100
+  const totalBudget = useOnboardingStore(s => s.totalBudget)
+  const guestCount = useOnboardingStore(s => s.guestCount)
+  const weddingCity = useOnboardingStore(s => s.weddingCity)
+
+  function handleNext() {
+    track('onboarding_step_completed', {
+      step_index: stepIndex,
+      step_name: STEP_NAMES[stepIndex] ?? 'unknown',
+      budget_bucket: bucketBudget(totalBudget),
+      guest_bucket: bucketGuests(guestCount),
+      city_tier: weddingCity ? getCityTier(weddingCity) : 'unknown',
+    })
+    onNext()
+  }
 
   return (
     <div className="min-h-[100dvh] bg-nikah-bg flex flex-col lg:flex-row">
@@ -168,7 +187,7 @@ export function StepWrapper({
         >
           <div className="max-w-lg mx-auto">
             <button
-              onClick={onNext}
+              onClick={handleNext}
               disabled={nextDisabled}
               className="w-full bg-nikah-deep text-white font-bold py-4 rounded-full text-sm disabled:opacity-40 hover:opacity-90 transition"
             >

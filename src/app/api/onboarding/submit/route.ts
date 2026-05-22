@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { calculateAllocation } from '@/lib/allocation'
+import { bucketBudget, bucketGuests, scoreBand, trackServer } from '@/lib/analytics'
 import { getCityTier } from '@/lib/cityTiers'
 import { checkRateLimit } from '@/lib/rateLimit'
 import { calculatePressureLevel, calculateScore } from '@/lib/scoring'
@@ -92,14 +93,22 @@ export async function POST(request: Request) {
     }, { onConflict: 'user_id' })
 
     if (error) {
+      await trackServer('onboarding_sync_failed', { reason: 'upsert_failed' })
       captureApiError(error, '/api/onboarding/submit')
       return NextResponse.json({ error: error.message }, { status: 500 })
     }
   } catch (error) {
+    await trackServer('onboarding_sync_failed', { reason: 'exception' })
     captureApiError(error, '/api/onboarding/submit')
     const message = error instanceof Error ? error.message : 'Gagal menyimpan onboarding.'
     return NextResponse.json({ error: message }, { status: 500 })
   }
 
+  await trackServer('onboarding_sync_success', {
+    budget_bucket: bucketBudget(onboarding.totalBudget),
+    guest_bucket: bucketGuests(onboarding.guestCount),
+    city_tier: getCityTier(onboarding.weddingCity),
+    score_band: scoreBand(scoreResult.score),
+  })
   return NextResponse.json({ ok: true })
 }

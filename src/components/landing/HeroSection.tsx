@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import Image from 'next/image'
+import { TrackedLink } from '@/components/analytics/TrackedLink'
 import { MobileHero } from '@/components/landing/MobileHero'
 
 const CLAUDE_SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
@@ -84,13 +84,15 @@ export function HeroSection() {
 
           <div className="flex flex-col items-start w-full" style={{ gap: 14 }}>
             <div className="hidden md:flex flex-wrap items-center" style={{ gap: 12 }}>
-              <Link
+              <TrackedLink
                 href="/onboarding"
+                event="landing_cta_clicked"
+                eventProps={{ cta_location: 'hero', target: 'onboarding' }}
                 className="inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full hover:opacity-90 active:scale-95 transition-all"
                 style={{ gap: 6, padding: '17px 28px', fontSize: 14, boxShadow: '0 8px 18px rgba(107,53,69,0.18)' }}
               >
                 Cek Sekarang — Gratis →
-              </Link>
+              </TrackedLink>
               <a
                 href="#contoh-hasil"
                 className="inline-flex items-center justify-center bg-white border border-nikah-border text-nikah-deep font-bold rounded-full hover:bg-nikah-bg active:scale-95 transition-all"

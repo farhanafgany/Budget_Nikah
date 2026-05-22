@@ -2,6 +2,7 @@
 import { useState, useTransition } from 'react'
 import { SESERAHAN_ITEMS } from '@/lib/seserahanItems'
 import { updateCustomSeserahanItems, updateHiddenSeserahanItems, updateSeserahanItems, type CustomSeserahanInput } from '@/app/dashboard/actions'
+import { track } from '@/lib/analytics'
 import { ChevronDown, Plus, Trash2 } from 'lucide-react'
 
 interface Props {
@@ -65,6 +66,10 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
       : [...localChecked, id]
     setLocalChecked(newChecked)
     setError('')
+    track('dashboard_feature_used', {
+      feature: 'seserahan',
+      action: wasChecked ? 'uncomplete' : 'complete',
+    })
     startTransition(async () => {
       const result = await updateSeserahanItems(newChecked)
       if (result.error) {
@@ -78,6 +83,10 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
     const label = draftLabel.trim()
     if (!label) return
     const nextItems = [{ id: `custom-${crypto.randomUUID()}`, label }, ...localCustomItems]
+    track('dashboard_feature_used', {
+      feature: 'seserahan',
+      action: 'add_custom',
+    })
     setLocalCustomItems(nextItems)
     setDraftLabel('')
     setExpanded(true)
@@ -95,6 +104,10 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
   function handleRemoveCustom(id: string) {
     const nextItems = localCustomItems.filter(item => item.id !== id)
     const nextChecked = localChecked.filter(checkedId => checkedId !== id)
+    track('dashboard_feature_used', {
+      feature: 'seserahan',
+      action: 'delete_custom',
+    })
     setLocalCustomItems(nextItems)
     setLocalChecked(nextChecked)
     setError('')
@@ -114,6 +127,10 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
   function handleRemoveDefault(id: string) {
     const nextHidden = [...localHiddenDefaultIds, id]
     const nextChecked = localChecked.filter(checkedId => checkedId !== id)
+    track('dashboard_feature_used', {
+      feature: 'seserahan',
+      action: 'hide_default',
+    })
     setLocalHiddenDefaultIds(nextHidden)
     setLocalChecked(nextChecked)
     setError('')

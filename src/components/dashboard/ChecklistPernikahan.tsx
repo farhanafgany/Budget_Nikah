@@ -3,6 +3,7 @@ import { useRef, useState, useTransition } from 'react'
 import { CHECKLIST_ITEMS, type ChecklistTimeline } from '@/lib/checklistItems'
 import { updateChecklistItems } from '@/app/dashboard/actions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
+import { track } from '@/lib/analytics'
 import { ChevronDown } from 'lucide-react'
 
 const TIMELINE_LABELS: Record<ChecklistTimeline, string> = {
@@ -100,6 +101,11 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
     setLocalChecked(newChecked)
     setError('')
     setRetryFn(null)
+    track('dashboard_feature_used', {
+      feature: 'checklist',
+      action: wasChecked ? 'uncomplete' : 'complete',
+      timeline_months_before: active,
+    })
     saveChecked(newChecked, () => {
       // Undo hanya perubahan item ini — aman meski ada toggle lain yang concurrent.
       setLocalChecked(prev =>

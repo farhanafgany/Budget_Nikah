@@ -1,7 +1,9 @@
 'use client'
 
 import Script from 'next/script'
+import * as Sentry from '@sentry/nextjs'
 import { useRef, useState } from 'react'
+import { track } from '@/lib/analytics'
 
 declare global {
   interface MidtransPaymentResult {
@@ -49,6 +51,17 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
   async function handlePay() {
     setError('')
     setLoading(true)
+    track('premium_payment_clicked', {
+      cta_location: 'premium_payment_button',
+      target: 'payment',
+      is_signed_in: true,
+    })
+    track('payment_started', { provider: 'midtrans' })
+    Sentry.addBreadcrumb({
+      category: 'payment',
+      message: 'payment_started',
+      level: 'info',
+    })
 
     try {
       let snapToken: string
@@ -76,17 +89,20 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
         const data = await response.json() as { order_id?: string; snap_token?: string; error?: string }
 
         if (response.status === 401) {
+          track('auth_required_for_payment', { source: 'payment_create' })
           window.location.href = loginRedirectHref
           return
         }
 
         if (!response.ok || !data.snap_token) {
+          track('payment_create_failed', { status: response.status })
           throw new Error(data.error || 'Gagal membuat transaksi.')
         }
 
         snapToken = data.snap_token
         orderId = data.order_id ?? ''
         cachedTokenRef.current = { snapToken, orderId }
+        track('payment_create_succeeded', { provider: 'midtrans' })
       }
 
       if (!clientKey) {
@@ -94,13 +110,21 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
       }
 
       if (!window.snap || !scriptReady) {
+        track('payment_snap_not_ready', { provider: 'midtrans' })
         throw new Error('Midtrans Snap belum siap. Tunggu sebentar lalu coba lagi.')
       }
 
+      track('payment_snap_opened', { provider: 'midtrans' })
+      Sentry.addBreadcrumb({
+        category: 'payment',
+        message: 'payment_snap_opened',
+        level: 'info',
+      })
       window.snap.pay(snapToken, {
         onSuccess: async (result) => {
           cachedTokenRef.current = null
           const finalOrderId = result.order_id ?? orderId
+          track('payment_success_callback', { provider: 'midtrans' })
 
           if (finalOrderId) {
             await fetch('/api/payments/midtrans/confirm', {
@@ -114,18 +138,37 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
         },
         onPending: () => {
           cachedTokenRef.current = null
+          track('payment_pending_callback', { provider: 'midtrans' })
           setLoading(false)
           window.location.replace('/premium')
         },
         onError: () => {
           cachedTokenRef.current = null
+          track('payment_error_callback', { provider: 'midtrans' })
+          Sentry.addBreadcrumb({
+            category: 'payment',
+            message: 'payment_error_callback',
+            level: 'warning',
+          })
           setError('Pembayaran belum berhasil. Silakan coba lagi.')
           setLoading(false)
         },
-        onClose: () => setLoading(false),
+        onClose: () => {
+          track('payment_closed', { provider: 'midtrans' })
+          setLoading(false)
+        },
       })
     } catch (err) {
       const isTimeout = err instanceof Error && err.name === 'AbortError'
+      track('payment_start_failed', {
+        provider: 'midtrans',
+        reason: isTimeout ? 'timeout' : 'error',
+      })
+      Sentry.addBreadcrumb({
+        category: 'payment',
+        message: isTimeout ? 'payment_timeout' : 'payment_start_failed',
+        level: 'warning',
+      })
       setError(isTimeout
         ? 'Koneksi lambat. Periksa internet kamu, lalu coba lagi.'
         : (err instanceof Error ? err.message : 'Gagal memulai pembayaran.')
@@ -141,8 +184,14 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
           src={snapScriptUrl}
           data-client-key={clientKey}
           strategy="afterInteractive"
-          onReady={() => setScriptReady(true)}
-          onLoad={() => setScriptReady(true)}
+          onReady={() => {
+            setScriptReady(true)
+            track('payment_snap_script_ready', { provider: 'midtrans' })
+          }}
+          onLoad={() => {
+            setScriptReady(true)
+            track('payment_snap_script_ready', { provider: 'midtrans' })
+          }}
         />
       )}
       <button

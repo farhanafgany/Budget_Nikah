@@ -1,6 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { useOnboardingStore } from '@/stores/onboardingStore'
+import { bucketBudget, bucketGuests, track } from '@/lib/analytics'
+import { getCityTier } from '@/lib/cityTiers'
 import { StepNames }         from '@/components/onboarding/StepNames'
 import { StepCity }          from '@/components/onboarding/StepCity'
 import { StepDate }          from '@/components/onboarding/StepDate'
@@ -20,6 +22,8 @@ const STEPS = [
   StepEventPriority,
   StepConfirmation,
 ]
+
+const STEP_NAMES = ['names', 'city', 'date', 'budget', 'guests', 'style', 'event_priority', 'confirmation']
 
 function WelcomeBackBanner({ step, name }: { step: number; name: string }) {
   const [visible, setVisible] = useState(true)
@@ -52,12 +56,29 @@ function WelcomeBackBanner({ step, name }: { step: number; name: string }) {
 export default function OnboardingPage() {
   const currentStep = useOnboardingStore(s => s.currentStep)
   const name = useOnboardingStore(s => s.partnerOneName)
+  const totalBudget = useOnboardingStore(s => s.totalBudget)
+  const guestCount = useOnboardingStore(s => s.guestCount)
+  const weddingCity = useOnboardingStore(s => s.weddingCity)
   const [showBanner, setShowBanner] = useState(false)
 
   useEffect(() => {
     // Hanya tampilkan banner jika user kembali ke tengah-tengah (bukan dari awal)
     if (currentStep > 0 && name) setShowBanner(true)
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (currentStep === 0) {
+      track('onboarding_started')
+    }
+
+    track('onboarding_step_viewed', {
+      step_index: currentStep,
+      step_name: STEP_NAMES[currentStep] ?? 'unknown',
+      budget_bucket: bucketBudget(totalBudget),
+      guest_bucket: bucketGuests(guestCount),
+      city_tier: weddingCity ? getCityTier(weddingCity) : 'unknown',
+    })
+  }, [currentStep, totalBudget, guestCount, weddingCity])
 
   const Step = STEPS[Math.min(currentStep, STEPS.length - 1)]
   return (

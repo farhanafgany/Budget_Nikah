@@ -1,6 +1,8 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { useOnboardingStore } from '@/stores/onboardingStore'
+import { bucketBudget, bucketGuests, track } from '@/lib/analytics'
+import { getCityTier } from '@/lib/cityTiers'
 import { StepWrapper } from './StepWrapper'
 
 const STYLE_LABELS: Record<string, string> = {
@@ -69,7 +71,17 @@ export function StepConfirmation() {
   return (
     <StepWrapper
       stepIndex={6}
-      onNext={() => router.push('/result')}
+      onNext={() => {
+        track('onboarding_completed', {
+          budget_bucket: bucketBudget(totalBudget),
+          guest_bucket: bucketGuests(guestCount),
+          city_tier: weddingCity ? getCityTier(weddingCity) : 'unknown',
+          wedding_style: weddingStyle,
+          event_type: eventType,
+          planning_priority: planningPriority,
+        })
+        router.push('/result')
+      }}
       onBack={prevStep}
       nextLabel="Lihat hasilnya →"
       hideStepCounter

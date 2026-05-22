@@ -78,6 +78,11 @@ NEXT_PUBLIC_APP_URL=
 
 NEXT_PUBLIC_WHATSAPP_NUMBER=
 NEXT_PUBLIC_WHATSAPP_MESSAGE=
+
+NEXT_PUBLIC_POSTHOG_KEY=
+# Alternative accepted if copied from PostHog wizard:
+# NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=
+NEXT_PUBLIC_POSTHOG_HOST=https://app.posthog.com
 ```
 
 Catatan production:
@@ -85,6 +90,7 @@ Catatan production:
 - Ganti Midtrans sandbox keys dengan production keys.
 - Set `MIDTRANS_IS_PRODUCTION=true`.
 - Pastikan `NEXT_PUBLIC_APP_URL` memakai domain production.
+- Isi `NEXT_PUBLIC_POSTHOG_KEY` untuk funnel analytics production.
 - Daftarkan webhook URL publik:
   `https://<domain>/api/payments/midtrans/webhook`
 

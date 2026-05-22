@@ -2,6 +2,7 @@
 import { useState, useTransition } from 'react'
 import { updateDashboardNote } from '@/app/dashboard/actions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
+import { track } from '@/lib/analytics'
 
 interface Props {
   initialNote: string
@@ -18,6 +19,11 @@ export function DashboardNote({ initialNote }: Props) {
 
   function handleSave() {
     setError('')
+    track('dashboard_feature_used', {
+      feature: 'note',
+      action: savedNote ? 'update' : 'add',
+      note_length_bucket: note.length < 50 ? '<50' : note.length < 200 ? '50-200' : '>200',
+    })
     startTransition(async () => {
       const result = await updateDashboardNote(note)
       const err = handleActionError(result.error)

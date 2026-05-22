@@ -2,6 +2,7 @@
 import { useState, useTransition } from 'react'
 import { updateVendorPayments, type VendorPaymentInput } from '@/app/dashboard/actions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
+import { track } from '@/lib/analytics'
 import { formatRupiah } from '@/lib/utils'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
 import { ChevronDown, Plus, Trash2 } from 'lucide-react'
@@ -73,6 +74,11 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
       return
     }
 
+    track('dashboard_feature_used', {
+      feature: 'vendor_tracker',
+      action: 'add',
+      has_due_date: Boolean(draft.dueDate),
+    })
     persist([
       {
         id: crypto.randomUUID(),
@@ -92,6 +98,10 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
   }
 
   function markPaid(id: string) {
+    track('dashboard_feature_used', {
+      feature: 'vendor_tracker',
+      action: 'mark_paid',
+    })
     persist(payments.map(item => {
       if (item.id !== id) return item
       const amount = Math.max(0, item.totalAmount - item.paidAmount)
@@ -106,6 +116,10 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
   }
 
   function removePayment(id: string) {
+    track('dashboard_feature_used', {
+      feature: 'vendor_tracker',
+      action: 'delete',
+    })
     persist(payments.filter(item => item.id !== id))
   }
 
@@ -124,6 +138,10 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
       return
     }
 
+    track('dashboard_feature_used', {
+      feature: 'vendor_tracker',
+      action: 'add_installment',
+    })
     const cappedAmount = Math.min(amount, remaining)
     persist(payments.map(item => item.id === id ? {
       ...item,

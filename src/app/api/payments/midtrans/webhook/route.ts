@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { trackServer } from '@/lib/analytics'
 import { captureApiError } from '@/lib/sentry'
 import { createAdminClient } from '@/lib/supabase/admin'
 import {
@@ -32,6 +33,7 @@ export async function POST(request: Request) {
   try {
     notification = await request.json()
   } catch {
+    await trackServer('payment_webhook_failed', { reason: 'invalid_json' })
     return NextResponse.json({ error: 'Invalid JSON.' }, { status: 400 })
   }
 
@@ -41,15 +43,20 @@ export async function POST(request: Request) {
   const signatureKey = notification.signature_key
 
   if (!orderId || !statusCode || !grossAmount || !signatureKey) {
+    await trackServer('payment_webhook_failed', { reason: 'incomplete_notification' })
     return NextResponse.json({ error: 'Incomplete Midtrans notification.' }, { status: 400 })
   }
 
+  await trackServer('payment_webhook_received', { provider: 'midtrans' })
+
   // Validate order_id format to reject unexpected inputs early
   if (!/^BN-\d+-[a-f0-9]{8}$/i.test(orderId)) {
+    await trackServer('payment_webhook_failed', { reason: 'invalid_order_id' })
     return NextResponse.json({ error: 'Invalid order_id format.' }, { status: 400 })
   }
 
   if (!verifyMidtransSignature({ orderId, statusCode, grossAmount, signatureKey })) {
+    await trackServer('payment_webhook_failed', { reason: 'invalid_signature' })
     return NextResponse.json({ error: 'Invalid Midtrans signature.' }, { status: 403 })
   }
 
@@ -63,6 +70,7 @@ export async function POST(request: Request) {
     })
 
     if (!statusResponse.ok) {
+      await trackServer('payment_webhook_failed', { reason: 'midtrans_status_failed', status: statusResponse.status })
       return NextResponse.json({ error: 'Failed to verify Midtrans status.' }, { status: 502 })
     }
 
@@ -80,11 +88,13 @@ export async function POST(request: Request) {
       .single()
 
     if (paymentError || !payment) {
+      await trackServer('payment_webhook_failed', { reason: 'order_not_found' })
       return NextResponse.json({ error: 'Payment order not found.' }, { status: 404 })
     }
 
     const verifiedGrossAmount = Number(verified.gross_amount ?? grossAmount)
     if (Number.isFinite(verifiedGrossAmount) && Math.round(verifiedGrossAmount) !== payment.amount) {
+      await trackServer('payment_webhook_failed', { reason: 'amount_mismatch' })
       return NextResponse.json({ error: 'Payment amount mismatch.' }, { status: 400 })
     }
 
@@ -104,6 +114,7 @@ export async function POST(request: Request) {
       .eq('order_id', orderId)
 
     if (updatePaymentError) {
+      await trackServer('payment_webhook_failed', { reason: 'payment_update_failed' })
       return NextResponse.json({ error: updatePaymentError.message }, { status: 500 })
     }
 
@@ -120,12 +131,19 @@ export async function POST(request: Request) {
         .eq('is_premium', false)
 
       if (premiumError) {
+        await trackServer('payment_webhook_failed', { reason: 'premium_update_failed' })
         return NextResponse.json({ error: premiumError.message }, { status: 500 })
       }
     }
 
+    await trackServer(isSuccessfulPayment(transactionStatus, fraudStatus) ? 'payment_webhook_paid' : 'payment_webhook_status_updated', {
+      provider: 'midtrans',
+      payment_status: nextStatus,
+      payment_type: paymentType,
+    })
     return NextResponse.json({ ok: true })
   } catch (error) {
+    await trackServer('payment_webhook_failed', { reason: 'exception' })
     captureApiError(error, '/api/payments/midtrans/webhook')
     const message = error instanceof Error ? error.message : 'Webhook failed.'
     return NextResponse.json({ error: message }, { status: 500 })

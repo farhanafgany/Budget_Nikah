@@ -3,6 +3,7 @@ import { Suspense, useState } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { track } from '@/lib/analytics'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { AlarmClock, BriefcaseBusiness, CheckCircle2, Coins } from 'lucide-react'
 import { useOnboardingStore } from '@/stores/onboardingStore'
@@ -76,6 +77,11 @@ function SignupContent() {
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
     setLoading(true); setError('')
+    track('auth_started', {
+      method: 'email_signup',
+      next_path: nextPath,
+      source: isPremiumContinuation ? 'premium' : 'auth',
+    })
     const response = await fetch('/api/auth/signup', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -83,27 +89,52 @@ function SignupContent() {
     })
     const data = await response.json()
     if (!response.ok) {
+      track('auth_failed', {
+        method: 'email_signup',
+        next_path: nextPath,
+        status: response.status,
+      })
       setError(getSignupErrorMessage({ message: data.error, status: data.status ?? response.status }))
       setLoading(false)
       return
     }
 
     if (data.identities_count === 0) {
+      track('auth_failed', {
+        method: 'email_signup',
+        next_path: nextPath,
+        reason: 'existing_email',
+      })
       setError('Email ini sudah terdaftar. Masuk dengan email tersebut atau gunakan email lain.')
       setLoading(false)
       return
     }
 
     if (data.has_session && data.user_id) {
+      track('auth_success', {
+        method: 'email_signup',
+        next_path: nextPath,
+        source: isPremiumContinuation ? 'premium' : 'auth',
+      })
       await syncAndRedirect()
       return
     }
 
+    track('auth_success', {
+      method: 'email_signup_pending_login',
+      next_path: nextPath,
+      source: isPremiumContinuation ? 'premium' : 'auth',
+    })
     setSuccess(true)
     setLoading(false)
   }
 
   async function handleGoogle() {
+    track('auth_started', {
+      method: 'google_signup',
+      next_path: nextPath,
+      source: isPremiumContinuation ? 'premium' : 'auth',
+    })
     const supabase = createClient()
     const finishPath = `/auth/finish?next=${encodeURIComponent(nextPath)}`
     await supabase.auth.signInWithOAuth({

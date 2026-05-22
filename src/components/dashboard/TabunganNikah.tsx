@@ -2,6 +2,7 @@
 import { useState, useTransition } from 'react'
 import { updateTabunganWithHistory, type SavingsHistoryInput } from '@/app/dashboard/actions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
+import { track } from '@/lib/analytics'
 import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
 import { formatRupiah } from '@/lib/utils'
 import { ChevronDown } from 'lucide-react'
@@ -55,6 +56,10 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
       date: new Date().toISOString(),
     }
     const nextHistory = [newEntry, ...localHistory].slice(0, 20)
+    track('dashboard_feature_used', {
+      feature: 'savings',
+      action: mode,
+    })
     setLocalCollected(next)
     setLocalHistory(nextHistory)
     setInputRaw('')

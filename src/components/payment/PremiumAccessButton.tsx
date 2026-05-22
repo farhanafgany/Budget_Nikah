@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { track } from '@/lib/analytics'
 import { MidtransPaymentButton } from './MidtransPaymentButton'
 
 interface PremiumAccessButtonProps {
@@ -125,6 +126,16 @@ export function PremiumAccessButton({
   return (
     <Link
       href="/auth/login?next=/premium"
+      onClick={() => {
+        track('premium_auth_cta_clicked', {
+          cta_location: variant === 'gold' ? 'premium_bottom' : 'premium_card',
+          target: 'auth_login',
+          is_signed_in: false,
+        })
+        track('auth_required_for_payment', {
+          cta_location: variant === 'gold' ? 'premium_bottom' : 'premium_card',
+        })
+      }}
       className={className}
       style={style}
     >

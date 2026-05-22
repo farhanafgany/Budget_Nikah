@@ -1,5 +1,6 @@
 'use client'
 import { useSimulationStore } from '@/stores/simulationStore'
+import { bucketGuests, track } from '@/lib/analytics'
 import { Lightbulb, SlidersHorizontal } from 'lucide-react'
 
 const STYLES = ['simple', 'elegant', 'luxury', 'traditional', 'modern']
@@ -36,7 +37,15 @@ export function SimulationControls() {
           max={1000}
           step={25}
           value={guestCount}
-          onChange={e => setGuestCount(Number(e.target.value))}
+          onChange={e => {
+            const next = Number(e.target.value)
+            setGuestCount(next)
+            track('simulation_changed', {
+              control: 'guest_count',
+              guest_bucket: bucketGuests(next),
+              wedding_style: weddingStyle,
+            })
+          }}
           className="w-full accent-nikah-deep"
           aria-label="Jumlah tamu"
         />
@@ -56,7 +65,14 @@ export function SimulationControls() {
           {STYLES.map(s => (
             <button
               key={s}
-              onClick={() => setWeddingStyle(s)}
+              onClick={() => {
+                setWeddingStyle(s)
+                track('simulation_changed', {
+                  control: 'wedding_style',
+                  guest_bucket: bucketGuests(guestCount),
+                  wedding_style: s,
+                })
+              }}
               aria-pressed={weddingStyle === s}
               className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition ${
                 weddingStyle === s

@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useMemo } from 'react'
+import { track } from '@/lib/analytics'
 
 const CLAUDE_SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
 
@@ -200,6 +201,12 @@ export function MobileHero() {
       {/* CTA */}
       <Link
         href="/onboarding"
+        onClick={() => track('landing_cta_clicked', {
+          cta_location: 'mobile_hero',
+          target: 'onboarding',
+          guest_bucket: guests < 100 ? '<100' : guests < 300 ? '100-300' : guests < 600 ? '300-600' : '>600',
+          style_preview: gaya.toLowerCase(),
+        })}
         className="block w-full text-white font-bold text-center active:opacity-80 active:scale-[0.98] transition-all"
         style={{
           padding: '16px 20px',

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { checkRateLimit } from '@/lib/rateLimit'
+import { trackServer } from '@/lib/analytics'
 import { captureApiError } from '@/lib/sentry'
 import {
   getMidtransBasicAuthHeader,
@@ -22,6 +23,7 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) {
+    await trackServer('payment_create_failed', { reason: 'unauthenticated' })
     return NextResponse.json({ error: 'Login diperlukan sebelum pembayaran.' }, { status: 401 })
   }
 
@@ -39,6 +41,7 @@ export async function POST(request: Request) {
   }
 
   try {
+    await trackServer('payment_create_requested', { provider: 'midtrans' })
     const admin = createAdminClient()
     const orderId = `BN-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`
     const amount = PREMIUM_PRICE
@@ -53,6 +56,7 @@ export async function POST(request: Request) {
     })
 
     if (insertError) {
+      await trackServer('payment_create_failed', { reason: 'insert_failed' })
       return NextResponse.json({ error: insertError.message }, { status: 500 })
     }
 
@@ -98,6 +102,10 @@ export async function POST(request: Request) {
         })
         .eq('order_id', orderId)
 
+      await trackServer('payment_create_failed', {
+        provider: 'midtrans',
+        status: response.status,
+      })
       return NextResponse.json({
         error: snap.error_messages?.join(', ') || 'Gagal membuat transaksi Midtrans.',
       }, { status: 502 })
@@ -111,12 +119,14 @@ export async function POST(request: Request) {
       })
       .eq('order_id', orderId)
 
+    await trackServer('payment_create_succeeded', { provider: 'midtrans' })
     return NextResponse.json({
       order_id: orderId,
       snap_token: snap.token,
       redirect_url: snap.redirect_url,
     })
   } catch (error) {
+    await trackServer('payment_create_failed', { reason: 'exception' })
     captureApiError(error, '/api/payments/midtrans/create')
     const message = error instanceof Error ? error.message : 'Gagal membuat transaksi.'
     return NextResponse.json({ error: message }, { status: 500 })
