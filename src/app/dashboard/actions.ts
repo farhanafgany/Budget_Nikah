@@ -19,6 +19,16 @@ function formatDashboardError(error: { message?: string; code?: string }) {
   return message
 }
 
+function formatUnexpectedDashboardError(error: unknown) {
+  if (error && typeof error === 'object' && 'message' in error) {
+    return formatDashboardError({
+      message: typeof error.message === 'string' ? error.message : undefined,
+      code: 'code' in error && typeof error.code === 'string' ? error.code : undefined,
+    })
+  }
+  return 'Data belum tersimpan. Coba lagi sebentar lagi.'
+}
+
 export async function updateTabungan(collected: number): Promise<{ error?: string }> {
   return updateTabunganWithHistory(collected, [])
 }
@@ -27,31 +37,35 @@ export async function updateTabunganWithHistory(
   collected: number,
   history: SavingsHistoryInput[],
 ): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: AUTH_ERROR }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: AUTH_ERROR }
 
-  const sanitizedHistory = history
-    .map(item => ({
-      id: item.id,
-      type: item.type === 'subtract' ? 'subtract' : 'add',
-      amount: Math.max(0, Math.round(item.amount || 0)),
-      balanceAfter: Math.max(0, Math.round(item.balanceAfter || 0)),
-      date: item.date,
-    }))
-    .filter(item => item.id && item.amount > 0)
+    const sanitizedHistory = history
+      .map(item => ({
+        id: item.id,
+        type: item.type === 'subtract' ? 'subtract' : 'add',
+        amount: Math.max(0, Math.round(item.amount || 0)),
+        balanceAfter: Math.max(0, Math.round(item.balanceAfter || 0)),
+        date: item.date,
+      }))
+      .filter(item => item.id && item.amount > 0)
 
-  const { error } = await supabase
-    .from('wedding_profiles')
-    .update({
-      savings_collected: collected,
-      savings_history: sanitizedHistory,
-    })
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('wedding_profiles')
+      .update({
+        savings_collected: Math.max(0, Math.round(collected || 0)),
+        savings_history: sanitizedHistory,
+      })
+      .eq('user_id', user.id)
 
-  if (error) return { error: formatDashboardError(error) }
-  revalidatePath('/dashboard')
-  return {}
+    if (error) return { error: formatDashboardError(error) }
+    revalidatePath('/dashboard')
+    return {}
+  } catch (error) {
+    return { error: formatUnexpectedDashboardError(error) }
+  }
 }
 
 export async function toggleChecklistItem(
@@ -67,20 +81,24 @@ export async function toggleChecklistItem(
 }
 
 export async function updateChecklistItems(checkedIds: string[]): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: AUTH_ERROR }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: AUTH_ERROR }
 
-  const sanitized = Array.from(new Set(checkedIds.filter(Boolean)))
+    const sanitized = Array.from(new Set(checkedIds.filter(Boolean)))
 
-  const { error } = await supabase
-    .from('wedding_profiles')
-    .update({ checklist_checked: sanitized })
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('wedding_profiles')
+      .update({ checklist_checked: sanitized })
+      .eq('user_id', user.id)
 
-  if (error) return { error: formatDashboardError(error) }
-  revalidatePath('/dashboard')
-  return {}
+    if (error) return { error: formatDashboardError(error) }
+    revalidatePath('/dashboard')
+    return {}
+  } catch (error) {
+    return { error: formatUnexpectedDashboardError(error) }
+  }
 }
 
 export async function toggleSeserahanItem(
@@ -96,108 +114,128 @@ export async function toggleSeserahanItem(
 }
 
 export async function updateSeserahanItems(checkedIds: string[]): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: AUTH_ERROR }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: AUTH_ERROR }
 
-  const sanitized = Array.from(new Set(checkedIds.filter(Boolean)))
+    const sanitized = Array.from(new Set(checkedIds.filter(Boolean)))
 
-  const { error } = await supabase
-    .from('wedding_profiles')
-    .update({ seserahan_checked: sanitized })
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('wedding_profiles')
+      .update({ seserahan_checked: sanitized })
+      .eq('user_id', user.id)
 
-  if (error) return { error: formatDashboardError(error) }
-  revalidatePath('/dashboard')
-  return {}
+    if (error) return { error: formatDashboardError(error) }
+    revalidatePath('/dashboard')
+    return {}
+  } catch (error) {
+    return { error: formatUnexpectedDashboardError(error) }
+  }
 }
 
 export async function updateCustomSeserahanItems(items: CustomSeserahanInput[]): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: AUTH_ERROR }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: AUTH_ERROR }
 
-  const sanitized = items
-    .map(item => ({
-      id: item.id,
-      label: item.label.trim().slice(0, 80),
-    }))
-    .filter(item => item.id && item.label)
+    const sanitized = items
+      .map(item => ({
+        id: item.id,
+        label: item.label.trim().slice(0, 80),
+      }))
+      .filter(item => item.id && item.label)
 
-  const { error } = await supabase
-    .from('wedding_profiles')
-    .update({ custom_seserahan_items: sanitized })
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('wedding_profiles')
+      .update({ custom_seserahan_items: sanitized })
+      .eq('user_id', user.id)
 
-  if (error) return { error: formatDashboardError(error) }
-  revalidatePath('/dashboard')
-  return {}
+    if (error) return { error: formatDashboardError(error) }
+    revalidatePath('/dashboard')
+    return {}
+  } catch (error) {
+    return { error: formatUnexpectedDashboardError(error) }
+  }
 }
 
 export async function updateHiddenSeserahanItems(ids: string[]): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: AUTH_ERROR }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: AUTH_ERROR }
 
-  const sanitized = Array.from(new Set(ids.filter(Boolean)))
+    const sanitized = Array.from(new Set(ids.filter(Boolean)))
 
-  const { error } = await supabase
-    .from('wedding_profiles')
-    .update({ hidden_seserahan_item_ids: sanitized })
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('wedding_profiles')
+      .update({ hidden_seserahan_item_ids: sanitized })
+      .eq('user_id', user.id)
 
-  if (error) return { error: formatDashboardError(error) }
-  revalidatePath('/dashboard')
-  return {}
+    if (error) return { error: formatDashboardError(error) }
+    revalidatePath('/dashboard')
+    return {}
+  } catch (error) {
+    return { error: formatUnexpectedDashboardError(error) }
+  }
 }
 
 export async function updateDashboardNote(note: string): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: AUTH_ERROR }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: AUTH_ERROR }
 
-  const { error } = await supabase
-    .from('wedding_profiles')
-    .update({ dashboard_note: note })
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('wedding_profiles')
+      .update({ dashboard_note: note.slice(0, 500) })
+      .eq('user_id', user.id)
 
-  if (error) return { error: formatDashboardError(error) }
-  revalidatePath('/dashboard')
-  return {}
+    if (error) return { error: formatDashboardError(error) }
+    revalidatePath('/dashboard')
+    return {}
+  } catch (error) {
+    return { error: formatUnexpectedDashboardError(error) }
+  }
 }
 
 export async function updateVendorPayments(payments: VendorPaymentInput[]): Promise<{ error?: string }> {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { error: AUTH_ERROR }
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: AUTH_ERROR }
 
-  const sanitized = payments.map(item => ({
-    id: item.id,
-    name: item.name.slice(0, 80),
-    category: item.category.slice(0, 40),
-    totalAmount: Math.max(0, Math.round(item.totalAmount || 0)),
-    paidAmount: Math.min(
-      Math.max(0, Math.round(item.paidAmount || 0)),
-      Math.max(0, Math.round(item.totalAmount || 0)),
-    ),
-    dueDate: item.dueDate,
-    installments: Array.isArray(item.installments)
-      ? item.installments.map(installment => ({
-          id: installment.id,
-          amount: Math.max(0, Math.round(installment.amount || 0)),
-          date: installment.date,
-        })).filter(installment => installment.id && installment.amount > 0)
-      : [],
-  }))
+    const sanitized = payments.map(item => ({
+      id: item.id,
+      name: item.name.slice(0, 80),
+      category: item.category.slice(0, 40),
+      totalAmount: Math.max(0, Math.round(item.totalAmount || 0)),
+      paidAmount: Math.min(
+        Math.max(0, Math.round(item.paidAmount || 0)),
+        Math.max(0, Math.round(item.totalAmount || 0)),
+      ),
+      dueDate: item.dueDate,
+      installments: Array.isArray(item.installments)
+        ? item.installments.map(installment => ({
+            id: installment.id,
+            amount: Math.max(0, Math.round(installment.amount || 0)),
+            date: installment.date,
+          })).filter(installment => installment.id && installment.amount > 0)
+        : [],
+    }))
 
-  const { error } = await supabase
-    .from('wedding_profiles')
-    .update({ vendor_payments: sanitized })
-    .eq('user_id', user.id)
+    const { error } = await supabase
+      .from('wedding_profiles')
+      .update({ vendor_payments: sanitized })
+      .eq('user_id', user.id)
 
-  if (error) return { error: formatDashboardError(error) }
-  revalidatePath('/dashboard')
-  return {}
+    if (error) return { error: formatDashboardError(error) }
+    revalidatePath('/dashboard')
+    return {}
+  } catch (error) {
+    return { error: formatUnexpectedDashboardError(error) }
+  }
 }
 
 export async function logoutDashboard(): Promise<void> {

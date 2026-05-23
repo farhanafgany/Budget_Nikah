@@ -40,7 +40,7 @@ const COMPARISON_ROWS = [
 
 const TRUST_ITEMS = [
   { icon: '🔒', label: 'Pembayaran via', value: 'Midtrans Snap' },
-  { icon: '↩', label: 'Garansi', value: '3 hari refund' },
+  { icon: '↩', label: 'Garansi', value: '3 hari tanpa pertanyaan' },
   { icon: '∞', label: 'Model', value: 'Sekali bayar' },
 ]
 

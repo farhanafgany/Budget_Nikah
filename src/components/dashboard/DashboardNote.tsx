@@ -64,7 +64,14 @@ export function DashboardNote({ initialNote }: Props) {
         >
           <p
             className="text-nikah-text"
-            style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontSize: 16, lineHeight: 1.45, margin: 0 }}
+            style={{
+              fontFamily: 'var(--font-playfair), Georgia, serif',
+              fontStyle: 'italic',
+              fontSize: 16,
+              lineHeight: 1.45,
+              margin: 0,
+              whiteSpace: 'pre-wrap',
+            }}
           >
             “{savedNote}”
           </p>

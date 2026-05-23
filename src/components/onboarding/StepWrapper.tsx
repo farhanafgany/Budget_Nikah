@@ -1,6 +1,6 @@
 'use client'
 
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { bucketBudget, bucketGuests, track } from '@/lib/analytics'
 import { getCityTier } from '@/lib/cityTiers'
@@ -45,6 +45,12 @@ export function StepWrapper({
   const totalBudget = useOnboardingStore(s => s.totalBudget)
   const guestCount = useOnboardingStore(s => s.guestCount)
   const weddingCity = useOnboardingStore(s => s.weddingCity)
+  const partnerOneName = useOnboardingStore(s => s.partnerOneName)
+  const [showResumeBanner, setShowResumeBanner] = useState(false)
+
+  useEffect(() => {
+    setShowResumeBanner(stepIndex > 0 && Boolean(partnerOneName))
+  }, [partnerOneName, stepIndex])
 
   function handleNext() {
     track('onboarding_step_completed', {
@@ -176,6 +182,34 @@ export function StepWrapper({
         {/* Step content */}
         <div className="flex-1 px-6 py-4 overflow-y-auto lg:px-12 lg:py-8 lg:flex lg:items-center lg:justify-center">
           <div className="w-full max-w-lg mx-auto">
+            {showResumeBanner && (
+              <div className="flex justify-center" style={{ marginBottom: 96, marginTop: -112 }}>
+                <div
+                  className="inline-flex max-w-full items-center bg-white border border-nikah-border rounded-full shadow-md"
+                  style={{
+                    gap: 10,
+                    padding: '8px 10px 8px 14px',
+                    fontSize: 13,
+                  }}
+                >
+                  <span aria-hidden="true" className="text-nikah-deep" style={{ flexShrink: 0, lineHeight: 1 }}>
+                    👋
+                  </span>
+                  <span className="text-nikah-text font-medium truncate" style={{ minWidth: 0 }}>
+                    Lanjut dari langkah {stepIndex + 1}, {partnerOneName}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setShowResumeBanner(false)}
+                    className="inline-flex items-center justify-center text-nikah-muted hover:text-nikah-text transition text-base leading-none"
+                    style={{ width: 24, height: 24, flexShrink: 0 }}
+                    aria-label="Tutup"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            )}
             {children}
           </div>
         </div>

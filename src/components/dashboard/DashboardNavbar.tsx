@@ -9,15 +9,16 @@ interface Props {
 
 export function DashboardNavbar({ userEmail }: Props) {
   return (
-    <header className="border-b border-nikah-border bg-nikah-bg">
+    <header className="sticky top-0 z-40 border-b border-nikah-border bg-white">
       <div
-        className="max-w-[1200px] mx-auto flex items-center justify-between"
-        style={{ padding: '0 var(--d-pad-page)', height: 56 }}
+        className="max-w-[1200px] mx-auto flex items-center justify-between gap-3"
+        style={{ padding: '0 var(--d-pad-page)', height: 64 }}
       >
         <Link href="/" className="flex items-center">
-          <BrandLogo size="sm" />
+          <span className="md:hidden"><BrandLogo size="sm" /></span>
+          <span className="hidden md:block"><BrandLogo size="md" /></span>
         </Link>
-        <div className="flex items-center text-nikah-muted" style={{ gap: 12, fontSize: 13 }}>
+        <div className="flex min-w-0 items-center text-nikah-muted" style={{ gap: 10, fontSize: 13 }}>
           {/* Avatar — tampil di semua ukuran */}
           <div
             className="flex rounded-full items-center justify-center text-white font-extrabold flex-shrink-0"
@@ -34,11 +35,12 @@ export function DashboardNavbar({ userEmail }: Props) {
 
           {/* Desktop only: email + logout */}
           <span className="hidden sm:block truncate max-w-[180px]">{userEmail}</span>
-          <form action={logoutDashboard} className="hidden sm:block">
+          <form action={logoutDashboard}>
             <button
               type="submit"
-              className="font-bold text-nikah-deep hover:text-nikah-text transition-colors rounded-full border border-nikah-border hover:bg-nikah-bg"
+              className="inline-flex items-center justify-center font-bold text-nikah-deep hover:text-nikah-text transition-colors rounded-full border border-nikah-border hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
               style={{ padding: '9px 15px', fontSize: 12 }}
+              aria-label="Keluar"
             >
               Keluar
             </button>

@@ -12,15 +12,15 @@ function DashboardPreview() {
       <div
         className="overflow-hidden border border-nikah-border"
         style={{
-          borderRadius: 20,
+          borderRadius: 18,
           boxShadow: 'var(--landing-shadow-lg, 0 12px 40px rgba(90,30,42,0.12))',
         }}
       >
         <Image
-          src="/images/dashboard-preview.webp"
+          src="/images/dashboard-hero-desktop.png"
           alt="Contoh tampilan dashboard BudgetNikah"
-          width={2560}
-          height={1400}
+          width={3330}
+          height={1926}
           sizes="(min-width: 1024px) 519px, 1px"
           priority
           style={{ width: '100%', height: 'auto', display: 'block' }}

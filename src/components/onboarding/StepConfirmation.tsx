@@ -1,8 +1,10 @@
 'use client'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { useOnboardingStore } from '@/stores/onboardingStore'
+import { clearOnboardingStore, useOnboardingStore } from '@/stores/onboardingStore'
 import { bucketBudget, bucketGuests, track } from '@/lib/analytics'
 import { getCityTier } from '@/lib/cityTiers'
+import { createClient } from '@/lib/supabase/client'
 import { StepWrapper } from './StepWrapper'
 
 const STYLE_LABELS: Record<string, string> = {
@@ -42,6 +44,8 @@ function formatDate(dateStr: string) {
 
 export function StepConfirmation() {
   const router = useRouter()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
   const {
     partnerOneName,
     partnerTwoName,
@@ -68,22 +72,63 @@ export function StepConfirmation() {
     ...(planningPriority ? [{ label: 'Prioritas', value: PRIORITY_LABELS[planningPriority] ?? planningPriority }] : []),
   ]
 
+  async function handleNext() {
+    if (saving) return
+    setError('')
+    setSaving(true)
+    track('onboarding_completed', {
+      budget_bucket: bucketBudget(totalBudget),
+      guest_bucket: bucketGuests(guestCount),
+      city_tier: weddingCity ? getCityTier(weddingCity) : 'unknown',
+      wedding_style: weddingStyle,
+      event_type: eventType,
+      planning_priority: planningPriority,
+    })
+
+    const supabase = createClient()
+    const { data } = await supabase.auth.getSession()
+    if (data.session?.user) {
+      const response = await fetch('/api/onboarding/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          onboarding: {
+            partnerOneName,
+            partnerTwoName,
+            weddingCity,
+            weddingDate,
+            totalBudget,
+            guestCount,
+            weddingStyle,
+            eventType,
+            planningPriority,
+          },
+        }),
+      })
+
+      if (!response.ok) {
+        setSaving(false)
+        setError('Data belum tersimpan. Coba lagi sebentar lagi.')
+        return
+      }
+
+      const result = await response.json() as { isPremium?: boolean }
+      if (result.isPremium) {
+        await clearOnboardingStore()
+        router.replace('/dashboard')
+        return
+      }
+    }
+
+    router.push('/result')
+  }
+
   return (
     <StepWrapper
       stepIndex={6}
-      onNext={() => {
-        track('onboarding_completed', {
-          budget_bucket: bucketBudget(totalBudget),
-          guest_bucket: bucketGuests(guestCount),
-          city_tier: weddingCity ? getCityTier(weddingCity) : 'unknown',
-          wedding_style: weddingStyle,
-          event_type: eventType,
-          planning_priority: planningPriority,
-        })
-        router.push('/result')
-      }}
+      onNext={handleNext}
       onBack={prevStep}
-      nextLabel="Lihat hasilnya →"
+      nextLabel={saving ? 'Menyimpan...' : 'Lihat hasilnya →'}
       hideStepCounter
     >
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Hampir selesai</p>
@@ -131,6 +176,11 @@ export function StepConfirmation() {
           ← Kembali edit
         </button>
       </p>
+      {error && (
+        <p className="text-xs text-red-600 font-medium" style={{ marginTop: 12, lineHeight: 1.5 }}>
+          {error}
+        </p>
+      )}
     </StepWrapper>
   )
 }

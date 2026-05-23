@@ -37,9 +37,9 @@ describe('Navbar', () => {
 import { TrustMetrics } from '../TrustMetrics'
 
 describe('TrustMetrics', () => {
-  it('tidak menampilkan teks garansi refund (sudah dipindah ke PricingSection)', () => {
+  it('tidak menampilkan teks garansi tanpa pertanyaan (sudah dipindah ke PricingSection)', () => {
     render(<TrustMetrics />)
-    expect(screen.queryByText(/garansi refund/i)).toBeNull()
+    expect(screen.queryByText(/garansi tanpa pertanyaan/i)).toBeNull()
   })
 
   it('menampilkan metric 12 bulan timeline', () => {
@@ -120,7 +120,7 @@ describe('SocialProof', () => {
 
   it('menampilkan garansi 3 hari di fact card', () => {
     render(<SocialProof />)
-    expect(screen.getByText(/garansi refund/i)).toBeInTheDocument()
+    expect(screen.getByText(/garansi tanpa pertanyaan/i)).toBeInTheDocument()
   })
 
   it('menampilkan guarantee strip 3 hari tanpa pertanyaan', () => {

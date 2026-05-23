@@ -106,7 +106,7 @@ export default async function DashboardSummaryPage() {
               <BrandLogo size="md" />
               <h1
                 className="text-nikah-text"
-                style={{ fontFamily: 'var(--font-fraunces, Georgia, serif)', fontStyle: 'italic', fontWeight: 500, fontSize: 34, margin: '24px 0 8px', lineHeight: 1.08 }}
+                style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 34, margin: '24px 0 8px', lineHeight: 1.08 }}
               >
                 Ringkasan rencana pernikahan
               </h1>
@@ -116,7 +116,7 @@ export default async function DashboardSummaryPage() {
               </p>
             </div>
             <div className="text-right">
-              <div className="text-nikah-deep" style={{ fontFamily: 'var(--font-fraunces, Georgia, serif)', fontSize: 44, lineHeight: 1 }}>{score}</div>
+              <div className="text-nikah-deep" style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontSize: 44, lineHeight: 1 }}>{score}</div>
               <div className="text-xs font-extrabold uppercase tracking-[0.14em] text-nikah-mauve">{label}</div>
             </div>
           </div>

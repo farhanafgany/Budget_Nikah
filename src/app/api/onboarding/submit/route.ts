@@ -48,16 +48,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Data onboarding belum lengkap.' }, { status: 400 })
   }
 
-  const { data: account } = await supabase
-    .from('app_users')
-    .select('is_premium')
-    .eq('id', user.id)
-    .single()
-
-  if (account?.is_premium) {
-    return NextResponse.json({ ok: true, skipped: true })
-  }
-
   const allocation = calculateAllocation({
     totalBudget: onboarding.totalBudget,
     guestCount: onboarding.guestCount,
@@ -104,11 +94,21 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: message }, { status: 500 })
   }
 
+  const { data: account, error: accountError } = await supabase
+    .from('app_users')
+    .select('is_premium')
+    .eq('id', user.id)
+    .maybeSingle()
+
+  if (accountError) {
+    captureApiError(accountError, '/api/onboarding/submit')
+  }
+
   await trackServer('onboarding_sync_success', {
     budget_bucket: bucketBudget(onboarding.totalBudget),
     guest_bucket: bucketGuests(onboarding.guestCount),
     city_tier: getCityTier(onboarding.weddingCity),
     score_band: scoreBand(scoreResult.score),
   })
-  return NextResponse.json({ ok: true })
+  return NextResponse.json({ ok: true, isPremium: Boolean(account?.is_premium) })
 }

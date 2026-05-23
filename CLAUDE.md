@@ -22,9 +22,16 @@ BudgetNikah adalah mobile-first wedding planning web app untuk pasangan Indonesi
 
 - Komunikasi dengan user dalam **Bahasa Indonesia**.
 - Kode, nama variabel, nama file tetap dalam Bahasa Inggris.
+- User adalah programmer pemula / vibe coder. Jelaskan keputusan, error, command, dan langkah berikutnya dengan bahasa sederhana, konkret, dan tidak terlalu teknis kecuali diminta.
 - Jangan redesign besar-besaran tanpa konfirmasi.
 - Untuk pass desain sekarang, fokus pada flow, conversion, mobile UX, spacing, teks, tombol, dan bug visual yang jelas.
 - Kalau mau mengubah layout desktop besar atau mobile besar, konfirmasi dulu sebelum implementasi.
+
+## Tooling
+
+- Superpowers **dinonaktifkan untuk project ini**.
+- Jangan menjalankan workflow Superpowers baru, jangan membuat artefak `.superpowers` baru, dan jangan menambah plan/spec baru di `docs/superpowers`.
+- Artefak Superpowers lama boleh tetap ada sebagai referensi historis project; jangan hapus tanpa konfirmasi eksplisit.
 
 ## Current Safe Restore Point
 

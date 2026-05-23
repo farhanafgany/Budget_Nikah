@@ -182,7 +182,7 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
       </div>
 
       <div className="grid grid-cols-1" style={{ gap: 6 }}>
-        {visibleItems.map(item => {
+        {visibleItems.map((item, idx) => {
           const checked = localChecked.includes(item.id)
           return (
             <div
@@ -196,27 +196,42 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
                   handleToggle(item.id)
                 }
               }}
-              className="group flex items-center text-left transition-colors hover:bg-nikah-bg focus-within:bg-nikah-bg"
+              data-checked={checked}
+              className="group w-full flex items-center text-left transition-all hover:brightness-[0.98] active:scale-[0.985] active:brightness-90"
               style={{
-                gap: 10,
-                padding: '8px 10px',
-                borderRadius: 10,
-                background: checked ? 'var(--landing-pink, #F8E9EE)' : 'var(--landing-band, #EFE3DA)',
+                gap: 12,
+                padding: '10px 12px',
+                borderRadius: 12,
+                background: 'var(--landing-pink, #F8E9EE)',
               }}
             >
-              <div className={`w-5 h-5 rounded flex-shrink-0 border-2 flex items-center justify-center transition-colors ${
-                checked
-                  ? 'bg-nikah-deep border-nikah-deep'
-                  : 'border-nikah-border bg-white'
-              }`} style={{ width: 18, height: 18 }}>
+              <span
+                data-checked={checked}
+                className={`flex-shrink-0 inline-flex items-center justify-center border-2 transition-all ${
+                  checked
+                    ? 'bg-nikah-deep border-nikah-deep'
+                    : 'border-nikah-border bg-white'
+                }`}
+                style={{ width: 24, height: 24, borderRadius: 7 }}
+              >
                 {checked && (
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                 )}
-              </div>
-              <span aria-hidden="true" style={{ fontSize: 15 }}>{item.icon}</span>
-              <span className={`flex-1 ${checked ? 'line-through text-nikah-muted' : 'text-nikah-text'}`} style={{ fontSize: 13.5, lineHeight: 1.35 }}>
+              </span>
+              <span aria-hidden="true" style={{ fontSize: 15, width: 20, flexShrink: 0, textAlign: 'center' }}>
+                {item.icon}
+              </span>
+              <span
+                className={`flex-1 ${checked ? 'text-nikah-muted' : 'text-nikah-text'}`}
+                style={{
+                  fontSize: 13,
+                  lineHeight: 1.5,
+                  textDecoration: checked ? 'line-through' : 'none',
+                  textDecorationColor: 'var(--nikah-muted)',
+                }}
+              >
                 {item.label}
               </span>
               <span
@@ -241,7 +256,7 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
                     }
                   }
                 }}
-                className="inline-flex text-nikah-muted opacity-45 transition-opacity hover:text-nikah-deep hover:opacity-100 focus:opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
+                className="inline-flex flex-shrink-0 text-nikah-muted opacity-45 transition-opacity hover:text-nikah-deep hover:opacity-100 focus:opacity-100 md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100"
                 aria-label={`Hapus ${item.label}`}
                 title={`Hapus ${item.label}`}
               >
@@ -284,10 +299,10 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
       <button
         type="button"
         onClick={() => setFormOpen(value => !value)}
-        className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-colors hover:bg-nikah-bg"
+        className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-all hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
         style={{
           gap: 6,
-          marginTop: 10,
+          marginTop: 12,
           padding: '9px 14px',
           border: '1px solid var(--landing-border, var(--nikah-border))',
           borderRadius: 999,
@@ -302,7 +317,7 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
         <button
           type="button"
           onClick={() => setExpanded(value => !value)}
-          className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-colors hover:bg-nikah-bg"
+          className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-all hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
           style={{
             gap: 6,
             marginTop: 8,

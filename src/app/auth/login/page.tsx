@@ -153,7 +153,7 @@ function LoginContent() {
             <h1
               className="text-nikah-text"
               style={{
-                fontFamily: 'var(--font-fraunces, Georgia, serif)',
+                fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif',
                 fontStyle: 'italic',
                 fontWeight: 500,
                 fontSize: 'clamp(27px, 8vw, 36px)',

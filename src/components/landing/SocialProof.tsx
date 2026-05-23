@@ -18,7 +18,7 @@ const FACTS = [
   },
   {
     value: '3 hari',
-    label: 'garansi refund',
+    label: 'garansi tanpa pertanyaan',
     body: 'Tidak cocok? Uang kembali penuh tanpa pertanyaan. Cukup hubungi kami dalam 3 hari pertama.',
   },
 ]

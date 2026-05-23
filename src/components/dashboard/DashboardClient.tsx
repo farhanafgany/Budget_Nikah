@@ -2,9 +2,11 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { ChevronRight } from 'lucide-react'
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber'
 import { bucketBudget, bucketGuests, scoreBand, track } from '@/lib/analytics'
+import { clearOnboardingStore } from '@/stores/onboardingStore'
 import { TabunganNikah } from '@/components/dashboard/TabunganNikah'
 import { ChecklistPernikahan } from '@/components/dashboard/ChecklistPernikahan'
 import { SeserahanList } from '@/components/dashboard/SeserahanList'
@@ -194,9 +196,22 @@ export function DashboardClient({
   dashboardNote,
   vendorPayments,
 }: Props) {
+  const router = useRouter()
   // Inisialisasi hanya di client agar tidak menyebabkan hydration mismatch
   // akibat perbedaan timezone server (UTC) vs device user (WIB/WITA/WIT).
   const [greeting, setGreeting] = useState('')
+  const [isResetting, setIsResetting] = useState(false)
+
+  async function handleResetPlan() {
+    setIsResetting(true)
+    track('dashboard_feature_used', {
+      feature: 'plan_data',
+      action: 'reset_from_dashboard',
+    })
+    await clearOnboardingStore()
+    router.push('/onboarding')
+  }
+
   useEffect(() => {
     setGreeting(getTimeGreeting())
   }, [])
@@ -385,13 +400,15 @@ export function DashboardClient({
             >
               Lihat Ringkasan
             </Link>
-            <Link
-              href="/result"
-              className="hidden lg:inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition-all active:scale-[0.97] active:brightness-90"
+            <button
+              type="button"
+              onClick={handleResetPlan}
+              disabled={isResetting}
+              className="hidden lg:inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition-all active:scale-[0.97] active:brightness-90 disabled:opacity-60"
               style={{ padding: '13px 24px' }}
             >
-              Buka Simulasi
-            </Link>
+              {isResetting ? 'Membuka...' : 'Atur Ulang Data'}
+            </button>
           </div>
         </div>
       </div>
@@ -410,7 +427,7 @@ export function DashboardClient({
           <span className="lg:hidden">Dana &amp; Pembayaran</span>
           <span className="hidden lg:inline">Dana &amp; Pembayaran</span>
         </p>
-        <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 20, marginBottom: 28 }}>
+        <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 20, marginBottom: 28, alignItems: 'start' }}>
           <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} />
           <VendorPaymentTracker initialPayments={vendorPayments} />
           <DashboardNote initialNote={dashboardNote} />
@@ -420,7 +437,7 @@ export function DashboardClient({
           <span className="lg:hidden">Persiapan &amp; Referensi</span>
           <span className="hidden lg:inline">Tugas &amp; Referensi</span>
         </p>
-        <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_0.95fr_0.95fr]" style={{ gap: 20 }}>
+        <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1.1fr_0.95fr]" style={{ gap: 20, alignItems: 'start' }}>
           <ChecklistPernikahan checkedIds={checklistChecked} />
           <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
           {AllocationCard}
@@ -435,13 +452,15 @@ export function DashboardClient({
           >
             Lihat Ringkasan
           </Link>
-          <Link
-            href="/result"
+          <button
+            type="button"
+            onClick={handleResetPlan}
+            disabled={isResetting}
             className="w-full inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
             style={{ padding: '15px 24px' }}
           >
-            Atur Ulang Data
-          </Link>
+            {isResetting ? 'Membuka...' : 'Atur Ulang Data'}
+          </button>
         </div>
       </main>
     </>
