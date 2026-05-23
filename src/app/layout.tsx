@@ -43,7 +43,14 @@ const metadataConfig: Metadata = {
     description: 'Dapatkan Wedding Readiness Score, estimasi budget riil, dan rencana nabung bulanan. Gratis, tanpa login.',
     images: ['/images/og-image.png'],
   },
-  metadataBase: new URL('https://budgetnikah.com'),
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+      { url: '/favicon.ico', sizes: 'any' },
+    ],
+    shortcut: '/favicon.ico',
+  },
+  metadataBase: new URL('https://budget-nikah.vercel.app'),
 }
 
 export function generateMetadata(): Metadata {

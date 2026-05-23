@@ -1,26 +1,33 @@
+import Link from 'next/link'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 
 export function Footer() {
   return (
-    <footer className="px-6 py-10 bg-nikah-text text-white/70">
-      <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
+    <footer className="bg-nikah-text px-6 py-8 text-white/70 md:py-10">
+      <div className="mx-auto flex max-w-4xl flex-col items-center justify-between gap-5 text-sm md:flex-row">
 
         <BrandLogo size="md" color="#ffffff" />
 
-        <p className="text-xs text-center">
+        <p className="max-w-[260px] text-center text-xs leading-5 md:max-w-none">
           Wedding financial planner untuk pasangan Indonesia.
         </p>
 
-        <div className="flex items-center gap-5 text-xs">
-          <a href="#fitur" className="hover:text-white transition-colors">Fitur</a>
-          <a href="#harga" className="hover:text-white transition-colors">Harga</a>
-<a href="/auth/login" className="hover:text-white transition-colors">Masuk</a>
-        </div>
+        <nav
+          aria-label="Footer legal navigation"
+          className="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-xs"
+        >
+          <Link href="/#fitur" className="rounded-sm py-1 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/70">Fitur</Link>
+          <Link href="/#harga" className="rounded-sm py-1 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/70">Harga</Link>
+          <Link href="/privacy-policy" className="rounded-sm py-1 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/70">Privacy Policy</Link>
+          <Link href="/terms" className="rounded-sm py-1 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/70">Terms</Link>
+          <Link href="/contact" className="rounded-sm py-1 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/70">Contact</Link>
+          <Link href="/auth/login" className="rounded-sm py-1 hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/70">Masuk</Link>
+        </nav>
 
       </div>
 
-      <div className="max-w-4xl mx-auto mt-6 pt-6 border-t border-white/10 text-center text-xs">
-        © {new Date().getFullYear()} BudgetNikah. Dibuat dengan ❤️ untuk pasangan Indonesia.
+      <div className="mx-auto mt-6 max-w-4xl border-t border-white/10 pt-6 text-center text-xs leading-5">
+        © 2026 BudgetNikah. Semua hak dilindungi.
       </div>
     </footer>
   )

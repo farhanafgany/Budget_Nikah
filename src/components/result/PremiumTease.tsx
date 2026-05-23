@@ -206,10 +206,13 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           Wedding financial planner untuk pasangan Indonesia.<br />
           Sekali bayar untuk satu rencana pernikahan.
         </p>
-        <div className="flex justify-center" style={{ gap: 28 }}>
+        <div className="flex flex-wrap justify-center" style={{ gap: '14px 22px' }}>
           {[
             { text: 'Fitur', href: '/#fitur' },
             { text: 'FAQ', href: '/#faq' },
+            { text: 'Privacy', href: '/privacy-policy' },
+            { text: 'Terms', href: '/terms' },
+            { text: 'Contact', href: '/contact' },
           ].map(link => (
             <a key={link.text} href={link.href} className="text-nikah-muted hover:text-nikah-text transition-colors" style={{ fontSize: 12 }}>
               {link.text}
