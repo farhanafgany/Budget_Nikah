@@ -1,7 +1,8 @@
 'use client'
 import { useState, useTransition } from 'react'
 import { SESERAHAN_ITEMS } from '@/lib/seserahanItems'
-import { updateCustomSeserahanItems, updateHiddenSeserahanItems, updateSeserahanItems, type CustomSeserahanInput } from '@/app/dashboard/actions'
+import { updateCustomSeserahanItems, updateHiddenSeserahanItems, updateSeserahanItems } from '@/app/dashboard/actions'
+import type { CustomSeserahanInput } from '@/lib/dashboardActions'
 import { track } from '@/lib/analytics'
 import { ChevronDown, Plus, Trash2 } from 'lucide-react'
 

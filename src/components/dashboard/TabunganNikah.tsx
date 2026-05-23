@@ -1,6 +1,7 @@
 'use client'
 import { useState, useTransition } from 'react'
-import { updateTabunganWithHistory, type SavingsHistoryInput } from '@/app/dashboard/actions'
+import { updateTabunganWithHistory } from '@/app/dashboard/actions'
+import type { SavingsHistoryInput } from '@/lib/dashboardActions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { track } from '@/lib/analytics'
 import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'

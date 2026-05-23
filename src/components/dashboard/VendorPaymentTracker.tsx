@@ -1,6 +1,7 @@
 'use client'
 import { useState, useTransition } from 'react'
-import { updateVendorPayments, type VendorPaymentInput } from '@/app/dashboard/actions'
+import { updateVendorPayments } from '@/app/dashboard/actions'
+import type { VendorPaymentInput } from '@/lib/dashboardActions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { track } from '@/lib/analytics'
 import { formatRupiah } from '@/lib/utils'

@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { calculatePressureLevel } from '@/lib/scoring'
 import { DashboardNavbar } from '@/components/dashboard/DashboardNavbar'
 import { DashboardClient } from '@/components/dashboard/DashboardClient'
-import type { CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/app/dashboard/actions'
+import type { CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/lib/dashboardActions'
 
 function daysUntil(dateStr: string | null): number | null {
   if (!dateStr) return null

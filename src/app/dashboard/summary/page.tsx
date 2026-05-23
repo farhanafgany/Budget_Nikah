@@ -6,7 +6,7 @@ import { formatRupiah } from '@/lib/utils'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { PrintButton } from '@/components/dashboard/PrintButton'
 import { BrandLogo } from '@/components/ui/BrandLogo'
-import type { VendorPaymentInput } from '@/app/dashboard/actions'
+import type { VendorPaymentInput } from '@/lib/dashboardActions'
 
 interface AllocEntry {
   percentage: number

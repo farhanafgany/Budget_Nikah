@@ -2,8 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-
-const AUTH_ERROR = '__AUTH_EXPIRED__'
+import { AUTH_ERROR, type CustomSeserahanInput, type SavingsHistoryInput, type VendorPaymentInput } from '@/lib/dashboardActions'
 
 function formatDashboardError(error: { message?: string; code?: string }) {
   const message = error.message ?? 'Unknown error'
@@ -20,18 +19,8 @@ function formatDashboardError(error: { message?: string; code?: string }) {
   return message
 }
 
-export { AUTH_ERROR }
-
 export async function updateTabungan(collected: number): Promise<{ error?: string }> {
   return updateTabunganWithHistory(collected, [])
-}
-
-export interface SavingsHistoryInput {
-  id: string
-  type: 'add' | 'subtract'
-  amount: number
-  balanceAfter: number
-  date: string
 }
 
 export async function updateTabunganWithHistory(
@@ -123,11 +112,6 @@ export async function updateSeserahanItems(checkedIds: string[]): Promise<{ erro
   return {}
 }
 
-export interface CustomSeserahanInput {
-  id: string
-  label: string
-}
-
 export async function updateCustomSeserahanItems(items: CustomSeserahanInput[]): Promise<{ error?: string }> {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -180,20 +164,6 @@ export async function updateDashboardNote(note: string): Promise<{ error?: strin
   if (error) return { error: formatDashboardError(error) }
   revalidatePath('/dashboard')
   return {}
-}
-
-export interface VendorPaymentInput {
-  id: string
-  name: string
-  category: string
-  totalAmount: number
-  paidAmount: number
-  dueDate: string
-  installments?: {
-    id: string
-    amount: number
-    date: string
-  }[]
 }
 
 export async function updateVendorPayments(payments: VendorPaymentInput[]): Promise<{ error?: string }> {

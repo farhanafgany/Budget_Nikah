@@ -1,4 +1,4 @@
-import type { VendorPaymentInput } from '@/app/dashboard/actions'
+import type { VendorPaymentInput } from '@/lib/dashboardActions'
 
 export type VendorPaymentStatus = 'paid' | 'overdue' | 'dueSoon' | 'safe' | 'unscheduled'
 

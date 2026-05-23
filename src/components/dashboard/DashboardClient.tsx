@@ -13,7 +13,7 @@ import { VendorPaymentTracker } from '@/components/dashboard/VendorPaymentTracke
 import { CurrentPriorities } from '@/components/dashboard/CurrentPriorities'
 import { formatRupiah } from '@/lib/utils'
 import type { PressureLevel } from '@/lib/scoring'
-import type { CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/app/dashboard/actions'
+import type { CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/lib/dashboardActions'
 
 interface AllocEntry {
   percentage: number

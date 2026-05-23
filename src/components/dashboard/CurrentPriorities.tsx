@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { VendorPaymentInput } from '@/app/dashboard/actions'
+import type { VendorPaymentInput } from '@/lib/dashboardActions'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
 import { Circle } from 'lucide-react'
