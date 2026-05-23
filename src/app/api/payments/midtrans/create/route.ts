@@ -8,7 +8,7 @@ import {
   getMidtransBasicAuthHeader,
   getMidtransSnapBaseUrl,
 } from '@/lib/midtrans'
-import { PAYMENT_CURRENCY, PREMIUM_PRICE, PREMIUM_PRODUCT_NAME } from '@/lib/payment'
+import { PAYMENT_CURRENCY, PREMIUM_PRODUCT_NAME, getPremiumPaymentAmount } from '@/lib/payment'
 
 export const runtime = 'nodejs'
 
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
     await trackServer('payment_create_requested', { provider: 'midtrans' })
     const admin = createAdminClient()
     const orderId = `BN-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`
-    const amount = PREMIUM_PRICE
+    const amount = getPremiumPaymentAmount()
 
     const { error: insertError } = await admin.from('payments').insert({
       user_id: user.id,

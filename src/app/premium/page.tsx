@@ -3,6 +3,7 @@ import { Check, ChevronRight, Minus } from 'lucide-react'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { PremiumAccessButton } from '@/components/payment/PremiumAccessButton'
 import { createClient } from '@/lib/supabase/server'
+import { formatPaymentAmount, getPremiumPaymentAmount } from '@/lib/payment'
 
 // Label metode pembayaran yang dikenal pengguna Indonesia
 const PAYMENT_METHODS = ['QRIS', 'GoPay', 'OVO', 'Dana', 'BCA', 'Mandiri', 'BNI']
@@ -44,24 +45,26 @@ const TRUST_ITEMS = [
   { icon: '∞', label: 'Model', value: 'Sekali bayar' },
 ]
 
-const FAQS = [
-  {
-    question: 'Apakah ada biaya langganan?',
-    answer: 'Tidak. Rp 149rb adalah sekali bayar untuk akses seumur hidup, termasuk update fitur ke depannya.',
-  },
-  {
-    question: 'Bagaimana jika setelah membeli ternyata tidak cocok?',
-    answer: 'Garansi 3 hari uang kembali penuh. Cukup hubungi kami lewat email atau WhatsApp pembelian.',
-  },
-  {
-    question: 'Apakah data saya aman?',
-    answer: 'Data disimpan di Supabase dengan Row Level Security, sehingga hanya akun kalian yang bisa mengakses data sendiri.',
-  },
-  {
-    question: 'Bisa diakses dari mana saja?',
-    answer: 'Bisa dibuka dari HP, tablet, atau laptop selama kalian login dengan email yang sama.',
-  },
-]
+function getFaqs(priceLabel: string) {
+  return [
+    {
+      question: 'Apakah ada biaya langganan?',
+      answer: `Tidak. ${priceLabel} adalah sekali bayar untuk akses seumur hidup, termasuk update fitur ke depannya.`,
+    },
+    {
+      question: 'Bagaimana jika setelah membeli ternyata tidak cocok?',
+      answer: 'Garansi 3 hari uang kembali penuh. Cukup hubungi kami lewat email atau WhatsApp pembelian.',
+    },
+    {
+      question: 'Apakah data saya aman?',
+      answer: 'Data disimpan di Supabase dengan Row Level Security, sehingga hanya akun kalian yang bisa mengakses data sendiri.',
+    },
+    {
+      question: 'Bisa diakses dari mana saja?',
+      answer: 'Bisa dibuka dari HP, tablet, atau laptop selama kalian login dengan email yang sama.',
+    },
+  ]
+}
 
 function ComparisonMark({ active }: { active: boolean }) {
   if (!active) {
@@ -81,6 +84,9 @@ function ComparisonMark({ active }: { active: boolean }) {
 
 export default async function PremiumPage() {
   const isProduction = process.env.MIDTRANS_IS_PRODUCTION === 'true'
+  const paymentAmount = getPremiumPaymentAmount()
+  const priceLabel = formatPaymentAmount(paymentAmount)
+  const faqs = getFaqs(priceLabel)
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const isSignedIn = Boolean(user)
@@ -166,7 +172,7 @@ export default async function PremiumPage() {
                 gap: 6,
               }}
             >
-              Rp 149rb · Sekali bayar selamanya
+              {priceLabel} · Sekali bayar selamanya
             </span>
           </div>
 
@@ -176,7 +182,7 @@ export default async function PremiumPage() {
               className="text-nikah-deep"
               style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 48, lineHeight: 1, letterSpacing: '-0.018em', marginBottom: 6 }}
             >
-              Rp 149rb
+              {priceLabel}
             </div>
             <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.55, margin: '0 0 24px' }}>
               Sekali bayar · tanpa subscription · termasuk update fitur
@@ -209,13 +215,13 @@ export default async function PremiumPage() {
               isSignedIn={isSignedIn}
               loginChildren={(
                 <span className="inline-flex items-center justify-center" style={{ gap: 10 }}>
-                  Mulai Premium — Rp 149rb
+                  Mulai Premium — {priceLabel}
                   <ChevronRight size={18} strokeWidth={2.4} />
                 </span>
               )}
               paymentChildren={(
                 <span className="inline-flex items-center justify-center" style={{ gap: 10 }}>
-                  Mulai Premium — Rp 149rb
+                  Mulai Premium — {priceLabel}
                   <ChevronRight size={18} strokeWidth={2.4} />
                 </span>
               )}
@@ -253,7 +259,7 @@ export default async function PremiumPage() {
                   marginBottom: 8,
                 }}
               >
-                Rp 149rb
+                {priceLabel}
               </div>
               <p className="text-nikah-muted" style={{ fontSize: 14.8, lineHeight: 1.55, margin: '0 0 2px' }}>
                 Bayar sekali, pakai sampai hari pernikahan kalian.
@@ -287,7 +293,7 @@ export default async function PremiumPage() {
                 )}
                 paymentChildren={(
                   <span className="inline-flex items-center justify-center" style={{ gap: 10 }}>
-                    Mulai Premium — Rp 149rb
+                    Mulai Premium — {priceLabel}
                     <ChevronRight size={18} strokeWidth={2.4} />
                   </span>
                 )}
@@ -406,7 +412,7 @@ export default async function PremiumPage() {
           Pertanyaan sebelum melanjutkan.
         </h2>
         <div>
-          {FAQS.map(item => (
+          {faqs.map(item => (
             <div key={item.question} className="border-b border-nikah-border" style={{ padding: '19px 0' }}>
               <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 15.5, lineHeight: 1.35, margin: '0 0 8px' }}>
                 {item.question}
@@ -440,7 +446,7 @@ export default async function PremiumPage() {
           Siap melanjutkan persiapan dengan lebih tenang?
         </h2>
         <p style={{ color: 'rgba(255,255,255,0.84)', fontSize: 15.5, lineHeight: 1.68, margin: '0 auto 24px', maxWidth: 620 }}>
-          Sekali bayar Rp 149rb. Tanpa langganan. Tanpa biaya tersembunyi.
+          Sekali bayar {priceLabel}. Tanpa langganan. Tanpa biaya tersembunyi.
           <br />
           Kalau tidak cocok dalam 3 hari, uang kembali penuh.
         </p>
@@ -456,7 +462,7 @@ export default async function PremiumPage() {
           )}
           paymentChildren={(
             <span className="inline-flex items-center justify-center" style={{ gap: 10 }}>
-              Mulai Premium — Rp 149rb
+              Mulai Premium — {priceLabel}
               <ChevronRight size={18} strokeWidth={2.4} />
             </span>
           )}

@@ -182,7 +182,7 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
       </div>
 
       <div className="grid grid-cols-1" style={{ gap: 6 }}>
-        {visibleItems.map((item, idx) => {
+        {visibleItems.map((item) => {
           const checked = localChecked.includes(item.id)
           return (
             <div
