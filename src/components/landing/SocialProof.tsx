@@ -84,7 +84,7 @@ export function SocialProof() {
         </div>
 
         <p className="text-center text-nikah-muted" style={{ fontSize: 12.5, marginTop: 28, lineHeight: 1.5 }}>
-          ✓ Tanpa langganan &nbsp;·&nbsp; ✓ Garansi 3 hari tanpa pertanyaan &nbsp;·&nbsp; ✓ Sekali bayar, akses seumur hidup
+          ✓ Tanpa langganan &nbsp;·&nbsp; ✓ Garansi 3 hari tanpa pertanyaan &nbsp;·&nbsp; ✓ Sekali bayar, dipakai sampai hari H
         </p>
 
       </div>

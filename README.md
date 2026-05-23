@@ -19,7 +19,7 @@ Fokus produk: mobile-first wedding planning app untuk pasangan Indonesia. Nuansa
 - Landing, onboarding, result, premium, payment, dan dashboard sudah bisa dicek di localhost.
 - Branch utama: `main`.
 - Harga premium diseragamkan sebagai `Rp 149rb`.
-- Model monetisasi: sekali bayar, akses seumur hidup, tanpa langganan.
+- Model monetisasi: sekali bayar untuk satu rencana pernikahan, dipakai sampai hari H, tanpa langganan.
 - Midtrans Snap sandbox sudah terhubung untuk flow pembayaran.
 - Aktivasi premium memakai `app_users.is_premium`.
 - Data onboarding pre-auth disimpan di localStorage, lalu disync ke `wedding_profiles` setelah login/signup dan state onboarding dikosongkan.

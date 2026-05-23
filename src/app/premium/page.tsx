@@ -49,7 +49,7 @@ function getFaqs(priceLabel: string) {
   return [
     {
       question: 'Apakah ada biaya langganan?',
-      answer: `Tidak. ${priceLabel} adalah pembelian sekali bayar untuk akses seumur hidup, termasuk update fitur ke depannya.`,
+      answer: `Tidak. ${priceLabel} adalah pembelian sekali bayar untuk satu rencana pernikahan, dipakai sampai hari H.`,
     },
     {
       question: 'Bagaimana jika setelah membeli ternyata tidak cocok?',
@@ -262,7 +262,7 @@ export default async function PremiumPage() {
                 {priceLabel}
               </div>
               <p className="text-nikah-muted" style={{ fontSize: 14.8, lineHeight: 1.55, margin: '0 0 2px' }}>
-                Bayar sekali untuk akses seumur hidup.
+                Bayar sekali untuk satu rencana pernikahan.
               </p>
               <p className="text-nikah-muted" style={{ fontSize: 14.8, lineHeight: 1.55, margin: '0 0 24px' }}>
                 Termasuk update fitur ke depannya.

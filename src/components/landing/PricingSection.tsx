@@ -15,7 +15,7 @@ export function PricingSection() {
       <div className="max-w-[1080px] mx-auto">
 
         <p className="text-xs font-extrabold uppercase tracking-widest text-nikah-mauve text-center mb-3">
-          Sekali bayar, akses seumur hidup
+          Sekali bayar, dipakai sampai hari H
         </p>
         <h2
           className="text-[34px] md:text-[46px] text-nikah-text text-center mb-10 leading-tight"
@@ -35,7 +35,7 @@ export function PricingSection() {
               <div className="text-nikah-deep mb-1" style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 46, fontWeight: 500, letterSpacing: '-0.02em', lineHeight: 1 }}>
                 Rp 149rb
               </div>
-              <p className="text-nikah-muted text-sm font-light">Bayar sekali · akses seumur hidup · bukan langganan</p>
+              <p className="text-nikah-muted text-sm font-light">Bayar sekali · dipakai sampai hari H · bukan langganan</p>
             </div>
 
             <div className="flex flex-col gap-3">
