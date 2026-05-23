@@ -86,7 +86,7 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
           clearTimeout(timeoutId)
         }
 
-        const data = await response.json() as { order_id?: string; snap_token?: string; error?: string }
+        const data = await response.json() as { order_id?: string; snap_token?: string; error?: string; reused?: boolean }
 
         if (response.status === 401) {
           track('auth_required_for_payment', { source: 'payment_create' })
@@ -102,7 +102,7 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
         snapToken = data.snap_token
         orderId = data.order_id ?? ''
         cachedTokenRef.current = { snapToken, orderId }
-        track('payment_create_succeeded', { provider: 'midtrans' })
+        track('payment_create_succeeded', { provider: 'midtrans', reused: Boolean(data.reused) })
       }
 
       if (!clientKey) {

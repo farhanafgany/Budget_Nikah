@@ -12,6 +12,8 @@ import { PAYMENT_CURRENCY, PREMIUM_PRODUCT_NAME, getPremiumPaymentAmount } from 
 
 export const runtime = 'nodejs'
 
+const PENDING_PAYMENT_REUSE_WINDOW_MS = 24 * 60 * 60 * 1000
+
 interface SnapResponse {
   token?: string
   redirect_url?: string
@@ -43,8 +45,39 @@ export async function POST(request: Request) {
   try {
     await trackServer('payment_create_requested', { provider: 'midtrans' })
     const admin = createAdminClient()
-    const orderId = `BN-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`
     const amount = getPremiumPaymentAmount()
+    const reusablePaymentCreatedAfter = new Date(Date.now() - PENDING_PAYMENT_REUSE_WINDOW_MS).toISOString()
+
+    const { data: reusablePayment, error: reusablePaymentError } = await admin
+      .from('payments')
+      .select('order_id, snap_token, redirect_url')
+      .eq('user_id', user.id)
+      .eq('amount', amount)
+      .eq('currency', PAYMENT_CURRENCY)
+      .eq('product_name', PREMIUM_PRODUCT_NAME)
+      .eq('status', 'pending')
+      .not('snap_token', 'is', null)
+      .gte('created_at', reusablePaymentCreatedAfter)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+
+    if (reusablePaymentError) {
+      await trackServer('payment_create_failed', { reason: 'pending_lookup_failed' })
+      return NextResponse.json({ error: reusablePaymentError.message }, { status: 500 })
+    }
+
+    if (reusablePayment?.snap_token) {
+      await trackServer('payment_create_reused', { provider: 'midtrans' })
+      return NextResponse.json({
+        order_id: reusablePayment.order_id,
+        snap_token: reusablePayment.snap_token,
+        redirect_url: reusablePayment.redirect_url,
+        reused: true,
+      })
+    }
+
+    const orderId = `BN-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`
 
     const { error: insertError } = await admin.from('payments').insert({
       user_id: user.id,
