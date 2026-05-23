@@ -234,7 +234,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
             </a>
           </div>
           <p className="hidden lg:block text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.45, margin: 0 }}>
-            Sekali bayar · akses sampai hari H · garansi 3 hari tanpa pertanyaan.
+            Sekali bayar · akses seumur hidup · garansi 3 hari tanpa pertanyaan.
           </p>
 
         </div>

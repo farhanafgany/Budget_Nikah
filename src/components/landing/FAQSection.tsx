@@ -13,7 +13,7 @@ const FAQS = [
   },
   {
     q: 'Apakah ada biaya langganan?',
-    a: 'Tidak. BudgetNikah adalah pembelian sekali bayar. Bayar sekali, akses seumur hidup — termasuk semua update fitur ke depannya.',
+    a: 'Tidak. BudgetNikah adalah pembelian sekali bayar: akses seumur hidup, termasuk semua update fitur ke depannya.',
   },
 ]
 

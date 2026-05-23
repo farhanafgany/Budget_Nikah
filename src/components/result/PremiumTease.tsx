@@ -71,7 +71,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
             Lanjutkan persiapan dengan lebih tenang.
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.76)', margin: '10px 0 0', fontSize: 14, lineHeight: 1.55, maxWidth: 640 }}>
-            Rp 149rb · sekali bayar · akses sampai hari H · garansi 3 hari tanpa pertanyaan
+            Rp 149rb · sekali bayar · akses seumur hidup · garansi 3 hari tanpa pertanyaan
           </p>
         </div>
         <div className="flex justify-end" style={{ gap: 12 }}>
@@ -193,7 +193,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           </TrackedLink>
         )}
         <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: '14px 0 0' }}>
-          ✓ Tanpa subscription · ✓ Garansi 3 hari tanpa pertanyaan
+          ✓ Tanpa langganan · ✓ Garansi 3 hari tanpa pertanyaan
         </p>
       </div>
 
@@ -204,7 +204,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         </div>
         <p className="text-nikah-muted" style={{ fontSize: 12, marginTop: 6, lineHeight: 1.6, marginBottom: 20 }}>
           Wedding financial planner untuk pasangan Indonesia.<br />
-          Sekali bayar, akses sampai hari H.
+          Sekali bayar, akses seumur hidup.
         </p>
         <div className="flex justify-center" style={{ gap: 28 }}>
           {[
