@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import * as Sentry from '@sentry/nextjs'
 import { Plus_Jakarta_Sans, Playfair_Display } from 'next/font/google'
 import { AnalyticsProvider } from '@/components/analytics/AnalyticsProvider'
+import { GoogleAdsScript } from '@/components/analytics/GoogleAdsScript'
 import './globals.css'
 
 const jakarta = Plus_Jakarta_Sans({
@@ -66,6 +67,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="id">
       <body className={`${jakarta.variable} ${playfair.variable} font-jakarta bg-nikah-bg text-nikah-text antialiased`}>
+        <GoogleAdsScript />
         <AnalyticsProvider>{children}</AnalyticsProvider>
       </body>
     </html>

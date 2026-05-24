@@ -5,12 +5,16 @@ import Link from 'next/link'
 import { CheckCircle2 } from 'lucide-react'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { clearOnboardingStore } from '@/stores/onboardingStore'
+import { firePurchaseConversion } from '@/lib/googleAds'
+import { PREMIUM_PRICE } from '@/lib/payment'
 
 export default function PremiumSuccessPage() {
   // Bersihkan localStorage onboarding setelah payment sukses,
   // bukan saat login — agar user bisa kembali ke /result sebelum bayar.
+  // Fire Google Ads purchase conversion event sekali saat halaman ini dibuka.
   useEffect(() => {
     clearOnboardingStore()
+    firePurchaseConversion(PREMIUM_PRICE)
   }, [])
 
   return (
