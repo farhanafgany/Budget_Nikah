@@ -20,9 +20,6 @@ function calcEstimate(guests: number, gaya: Gaya): number {
   return BASE_COST + guests * GAYA_RATE[gaya]
 }
 
-function formatRpJt(amount: number): string {
-  return `Rp ${Math.round(amount / 1_000_000)}jt`
-}
 
 export function MobileHero() {
   const [guests, setGuests] = useState(350)
