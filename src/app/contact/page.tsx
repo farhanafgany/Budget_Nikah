@@ -3,7 +3,7 @@ import { Mail, MessageCircle, Clock, ShieldQuestion } from 'lucide-react'
 import { LegalPageLayout, LegalSection, SimpleList } from '@/components/legal/LegalPageLayout'
 
 const UPDATED_AT = '24 Mei 2026'
-const SUPPORT_EMAIL = 'budgetnikah.ads@gmail.com'
+const SUPPORT_EMAIL = 'budgetnikahads@gmail.com'
 const MAILTO = `mailto:${SUPPORT_EMAIL}`
 
 export const metadata: Metadata = {

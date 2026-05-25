@@ -25,8 +25,7 @@ export function Navbar() {
         <div className="flex items-center">
           <Link
             href="/auth/login"
-            className="border border-nikah-border text-nikah-deep font-semibold rounded-full active:scale-95 active:brightness-90 transition-all whitespace-nowrap text-[11px] px-3 py-1.5 md:text-sm md:px-5 md:py-2.5 md:bg-white md:hover:bg-nikah-bg"
-            style={{ background: 'var(--landing-bg, #FAF5F5)' }}
+            className="border border-nikah-border text-nikah-deep font-semibold rounded-full active:scale-95 active:brightness-90 transition-all whitespace-nowrap text-[11px] px-3 py-1.5 bg-transparent md:text-sm md:px-5 md:py-2.5 md:bg-transparent md:hover:bg-white"
           >
             Masuk
           </Link>

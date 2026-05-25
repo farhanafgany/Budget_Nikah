@@ -47,18 +47,26 @@ function ScenarioCard({ label, guests, score, status }: ScenarioCardProps) {
       </div>
 
       <div className="flex items-end justify-between mt-5 md:mt-[38px]" style={{ gap: 18 }}>
-        <div
-          className="text-nikah-deep"
-          style={{
-            fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif',
-            fontStyle: 'italic',
-            fontWeight: 500,
-            fontSize: 'clamp(48px, 5vw, 64px)',
-            lineHeight: 0.82,
-            letterSpacing: '-0.04em',
-          }}
-        >
-          {score}
+        <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4 }}>
+          <span
+            className="text-nikah-deep"
+            style={{
+              fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif',
+              fontStyle: 'italic',
+              fontWeight: 500,
+              fontSize: 'clamp(48px, 5vw, 64px)',
+              lineHeight: 0.82,
+              letterSpacing: '-0.04em',
+            }}
+          >
+            {score}
+          </span>
+          <span
+            className="text-nikah-muted"
+            style={{ fontSize: 13, fontWeight: 600, marginBottom: 5 }}
+          >
+            /100
+          </span>
         </div>
         <span
           className="inline-flex items-center rounded-full font-extrabold"

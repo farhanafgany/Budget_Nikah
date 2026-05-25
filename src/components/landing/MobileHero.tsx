@@ -169,18 +169,12 @@ export function MobileHero() {
             >
               Estimasi Awal
             </p>
-            <p
-              style={{
-                fontFamily: CLAUDE_SERIF,
-                fontStyle: 'italic',
-                fontSize: 32,
-                fontWeight: 400,
-                color: 'var(--landing-deep-dark, #3D1419)',
-                margin: 0,
-                lineHeight: 1,
-              }}
-            >
-              {formatRpJt(estimate)}
+            <p style={{ margin: 0, lineHeight: 1 }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: 'var(--landing-muted, #A38B89)', letterSpacing: '0.03em', marginRight: 2 }}>Rp</span>
+              <span style={{ fontFamily: CLAUDE_SERIF, fontStyle: 'italic', fontSize: 40, fontWeight: 600, color: 'var(--landing-deep-dark, #3D1419)' }}>
+                {Math.round(estimate / 1_000_000)}
+              </span>
+              <span style={{ fontSize: 15, fontWeight: 600, color: 'var(--landing-muted, #A38B89)', marginLeft: 3 }}>jt</span>
             </p>
           </div>
           {gaya !== 'Simple' && delta > 0 && (
