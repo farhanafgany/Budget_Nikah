@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import { Check, ChevronRight, Minus } from 'lucide-react'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { PremiumAccessButton } from '@/components/payment/PremiumAccessButton'
@@ -90,6 +91,15 @@ export default async function PremiumPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   const isSignedIn = Boolean(user)
+
+  if (user) {
+    const { data: appUser } = await supabase
+      .from('app_users')
+      .select('is_premium')
+      .eq('id', user.id)
+      .single()
+    if (appUser?.is_premium) redirect('/dashboard')
+  }
 
   return (
     <main
