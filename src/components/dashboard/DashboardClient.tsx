@@ -79,27 +79,22 @@ function BudgetHealthCard({
   const vendorRemaining = Math.max(0, vendorTotal - vendorPaid)
   const commitPct       = totalBudget > 0 ? Math.min(100, Math.round((vendorTotal / totalBudget) * 100)) : 0
   const savingsGap      = Math.max(0, vendorRemaining - tabunganCollected)
+  const savingsSurplus  = Math.max(0, tabunganCollected - vendorRemaining)
 
   const isOverBudget  = vendorTotal > totalBudget
   const isNearBudget  = !isOverBudget && vendorTotal > totalBudget * 0.9
   const hasSavingsGap = !isOverBudget && savingsGap > 0
   const status = isOverBudget ? 'critical' : isNearBudget ? 'warning' : hasSavingsGap ? 'attention' : 'good'
 
-  const STATUS_LABELS  = { good: 'Aman', attention: 'Perlu Nabung', warning: 'Hampir Penuh', critical: 'Melewati Budget' }
-  const STATUS_COLORS  = { good: 'bg-green-100 text-green-700', attention: 'bg-orange-100 text-orange-700', warning: 'bg-orange-100 text-orange-700', critical: 'bg-red-100 text-red-700' }
-  const barColor       = isOverBudget ? '#B42318' : isNearBudget ? '#B98C54' : '#6E2638'
+  const STATUS_LABELS = { good: 'Aman', attention: 'Perlu Nabung', warning: 'Hampir Penuh', critical: 'Melewati Budget' }
+  const STATUS_COLORS = { good: 'bg-green-100 text-green-700', attention: 'bg-orange-100 text-orange-700', warning: 'bg-orange-100 text-orange-700', critical: 'bg-red-100 text-red-700' }
+  const barColor      = isOverBudget ? '#B42318' : isNearBudget ? '#B98C54' : '#6E2638'
 
-  const metrics = [
-    { label: 'Total Budget', value: formatRupiah(totalBudget) },
-    { label: 'Komit Vendor', value: formatRupiah(vendorTotal), note: isOverBudget ? `+${formatRupiah(vendorTotal - totalBudget)} melebihi` : undefined, noteColor: '#B42318' },
-    { label: 'Tabungan', value: formatRupiah(tabunganCollected) },
-    {
-      label: 'Sisa Bayar',
-      value: formatRupiah(vendorRemaining),
-      note: vendorRemaining === 0 ? 'semua lunas' : savingsGap > 0 ? `kurang ${formatRupiah(savingsGap)}` : 'tabungan cukup',
-      noteColor: savingsGap > 0 ? '#B42318' : '#2F7A3F',
-    },
-  ]
+  const gapLine = vendorRemaining === 0
+    ? { text: 'Semua tagihan vendor sudah lunas ✓', isGood: true }
+    : savingsGap > 0
+      ? { text: `Tabungan kurang ${formatRupiah(savingsGap)} dari yang perlu dibayar — perlu ditambah`, isGood: false }
+      : { text: `Tabungan lebih ${formatRupiah(savingsSurplus)} dari yang perlu dibayar — kamu aman ✓`, isGood: true }
 
   return (
     <div
@@ -113,38 +108,101 @@ function BudgetHealthCard({
         </span>
       </div>
 
-      <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 8, marginBottom: 6 }}>
-        <div
-          className="h-full rounded-full transition-all duration-700"
-          style={{ width: `${commitPct}%`, background: `linear-gradient(90deg, ${barColor}99, ${barColor})` }}
-        />
-      </div>
-      <p className="text-nikah-muted" style={{ fontSize: 11.5, marginBottom: 16 }}>
-        {vendorPayments.length === 0
-          ? 'Belum ada vendor dicatat — tambah vendor untuk melihat perbandingan budget.'
-          : `${commitPct}% dari budget sudah dikomit ke ${vendorPayments.length} vendor`}
-      </p>
-
-      <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: 12 }}>
-        {metrics.map(item => (
-          <div key={item.label}>
+      {vendorPayments.length > 0 ? (
+        <>
+          {/* Perbandingan utama: Perlu Dibayar vs Tabungan */}
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center" style={{ gap: 10, marginBottom: 10 }}>
             <div
-              className="text-nikah-deep"
-              style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 17, lineHeight: 1.1 }}
+              style={{
+                background: vendorRemaining === 0 ? '#F0FDF4' : '#FEF2F2',
+                border: `1px solid ${vendorRemaining === 0 ? '#BBF7D0' : '#FECACA'}`,
+                borderRadius: 10,
+                padding: '12px 14px',
+                textAlign: 'center',
+              }}
             >
-              {item.value}
-            </div>
-            <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9.5, letterSpacing: '0.1em', marginTop: 3 }}>
-              {item.label}
-            </div>
-            {item.note && (
-              <div className="font-bold" style={{ fontSize: 10, marginTop: 2, color: item.noteColor }}>
-                {item.note}
+              <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 22, lineHeight: 1.05, color: vendorRemaining === 0 ? '#166534' : '#991B1B', marginBottom: 4 }}>
+                {formatRupiah(vendorRemaining)}
               </div>
-            )}
+              <div className="font-bold uppercase text-nikah-muted" style={{ fontSize: 9.5, letterSpacing: '0.1em' }}>Perlu Dibayar</div>
+            </div>
+
+            <span className="text-nikah-muted font-bold" style={{ fontSize: 11, letterSpacing: '0.05em' }}>VS</span>
+
+            <div
+              style={{
+                background: '#F0FDF4',
+                border: '1px solid #BBF7D0',
+                borderRadius: 10,
+                padding: '12px 14px',
+                textAlign: 'center',
+              }}
+            >
+              <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 22, lineHeight: 1.05, color: '#166534', marginBottom: 4 }}>
+                {formatRupiah(tabunganCollected)}
+              </div>
+              <div className="font-bold uppercase text-nikah-muted" style={{ fontSize: 9.5, letterSpacing: '0.1em' }}>Tabungan</div>
+            </div>
           </div>
-        ))}
-      </div>
+
+          {/* Baris kesimpulan */}
+          <div
+            style={{
+              background: gapLine.isGood ? '#DCFCE7' : '#FEE2E2',
+              borderRadius: 8,
+              padding: '8px 12px',
+              textAlign: 'center',
+              fontSize: 13,
+              fontWeight: 600,
+              color: gapLine.isGood ? '#166534' : '#991B1B',
+              marginBottom: 14,
+            }}
+          >
+            {gapLine.text}
+          </div>
+
+          {/* Progress bar — konteks sekunder */}
+          <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 5, marginBottom: 5 }}>
+            <div
+              className="h-full rounded-full transition-all duration-700"
+              style={{ width: `${commitPct}%`, background: `linear-gradient(90deg, ${barColor}99, ${barColor})` }}
+            />
+          </div>
+          <p className="text-nikah-muted" style={{ fontSize: 11, marginBottom: 14 }}>
+            {commitPct}% dari budget sudah terikat ke {vendorPayments.length} vendor
+          </p>
+
+          {/* Angka konteks */}
+          <div className="flex items-start border-t border-nikah-border" style={{ paddingTop: 12, gap: 20 }}>
+            {[
+              { val: formatRupiah(totalBudget), lbl: 'Total Budget' },
+              { val: formatRupiah(vendorTotal), lbl: 'Total Vendor', note: isOverBudget ? `+${formatRupiah(vendorTotal - totalBudget)} melewati` : undefined },
+              { val: String(vendorPayments.length), lbl: 'Vendor' },
+            ].map(item => (
+              <div key={item.lbl}>
+                <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 15, color: 'var(--nikah-deep)', lineHeight: 1.1 }}>
+                  {item.val}
+                </div>
+                <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9, letterSpacing: '0.1em', marginTop: 2 }}>
+                  {item.lbl}
+                </div>
+                {item.note && (
+                  <div className="font-bold" style={{ fontSize: 9.5, marginTop: 1, color: '#B42318' }}>{item.note}</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 8, marginBottom: 6 }}>
+            <div className="h-full rounded-full" style={{ width: '0%' }} />
+          </div>
+          <p className="text-nikah-muted" style={{ fontSize: 11.5 }}>
+            Belum ada vendor dicatat — tambah vendor untuk melihat perbandingan budget.
+          </p>
+        </>
+      )}
     </div>
   )
 }
@@ -545,9 +603,13 @@ export function DashboardClient({
           <span className="lg:hidden">Dana &amp; Pembayaran</span>
           <span className="hidden lg:inline">Dana &amp; Pembayaran</span>
         </p>
-        <div className="grid grid-cols-1 lg:grid-cols-3" style={{ gap: 20, marginBottom: 28, alignItems: 'start' }}>
+        {/* Baris 1: Tabungan (1/2) + Vendor (1/2) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 20, marginBottom: 20, alignItems: 'start' }}>
           <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} />
           <VendorPaymentTracker initialPayments={vendorPayments} />
+        </div>
+        {/* Baris 2: Catatan */}
+        <div style={{ marginBottom: 28 }}>
           <DashboardNote initialNote={dashboardNote} />
         </div>
 
