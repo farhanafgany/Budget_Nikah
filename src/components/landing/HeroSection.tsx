@@ -37,8 +37,8 @@ export function HeroSection() {
   return (
     <section
       aria-label="Hero"
-      className="relative overflow-hidden pt-8 pb-10 md:pt-[62px] md:pb-[72px] px-6 md:px-8"
-      style={{ background: 'var(--landing-bg, #FAF5F5)' }}
+      className="relative overflow-hidden pt-8 pb-16 md:pt-[62px] md:pb-[72px] px-6 md:px-8"
+      style={{ background: 'linear-gradient(175deg, #EFD9CC 0%, #FAF5F5 52%)', boxShadow: '0 4px 24px rgba(90,30,42,0.08)' }}
     >
       <div
         className="relative z-10 max-w-[1128px] mx-auto grid grid-cols-1 lg:grid-cols-[minmax(0,545px)_minmax(0,519px)] items-center min-w-0"

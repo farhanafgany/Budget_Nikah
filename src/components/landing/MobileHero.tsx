@@ -20,9 +20,6 @@ function calcEstimate(guests: number, gaya: Gaya): number {
   return BASE_COST + guests * GAYA_RATE[gaya]
 }
 
-function formatRpJt(amount: number): string {
-  return `Rp ${Math.round(amount / 1_000_000)}jt`
-}
 
 export function MobileHero() {
   const [guests, setGuests] = useState(350)
@@ -96,8 +93,8 @@ export function MobileHero() {
       <div
         style={{
           background: 'linear-gradient(160deg, #FFF7F2 0%, #F2E2D4 100%)',
-          borderRadius: 20,
-          padding: '15px 14px',
+          borderRadius: 24,
+          padding: '20px 18px',
           marginBottom: 12,
           border: '1px solid var(--landing-border, #E8DACF)',
           boxShadow: '0 10px 28px rgba(90,30,42,0.055)',

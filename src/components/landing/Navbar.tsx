@@ -4,8 +4,7 @@ import { BrandLogo } from '@/components/ui/BrandLogo'
 export function Navbar() {
   return (
     <header
-      className="relative z-40 md:border-b md:border-nikah-border md:bg-white/90 md:backdrop-blur"
-      style={{ background: 'var(--landing-bg, #FAF5F5)' }}
+      className="relative z-40 bg-[#EFD9CC] md:border-b md:border-nikah-border md:bg-[#EFD9CC]/90 md:backdrop-blur"
     >
       <div className="max-w-[1080px] mx-auto px-4 md:px-8 h-14 md:h-16 flex items-center justify-between gap-3">
 
