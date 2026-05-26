@@ -9,7 +9,7 @@ interface Props {
 
 export function DashboardNavbar({ userEmail }: Props) {
   return (
-    <header className="sticky top-0 z-40 border-b border-nikah-border bg-white">
+    <header className="sticky top-0 z-40 border-b border-nikah-border bg-[#F5EDE8]/95 backdrop-blur-sm">
       <div
         className="max-w-[1200px] mx-auto flex items-center justify-between gap-3"
         style={{ padding: '0 var(--d-pad-page)', height: 64 }}
@@ -26,7 +26,7 @@ export function DashboardNavbar({ userEmail }: Props) {
               width: 34,
               height: 34,
               fontSize: 12,
-              background: 'var(--landing-mauve, var(--nikah-mauve))',
+              background: 'var(--landing-deep, var(--nikah-deep))',
             }}
             aria-label={`Akun ${userEmail}`}
           >

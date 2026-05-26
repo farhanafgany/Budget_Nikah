@@ -157,12 +157,12 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
 
   return (
     <div
-      className="bg-white border shadow-sm"
+      className="bg-white border"
       style={{
         borderRadius: 'var(--d-radius)',
         padding: 'var(--d-pad-card)',
         borderColor: 'rgba(200,168,96,0.34)',
-        boxShadow: '0 12px 30px rgba(107,53,69,0.06)',
+        boxShadow: '0 4px 20px rgba(107,53,69,0.1)',
       }}
     >
       <div className="flex items-start justify-between" style={{ marginBottom: 14 }}>

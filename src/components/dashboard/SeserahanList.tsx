@@ -150,8 +150,8 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
 
   return (
     <div
-      className="bg-white border border-nikah-border shadow-sm"
-      style={{ borderRadius: 'var(--d-radius)', padding: '22px 22px', boxShadow: '0 12px 30px rgba(90, 30, 42, 0.05)' }}
+      className="bg-white border"
+      style={{ borderRadius: 'var(--d-radius)', padding: '22px 22px', borderColor: 'rgba(192,120,136,0.26)', boxShadow: '0 4px 20px rgba(90,30,42,0.09)' }}
     >
       <div className="flex items-start justify-between" style={{ marginBottom: 14, gap: 18 }}>
         <span className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-nikah-mauve">
