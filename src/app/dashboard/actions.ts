@@ -2,7 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
-import { AUTH_ERROR, type CustomSeserahanInput, type SavingsHistoryInput, type VendorPaymentInput } from '@/lib/dashboardActions'
+import { AUTH_ERROR, type CustomChecklistInput, type CustomSeserahanInput, type SavingsHistoryInput, type VendorPaymentInput } from '@/lib/dashboardActions'
 
 function formatDashboardError(error: { message?: string; code?: string }) {
   const message = error.message ?? 'Unknown error'
@@ -12,7 +12,9 @@ function formatDashboardError(error: { message?: string; code?: string }) {
     message.includes('vendor_payments') ||
     message.includes('custom_seserahan_items') ||
     message.includes('hidden_seserahan_item_ids') ||
-    message.includes('savings_history')
+    message.includes('savings_history') ||
+    message.includes('custom_checklist_items') ||
+    message.includes('hidden_checklist_item_ids')
   ) {
     return 'Kolom database dashboard belum tersedia. Jalankan migration terbaru di Supabase, lalu coba lagi.'
   }
@@ -150,6 +152,55 @@ export async function updateCustomSeserahanItems(items: CustomSeserahanInput[]):
     const { error } = await supabase
       .from('wedding_profiles')
       .update({ custom_seserahan_items: sanitized })
+      .eq('user_id', user.id)
+
+    if (error) return { error: formatDashboardError(error) }
+    revalidatePath('/dashboard')
+    return {}
+  } catch (error) {
+    return { error: formatUnexpectedDashboardError(error) }
+  }
+}
+
+export async function updateCustomChecklistItems(items: CustomChecklistInput[]): Promise<{ error?: string }> {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: AUTH_ERROR }
+
+    const VALID_MONTHS = new Set([0, 1, 3, 6, 12])
+    const sanitized = items
+      .map(item => ({
+        id: item.id,
+        label: item.label.trim().slice(0, 80),
+        monthsBefore: VALID_MONTHS.has(item.monthsBefore) ? item.monthsBefore : 12,
+      }))
+      .filter(item => item.id && item.label)
+
+    const { error } = await supabase
+      .from('wedding_profiles')
+      .update({ custom_checklist_items: sanitized })
+      .eq('user_id', user.id)
+
+    if (error) return { error: formatDashboardError(error) }
+    revalidatePath('/dashboard')
+    return {}
+  } catch (error) {
+    return { error: formatUnexpectedDashboardError(error) }
+  }
+}
+
+export async function updateHiddenChecklistItems(ids: string[]): Promise<{ error?: string }> {
+  try {
+    const supabase = await createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { error: AUTH_ERROR }
+
+    const sanitized = Array.from(new Set(ids.filter(Boolean)))
+
+    const { error } = await supabase
+      .from('wedding_profiles')
+      .update({ hidden_checklist_item_ids: sanitized })
       .eq('user_id', user.id)
 
     if (error) return { error: formatDashboardError(error) }

@@ -171,7 +171,9 @@ export default async function DashboardSummaryPage() {
             <div className="grid grid-cols-2" style={{ gap: 8 }}>
               {topAlloc.map(([key, item]) => (
                 <div key={key} className="bg-nikah-bg" style={{ borderRadius: 12, padding: '11px 13px' }}>
-                  <div className="font-bold text-nikah-text capitalize" style={{ fontSize: 14 }}>{key}</div>
+                  <div className="font-bold text-nikah-text" style={{ fontSize: 14 }}>
+                    {({'catering':'Catering','venue':'Venue','decoration':'Dekorasi','documentation':'Dokumentasi','mua':'MUA & Busana','souvenir':'Souvenir','entertainment':'Hiburan','emergencyFund':'Dana Darurat'} as Record<string,string>)[key] ?? key}
+                  </div>
                   <div className="text-nikah-muted" style={{ fontSize: 11, marginTop: 3 }}>{formatRupiah(item.estimatedAmount)} · {item.percentage}%</div>
                 </div>
               ))}
