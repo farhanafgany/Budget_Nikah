@@ -37,11 +37,12 @@ export function DashboardNote({ initialNote }: Props) {
 
   return (
     <div
-      className="bg-white border border-nikah-border shadow-sm"
+      className="bg-white border"
       style={{
         borderRadius: 'var(--d-radius)',
         padding: '22px 22px',
-        boxShadow: '0 12px 30px rgba(90, 30, 42, 0.05)',
+        borderColor: 'rgba(192,120,136,0.26)',
+        boxShadow: '0 4px 20px rgba(90,30,42,0.09)',
       }}
     >
       <div className="flex items-center justify-between" style={{ marginBottom: 10 }}>

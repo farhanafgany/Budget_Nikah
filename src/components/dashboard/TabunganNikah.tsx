@@ -81,12 +81,12 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
 
   return (
     <div
-      className="bg-white border shadow-sm"
+      className="bg-white border"
       style={{
         borderRadius: 'var(--d-radius)',
         padding: 24,
         borderColor: 'rgba(192,120,136,0.26)',
-        boxShadow: '0 10px 26px rgba(107,53,69,0.05)',
+        boxShadow: '0 4px 20px rgba(90,30,42,0.09)',
       }}
     >
       <div className="flex items-start justify-between" style={{ marginBottom: 14 }}>
@@ -133,10 +133,10 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
       </div>
 
       {/* Progress bar */}
-      <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 6, margin: '6px 0 14px' }}>
+      <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 10, margin: '8px 0 14px' }}>
         <div
           className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${progress}%`, background: 'linear-gradient(90deg, var(--landing-mauve, var(--nikah-mauve)), var(--landing-deep, var(--nikah-deep)))' }}
+          style={{ width: `${progress}%`, background: 'linear-gradient(90deg, #C16E73, #6B3545)' }}
         />
       </div>
       <div className="flex justify-between text-nikah-muted" style={{ fontSize: 11, marginBottom: 12 }}>

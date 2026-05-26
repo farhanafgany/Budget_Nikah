@@ -423,7 +423,7 @@ export function DashboardClient({
           <MobileScoreStrip score={score} label={label} />
         </div>
 
-        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: '0 0 14px' }}>
+        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve border-l-[3px] border-nikah-mauve pl-3" style={{ margin: '0 0 14px' }}>
           <span className="lg:hidden">Dana &amp; Pembayaran</span>
           <span className="hidden lg:inline">Dana &amp; Pembayaran</span>
         </p>
@@ -433,7 +433,7 @@ export function DashboardClient({
           <DashboardNote initialNote={dashboardNote} />
         </div>
 
-        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: '0 0 14px' }}>
+        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve border-l-[3px] border-nikah-mauve pl-3" style={{ margin: '0 0 14px' }}>
           <span className="lg:hidden">Persiapan &amp; Referensi</span>
           <span className="hidden lg:inline">Tugas &amp; Referensi</span>
         </p>
