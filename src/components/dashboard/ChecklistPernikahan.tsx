@@ -1,10 +1,11 @@
 'use client'
 import { useRef, useState, useTransition } from 'react'
 import { CHECKLIST_ITEMS, type ChecklistTimeline } from '@/lib/checklistItems'
-import { updateChecklistItems } from '@/app/dashboard/actions'
+import { updateChecklistItems, updateCustomChecklistItems, updateHiddenChecklistItems } from '@/app/dashboard/actions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { track } from '@/lib/analytics'
-import { ChevronDown } from 'lucide-react'
+import type { CustomChecklistInput } from '@/lib/dashboardActions'
+import { ChevronDown, Plus, Trash2 } from 'lucide-react'
 
 const TIMELINE_LABELS: Record<ChecklistTimeline, string> = {
   12: '12 Bulan Sebelum',
@@ -17,8 +18,19 @@ const TIMELINE_LABELS: Record<ChecklistTimeline, string> = {
 const TIMELINES: ChecklistTimeline[] = [12, 6, 3, 1, 0]
 const PREVIEW_COUNT = 5
 
+function getDefaultTimeline(days: number | null | undefined): ChecklistTimeline {
+  if (days === null || days === undefined || days <= 7) return 0
+  if (days <= 45) return 1
+  if (days <= 120) return 3
+  if (days <= 240) return 6
+  return 12
+}
+
 interface Props {
   checkedIds: string[]
+  days?: number | null
+  customItems?: CustomChecklistInput[]
+  hiddenDefaultIds?: string[]
 }
 
 function MiniProgressRing({ value }: { value: number }) {
@@ -45,9 +57,14 @@ function MiniProgressRing({ value }: { value: number }) {
   )
 }
 
-export function ChecklistPernikahan({ checkedIds }: Props) {
+export function ChecklistPernikahan({ checkedIds, days, customItems = [], hiddenDefaultIds = [] }: Props) {
   const [localChecked, setLocalChecked] = useState<string[]>(checkedIds)
-  const [active, setActive] = useState<ChecklistTimeline>(12)
+  const [localCustomItems, setLocalCustomItems] = useState<CustomChecklistInput[]>(customItems)
+  const [localHiddenIds, setLocalHiddenIds] = useState<string[]>(hiddenDefaultIds)
+  const [draftLabel, setDraftLabel] = useState('')
+  const [formOpen, setFormOpen] = useState(false)
+  const currentTimeline = getDefaultTimeline(days)
+  const [active, setActive] = useState<ChecklistTimeline>(() => getDefaultTimeline(days))
   const [expanded, setExpanded] = useState(false)
   const [error, setError] = useState('')
   const [retryFn, setRetryFn] = useState<(() => void) | null>(null)
@@ -57,14 +74,21 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
   const localCheckedRef = useRef<string[]>(checkedIds)
   localCheckedRef.current = localChecked
 
-  const totalDone = localChecked.length
-  const totalCount = CHECKLIST_ITEMS.length
+  const visibleDefaultItems = CHECKLIST_ITEMS.filter(i => !localHiddenIds.includes(i.id))
+  const totalDone = localChecked.filter(id => {
+    const isDefault = CHECKLIST_ITEMS.some(i => i.id === id)
+    return !isDefault || !localHiddenIds.includes(id)
+  }).length
+  const totalCount = visibleDefaultItems.length + localCustomItems.length
   const totalProgress = totalCount > 0 ? Math.round((totalDone / totalCount) * 100) : 0
-  const activeItems = CHECKLIST_ITEMS.filter(i => i.monthsBefore === active)
-  const activeDone = activeItems.filter(i => localChecked.includes(i.id)).length
-  const visibleItems = expanded ? activeItems : activeItems.slice(0, PREVIEW_COUNT)
-  const hiddenCount = Math.max(0, activeItems.length - PREVIEW_COUNT)
-  const phaseCompleted = activeItems.length > 0 && activeDone === activeItems.length
+  const activeDefaultItems = visibleDefaultItems.filter(i => i.monthsBefore === active)
+  const activeCustomItems = localCustomItems.filter(i => i.monthsBefore === active)
+  const activeDone = [...activeDefaultItems, ...activeCustomItems].filter(i => localChecked.includes(i.id)).length
+  const visibleItems = expanded ? activeDefaultItems : activeDefaultItems.slice(0, PREVIEW_COUNT)
+  const hiddenCount = Math.max(0, activeDefaultItems.length - PREVIEW_COUNT)
+  const phaseCompleted =
+    (activeDefaultItems.length + activeCustomItems.length) > 0 &&
+    activeDone === (activeDefaultItems.length + activeCustomItems.length)
 
   const PHASE_CELEBRATION: Record<ChecklistTimeline, string> = {
     12: 'Fondasi sudah kuat. Langkah awal yang paling penting sudah terlewati.',
@@ -111,6 +135,72 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
       setLocalChecked(prev =>
         wasChecked ? [...prev, id] : prev.filter(i => i !== id)
       )
+    })
+  }
+
+  function handleRemoveDefault(id: string) {
+    const nextHidden = [...localHiddenIds, id]
+    const nextChecked = localCheckedRef.current.filter(checkedId => checkedId !== id)
+    track('dashboard_feature_used', { feature: 'checklist', action: 'hide_default' })
+    setLocalHiddenIds(nextHidden)
+    setLocalChecked(nextChecked)
+    setError('')
+    startTransition(async () => {
+      const [hiddenResult, checkedResult] = await Promise.all([
+        updateHiddenChecklistItems(nextHidden),
+        updateChecklistItems(nextChecked),
+      ])
+      const err = handleActionError(hiddenResult.error) || handleActionError(checkedResult.error)
+      if (err) {
+        setLocalHiddenIds(localHiddenIds)
+        setLocalChecked(localCheckedRef.current)
+        setError('Item belum tersembunyi. Coba lagi.')
+      }
+    })
+  }
+
+  function handleAddCustom() {
+    const label = draftLabel.trim()
+    if (!label) return
+    const newItem: CustomChecklistInput = {
+      id: `custom-${crypto.randomUUID()}`,
+      label,
+      monthsBefore: active,
+    }
+    const nextItems = [...localCustomItems, newItem]
+    track('dashboard_feature_used', { feature: 'checklist', action: 'add_custom', timeline_months_before: active })
+    setLocalCustomItems(nextItems)
+    setDraftLabel('')
+    setFormOpen(false)
+    setError('')
+    startTransition(async () => {
+      const result = await updateCustomChecklistItems(nextItems)
+      const err = handleActionError(result.error)
+      if (err) {
+        setLocalCustomItems(localCustomItems)
+        setError('Item custom belum tersimpan. Coba lagi.')
+      }
+    })
+  }
+
+  function handleRemoveCustom(id: string) {
+    const nextItems = localCustomItems.filter(item => item.id !== id)
+    const nextChecked = localCheckedRef.current.filter(checkedId => checkedId !== id)
+    track('dashboard_feature_used', { feature: 'checklist', action: 'delete_custom' })
+    setLocalCustomItems(nextItems)
+    setLocalChecked(nextChecked)
+    setError('')
+    startTransition(async () => {
+      const [customResult, checkedResult] = await Promise.all([
+        updateCustomChecklistItems(nextItems),
+        updateChecklistItems(nextChecked),
+      ])
+      const err = handleActionError(customResult.error) || handleActionError(checkedResult.error)
+      if (err) {
+        setLocalCustomItems(localCustomItems)
+        setLocalChecked(localCheckedRef.current)
+        setError('Item belum terhapus. Coba lagi.')
+      }
     })
   }
 
@@ -194,9 +284,25 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
               }}
             >
               {timeline === 0 ? 'H-1 mgg' : `${timeline} bln`}
-              {doneCnt === totalCnt && totalCnt > 0 && (
-                <span style={{ marginLeft: 4, opacity: 0.85 }}>✓</span>
-              )}
+              {doneCnt === totalCnt && totalCnt > 0
+                ? <span style={{ marginLeft: 4, opacity: 0.85 }}>✓</span>
+                : timeline === currentTimeline && (
+                  <span
+                    style={{
+                      marginLeft: 5,
+                      fontSize: 9,
+                      fontWeight: 800,
+                      letterSpacing: '0.04em',
+                      background: isActive ? 'rgba(255,255,255,0.25)' : 'rgba(110,38,56,0.12)',
+                      color: isActive ? 'white' : 'var(--nikah-deep)',
+                      borderRadius: 4,
+                      padding: '1px 5px',
+                    }}
+                  >
+                    Sekarang
+                  </span>
+                )
+              }
             </button>
           )
         })}
@@ -204,7 +310,7 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
 
       <div className="flex items-center justify-between" style={{ margin: '0 0 8px' }}>
         <h4 className="font-extrabold text-nikah-text" style={{ fontSize: 12, margin: 0 }}>{TIMELINE_LABELS[active]}</h4>
-        <span className="text-nikah-muted" style={{ fontSize: 11 }}>{activeDone} dari {activeItems.length} selesai</span>
+        <span className="text-nikah-muted" style={{ fontSize: 11 }}>{activeDone} dari {activeDefaultItems.length + activeCustomItems.length} selesai</span>
       </div>
 
       {phaseCompleted && (
@@ -230,44 +336,57 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
         {visibleItems.map((item, idx) => {
           const checked = localChecked.includes(item.id)
           return (
-            <button
+            <div
               key={item.id}
-              onClick={() => handleToggle(item.id)}
-              data-checked={checked}
-              className="w-full flex items-center text-left border-0 bg-transparent transition-all hover:bg-nikah-bg active:scale-[0.985] active:brightness-90"
+              className="group flex items-center"
               style={{
-                gap: 12,
-                padding: '13px 8px',
                 borderBottom: idx < visibleItems.length - 1 ? '1px solid var(--nikah-border)' : 'none',
               }}
             >
-              <span
+              <button
+                onClick={() => handleToggle(item.id)}
                 data-checked={checked}
-                className={`flex-shrink-0 inline-flex items-center justify-center border-2 transition-all ${
-                  checked
-                    ? 'bg-nikah-deep border-nikah-deep'
-                    : 'border-nikah-border bg-white'
-                }`}
-                style={{ width: 24, height: 24, borderRadius: 7 }}
+                className="flex-1 flex items-center text-left border-0 bg-transparent transition-all hover:bg-nikah-bg active:scale-[0.985] active:brightness-90"
+                style={{ gap: 12, padding: '13px 8px', minWidth: 0 }}
               >
-                {checked && (
-                  <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                )}
-              </span>
-              <span
-                className={`flex-1 ${checked ? 'text-nikah-muted' : 'text-nikah-text'}`}
-                style={{
-                  fontSize: 13,
-                  lineHeight: 1.5,
-                  textDecoration: checked ? 'line-through' : 'none',
-                  textDecorationColor: 'var(--nikah-muted)',
-                }}
+                <span
+                  data-checked={checked}
+                  className={`flex-shrink-0 inline-flex items-center justify-center border-2 transition-all ${
+                    checked
+                      ? 'bg-nikah-deep border-nikah-deep'
+                      : 'border-nikah-border bg-white'
+                  }`}
+                  style={{ width: 24, height: 24, borderRadius: 7 }}
+                >
+                  {checked && (
+                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                    </svg>
+                  )}
+                </span>
+                <span
+                  className={`flex-1 min-w-0 ${checked ? 'text-nikah-muted' : 'text-nikah-text'}`}
+                  style={{
+                    fontSize: 13,
+                    lineHeight: 1.5,
+                    textDecoration: checked ? 'line-through' : 'none',
+                    textDecorationColor: 'var(--nikah-muted)',
+                  }}
+                >
+                  {item.label}
+                </span>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleRemoveDefault(item.id)}
+                className="flex-shrink-0 text-nikah-muted opacity-40 transition-opacity hover:text-red-500 hover:opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                style={{ padding: '13px 8px' }}
+                aria-label={`Hapus ${item.label}`}
+                title="Sembunyikan item ini"
               >
-                {item.label}
-              </span>
-            </button>
+                <Trash2 size={14} />
+              </button>
+            </div>
           )
         })}
       </div>
@@ -297,6 +416,110 @@ export function ChecklistPernikahan({ checkedIds }: Props) {
           />
         </button>
       )}
+
+      {/* Custom items untuk tab aktif — selalu tampil */}
+      {activeCustomItems.length > 0 && (
+        <div style={{ borderTop: '1px solid var(--nikah-border)', marginTop: hiddenCount > 0 ? 8 : 0 }}>
+          {activeCustomItems.map((item, idx) => {
+            const checked = localChecked.includes(item.id)
+            return (
+              <div
+                key={item.id}
+                className="group flex items-center"
+                style={{
+                  gap: 12,
+                  padding: '11px 8px',
+                  borderBottom: idx < activeCustomItems.length - 1 ? '1px solid var(--nikah-border)' : 'none',
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => handleToggle(item.id)}
+                  className="flex items-center text-left flex-1 min-w-0 border-0 bg-transparent hover:bg-nikah-bg active:scale-[0.985] active:brightness-90 transition-all"
+                  style={{ gap: 12, borderRadius: 8, padding: '2px 4px', margin: '-2px -4px' }}
+                >
+                  <span
+                    className={`flex-shrink-0 inline-flex items-center justify-center border-2 transition-all ${
+                      checked ? 'bg-nikah-deep border-nikah-deep' : 'border-nikah-border bg-white'
+                    }`}
+                    style={{ width: 24, height: 24, borderRadius: 7 }}
+                  >
+                    {checked && (
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </span>
+                  <span
+                    className={`flex-1 min-w-0 ${checked ? 'text-nikah-muted' : 'text-nikah-text'}`}
+                    style={{
+                      fontSize: 13,
+                      lineHeight: 1.5,
+                      fontStyle: 'italic',
+                      textDecoration: checked ? 'line-through' : 'none',
+                      textDecorationColor: 'var(--nikah-muted)',
+                    }}
+                  >
+                    {item.label}
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveCustom(item.id)}
+                  className="flex-shrink-0 text-nikah-muted opacity-40 transition-opacity hover:text-red-500 hover:opacity-100 md:opacity-0 md:group-hover:opacity-100"
+                  aria-label={`Hapus ${item.label}`}
+                  title="Hapus item ini"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      )}
+
+      {/* Form tambah item kustom */}
+      {formOpen && (
+        <div className="grid grid-cols-[1fr_auto]" style={{ gap: 8, marginTop: 10 }}>
+          <input
+            value={draftLabel}
+            onChange={e => setDraftLabel(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustom() } }}
+            placeholder={`Tambah item untuk ${TIMELINE_LABELS[active].toLowerCase()}`}
+            className="w-full border border-nikah-border bg-nikah-bg text-nikah-text outline-none focus:border-nikah-mauve focus:bg-white"
+            style={{ minWidth: 0, borderRadius: 999, padding: '9px 13px', fontSize: 12 }}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
+          />
+          <button
+            type="button"
+            onClick={handleAddCustom}
+            disabled={!draftLabel.trim()}
+            className="inline-flex items-center justify-center bg-nikah-deep text-white disabled:opacity-40"
+            style={{ width: 36, height: 36, border: 0, borderRadius: 999, flexShrink: 0 }}
+            aria-label="Tambah item"
+          >
+            <Plus size={16} />
+          </button>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => { setFormOpen(v => !v); setDraftLabel('') }}
+        className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-all hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
+        style={{
+          gap: 6,
+          marginTop: 10,
+          padding: '9px 14px',
+          border: '1px solid var(--landing-border, var(--nikah-border))',
+          borderRadius: 999,
+          fontSize: 12,
+          background: 'transparent',
+        }}
+      >
+        {formOpen ? 'Tutup' : '+ Tambah item sendiri'}
+      </button>
     </div>
   )
 }

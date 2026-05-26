@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import type { VendorPaymentInput } from '@/lib/dashboardActions'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
@@ -167,16 +166,6 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
         )}
       </div>
 
-      {/* Footer */}
-      <div style={{ padding: '12px 22px 16px', borderTop: '1px solid rgba(237,228,230,0.7)' }}>
-        <Link
-          href="/dashboard"
-          className="text-nikah-deep font-bold active:opacity-60 transition-opacity"
-          style={{ fontSize: 13.5 }}
-        >
-          Lihat semua prioritas →
-        </Link>
-      </div>
     </div>
   )
 }

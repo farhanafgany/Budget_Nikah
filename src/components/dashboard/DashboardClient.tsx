@@ -15,7 +15,7 @@ import { VendorPaymentTracker } from '@/components/dashboard/VendorPaymentTracke
 import { CurrentPriorities } from '@/components/dashboard/CurrentPriorities'
 import { formatRupiah } from '@/lib/utils'
 import type { PressureLevel } from '@/lib/scoring'
-import type { CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/lib/dashboardActions'
+import type { CustomChecklistInput, CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/lib/dashboardActions'
 
 interface AllocEntry {
   percentage: number
@@ -36,6 +36,8 @@ interface Props {
   tabunganCollected: number
   savingsHistory: SavingsHistoryInput[]
   checklistChecked: string[]
+  customChecklistItems: CustomChecklistInput[]
+  hiddenChecklistItemIds: string[]
   seserahanChecked: string[]
   customSeserahanItems: CustomSeserahanInput[]
   hiddenSeserahanItemIds: string[]
@@ -62,6 +64,90 @@ const LABEL_COLORS: Record<string, string> = {
 
 const BAR_COLORS = ['#6E2638', '#C47986', '#B98C54', '#A87B68', '#8C4F62', '#A38C6C']
 const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
+
+function BudgetHealthCard({
+  totalBudget,
+  vendorPayments,
+  tabunganCollected,
+}: {
+  totalBudget: number
+  vendorPayments: VendorPaymentInput[]
+  tabunganCollected: number
+}) {
+  const vendorTotal     = vendorPayments.reduce((sum, v) => sum + v.totalAmount, 0)
+  const vendorPaid      = vendorPayments.reduce((sum, v) => sum + v.paidAmount, 0)
+  const vendorRemaining = Math.max(0, vendorTotal - vendorPaid)
+  const commitPct       = totalBudget > 0 ? Math.min(100, Math.round((vendorTotal / totalBudget) * 100)) : 0
+  const savingsGap      = Math.max(0, vendorRemaining - tabunganCollected)
+
+  const isOverBudget  = vendorTotal > totalBudget
+  const isNearBudget  = !isOverBudget && vendorTotal > totalBudget * 0.9
+  const hasSavingsGap = !isOverBudget && savingsGap > 0
+  const status = isOverBudget ? 'critical' : isNearBudget ? 'warning' : hasSavingsGap ? 'attention' : 'good'
+
+  const STATUS_LABELS  = { good: 'Aman', attention: 'Perlu Nabung', warning: 'Hampir Penuh', critical: 'Melewati Budget' }
+  const STATUS_COLORS  = { good: 'bg-green-100 text-green-700', attention: 'bg-orange-100 text-orange-700', warning: 'bg-orange-100 text-orange-700', critical: 'bg-red-100 text-red-700' }
+  const barColor       = isOverBudget ? '#B42318' : isNearBudget ? '#B98C54' : '#6E2638'
+
+  const metrics = [
+    { label: 'Total Budget', value: formatRupiah(totalBudget) },
+    { label: 'Komit Vendor', value: formatRupiah(vendorTotal), note: isOverBudget ? `+${formatRupiah(vendorTotal - totalBudget)} melebihi` : undefined, noteColor: '#B42318' },
+    { label: 'Tabungan', value: formatRupiah(tabunganCollected) },
+    {
+      label: 'Sisa Bayar',
+      value: formatRupiah(vendorRemaining),
+      note: vendorRemaining === 0 ? 'semua lunas' : savingsGap > 0 ? `kurang ${formatRupiah(savingsGap)}` : 'tabungan cukup',
+      noteColor: savingsGap > 0 ? '#B42318' : '#2F7A3F',
+    },
+  ]
+
+  return (
+    <div
+      className="bg-white border border-nikah-border"
+      style={{ borderRadius: 'var(--d-radius)', padding: '20px 22px', marginBottom: 20, boxShadow: '0 4px 20px rgba(90,30,42,0.06)' }}
+    >
+      <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
+        <span className="text-[11px] font-extrabold uppercase tracking-[0.13em] text-nikah-mauve">Kondisi Budget</span>
+        <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-bold ${STATUS_COLORS[status]}`}>
+          {STATUS_LABELS[status]}
+        </span>
+      </div>
+
+      <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 8, marginBottom: 6 }}>
+        <div
+          className="h-full rounded-full transition-all duration-700"
+          style={{ width: `${commitPct}%`, background: `linear-gradient(90deg, ${barColor}99, ${barColor})` }}
+        />
+      </div>
+      <p className="text-nikah-muted" style={{ fontSize: 11.5, marginBottom: 16 }}>
+        {vendorPayments.length === 0
+          ? 'Belum ada vendor dicatat — tambah vendor untuk melihat perbandingan budget.'
+          : `${commitPct}% dari budget sudah dikomit ke ${vendorPayments.length} vendor`}
+      </p>
+
+      <div className="grid grid-cols-2 sm:grid-cols-4" style={{ gap: 12 }}>
+        {metrics.map(item => (
+          <div key={item.label}>
+            <div
+              className="text-nikah-deep"
+              style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 17, lineHeight: 1.1 }}
+            >
+              {item.value}
+            </div>
+            <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9.5, letterSpacing: '0.1em', marginTop: 3 }}>
+              {item.label}
+            </div>
+            {item.note && (
+              <div className="font-bold" style={{ fontSize: 10, marginTop: 2, color: item.noteColor }}>
+                {item.note}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 function getTimeGreeting(): string {
   const hour = new Date().getHours()
@@ -190,6 +276,8 @@ export function DashboardClient({
   tabunganCollected,
   savingsHistory,
   checklistChecked,
+  customChecklistItems,
+  hiddenChecklistItemIds,
   seserahanChecked,
   customSeserahanItems,
   hiddenSeserahanItemIds,
@@ -225,12 +313,17 @@ export function DashboardClient({
     })
   }, [score, totalBudget, guestCount, weddingDate])
 
-  const allocEntries = alloc
-    ? (Object.entries(alloc) as [string, AllocEntry][])
-        .filter(([, v]) => typeof v?.percentage === 'number' && v.percentage > 0)
-        .sort((a, b) => b[1].percentage - a[1].percentage)
-        .slice(0, 4)
-    : []
+  // Sebaran aktual: agregasi total vendor per kategori
+  const spendByCategory: Record<string, number> = {}
+  vendorPayments.forEach(v => {
+    if (v.category) {
+      spendByCategory[v.category] = (spendByCategory[v.category] ?? 0) + v.totalAmount
+    }
+  })
+  const spreadEntries = Object.entries(spendByCategory)
+    .filter(([, amount]) => amount > 0)
+    .sort((a, b) => b[1] - a[1])
+  const totalCommitted = spreadEntries.reduce((sum, [, amt]) => sum + amt, 0)
 
   const weddingDateText = weddingDate
     ? new Date(weddingDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
@@ -304,40 +397,59 @@ export function DashboardClient({
 
   const AllocationCard = (
     <div className="bg-white border border-nikah-border shadow-sm" style={{ borderRadius: 'var(--d-radius)', padding: 24 }}>
-      <div className="flex items-center justify-between" style={{ marginBottom: 18 }}>
-        <CardTitle>Referensi Alokasi · Top {allocEntries.length}</CardTitle>
+      <div style={{ marginBottom: 4 }}>
+        <CardTitle>Sebaran Budget</CardTitle>
       </div>
-      {allocEntries.length > 0 ? (
-        <div className="grid" style={{ gap: 14 }}>
-          {allocEntries.map(([key, val], i) => (
-            <div key={key}>
-              <div className="flex items-center justify-between" style={{ gap: 10, marginBottom: 6 }}>
-                <span className="font-bold text-nikah-text truncate" style={{ fontSize: 13 }}>
-                  {CATEGORY_LABELS[key] ?? key}
-                </span>
-                <span className="font-extrabold text-nikah-text tabular-nums" style={{ fontSize: 13 }}>
-                  {formatRupiah(val.estimatedAmount)}
-                </span>
-              </div>
-              <div className="flex items-center" style={{ gap: 8 }}>
+      <p className="text-nikah-muted" style={{ fontSize: 11, marginBottom: spreadEntries.length > 0 ? 16 : 10, lineHeight: 1.4 }}>
+        Berdasarkan vendor yang sudah dicatat
+      </p>
+      {spreadEntries.length > 0 ? (
+        <div className="grid" style={{ gap: 13 }}>
+          {spreadEntries.map(([category, amount], idx) => {
+            const pct      = totalBudget > 0 ? Math.min(100, Math.round((amount / totalBudget) * 100)) : 0
+            const barColor = BAR_COLORS[idx % BAR_COLORS.length]
+            return (
+              <div key={category}>
+                <div className="flex items-baseline justify-between" style={{ marginBottom: 5, gap: 8 }}>
+                  <span className="font-bold text-nikah-text" style={{ fontSize: 13 }}>
+                    {category}
+                  </span>
+                  <div className="flex items-baseline flex-shrink-0" style={{ gap: 6 }}>
+                    <span className="text-nikah-muted tabular-nums" style={{ fontSize: 12 }}>
+                      {formatRupiah(amount)}
+                    </span>
+                    <span className="font-bold text-nikah-deep" style={{ fontSize: 11 }}>
+                      {pct}%
+                    </span>
+                  </div>
+                </div>
                 <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 5 }}>
                   <div
-                    className="h-full rounded-full"
-                    style={{ width: `${val.percentage}%`, backgroundColor: BAR_COLORS[i % BAR_COLORS.length] }}
+                    className="h-full rounded-full transition-all duration-700"
+                    style={{ width: `${pct}%`, backgroundColor: barColor }}
                   />
                 </div>
-                <span className="text-nikah-muted tabular-nums" style={{ fontSize: 11, minWidth: 34, textAlign: 'right' }}>
-                  {val.percentage}%
+              </div>
+            )
+          })}
+          <div style={{ borderTop: '1px solid var(--nikah-border)', paddingTop: 10, marginTop: 2 }}>
+            <div className="flex items-center justify-between">
+              <span className="text-nikah-muted" style={{ fontSize: 11 }}>Total dicatat</span>
+              <div>
+                <span className="font-bold text-nikah-deep" style={{ fontSize: 13 }}>
+                  {formatRupiah(totalCommitted)}
+                </span>
+                <span className="text-nikah-muted" style={{ fontSize: 11 }}>
+                  {' '}dari {formatRupiah(totalBudget)}
                 </span>
               </div>
             </div>
-          ))}
-          <p className="text-xs text-nikah-muted" style={{ margin: '8px 0 0', lineHeight: 1.5 }}>
-            Benchmark dari pasangan dengan budget {formatRupiah(totalBudget)}
-          </p>
+          </div>
         </div>
       ) : (
-        <p className="text-sm text-nikah-muted">Data alokasi belum tersedia.</p>
+        <p className="text-sm text-nikah-muted" style={{ margin: 0 }}>
+          Tambah vendor untuk melihat sebaran budget per kategori.
+        </p>
       )}
     </div>
   )
@@ -423,6 +535,12 @@ export function DashboardClient({
           <MobileScoreStrip score={score} label={label} />
         </div>
 
+        <BudgetHealthCard
+          totalBudget={totalBudget}
+          vendorPayments={vendorPayments}
+          tabunganCollected={tabunganCollected}
+        />
+
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve border-l-[3px] border-nikah-mauve pl-3" style={{ margin: '0 0 14px' }}>
           <span className="lg:hidden">Dana &amp; Pembayaran</span>
           <span className="hidden lg:inline">Dana &amp; Pembayaran</span>
@@ -438,7 +556,7 @@ export function DashboardClient({
           <span className="hidden lg:inline">Tugas &amp; Referensi</span>
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1.1fr_0.95fr]" style={{ gap: 20, alignItems: 'start' }}>
-          <ChecklistPernikahan checkedIds={checklistChecked} />
+          <ChecklistPernikahan checkedIds={checklistChecked} days={days} customItems={customChecklistItems} hiddenDefaultIds={hiddenChecklistItemIds} />
           <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
           {AllocationCard}
         </div>

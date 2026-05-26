@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { calculatePressureLevel } from '@/lib/scoring'
 import { DashboardNavbar } from '@/components/dashboard/DashboardNavbar'
 import { DashboardClient } from '@/components/dashboard/DashboardClient'
-import type { CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/lib/dashboardActions'
+import type { CustomChecklistInput, CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/lib/dashboardActions'
 
 function daysUntil(dateStr: string | null): number | null {
   if (!dateStr) return null
@@ -66,6 +66,21 @@ function normalizeSavingsHistory(value: unknown): SavingsHistoryInput[] {
       date: typeof item.date === 'string' ? item.date : '',
     }))
     .filter(item => item.amount > 0)
+}
+
+function normalizeCustomChecklistItems(value: unknown): CustomChecklistInput[] {
+  const VALID_MONTHS = new Set([0, 1, 3, 6, 12])
+  if (!Array.isArray(value)) return []
+  return value
+    .filter((item): item is Record<string, unknown> => typeof item === 'object' && item !== null)
+    .map(item => ({
+      id: typeof item.id === 'string' ? item.id : crypto.randomUUID(),
+      label: typeof item.label === 'string' ? item.label : '',
+      monthsBefore: (VALID_MONTHS.has(item.monthsBefore as number)
+        ? item.monthsBefore
+        : 12) as CustomChecklistInput['monthsBefore'],
+    }))
+    .filter(item => item.label)
 }
 
 function normalizeStringArray(value: unknown): string[] {
@@ -137,6 +152,8 @@ export default async function DashboardPage() {
         tabunganCollected={(profile.savings_collected as number | null) ?? 0}
         savingsHistory={normalizeSavingsHistory(profile.savings_history)}
         checklistChecked={(profile.checklist_checked as string[] | null) ?? []}
+        customChecklistItems={normalizeCustomChecklistItems(profile.custom_checklist_items)}
+        hiddenChecklistItemIds={normalizeStringArray(profile.hidden_checklist_item_ids)}
         seserahanChecked={(profile.seserahan_checked as string[] | null) ?? []}
         customSeserahanItems={normalizeCustomSeserahanItems(profile.custom_seserahan_items)}
         hiddenSeserahanItemIds={normalizeStringArray(profile.hidden_seserahan_item_ids)}

@@ -37,12 +37,13 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
   const [retryPayload, setRetryPayload] = useState<VendorPaymentInput[] | null>(null)
+  const [expandedAll, setExpandedAll] = useState(false)
   const handleActionError = useHandleActionError()
 
   const total = payments.reduce((sum, item) => sum + item.totalAmount, 0)
   const paid = payments.reduce((sum, item) => sum + item.paidAmount, 0)
   const remaining = Math.max(0, total - paid)
-  const visiblePayments = payments.slice(0, 4)
+  const visiblePayments = expandedAll ? payments : payments.slice(0, 4)
   const attentionCount = payments.filter(item => {
     const status = getVendorPaymentStatus(item)
     return status.status === 'overdue' || status.status === 'dueSoon'
@@ -373,9 +374,25 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
           )
         })}
         {payments.length > 4 && (
-          <p className="text-xs text-nikah-muted text-center" style={{ margin: '8px 0 0' }}>
-            Menampilkan 4 vendor terbaru dari {payments.length} vendor.
-          </p>
+          <button
+            type="button"
+            onClick={() => setExpandedAll(v => !v)}
+            className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-all hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
+            style={{
+              gap: 6, marginTop: 8, padding: '9px 14px',
+              border: '1px solid var(--landing-border, var(--nikah-border))',
+              borderRadius: 999, fontSize: 12, background: 'transparent',
+            }}
+          >
+            {expandedAll ? 'Sembunyikan' : `Lihat semua (${payments.length - 4} lagi)`}
+            <ChevronDown
+              size={15}
+              style={{
+                transform: expandedAll ? 'rotate(180deg)' : 'rotate(0deg)',
+                transition: 'transform 0.15s',
+              }}
+            />
+          </button>
         )}
       </div>
 
