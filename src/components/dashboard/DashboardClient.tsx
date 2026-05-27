@@ -13,7 +13,8 @@ import { SeserahanList } from '@/components/dashboard/SeserahanList'
 import { DashboardNote } from '@/components/dashboard/DashboardNote'
 import { VendorPaymentTracker } from '@/components/dashboard/VendorPaymentTracker'
 import { CurrentPriorities } from '@/components/dashboard/CurrentPriorities'
-import { buildDashboardGuidance, type DashboardFinance, type DashboardInsight } from '@/lib/dashboardInsights'
+import { buildDashboardGuidance, buildDashboardStatusCopy, type DashboardFinance, type DashboardInsight } from '@/lib/dashboardInsights'
+import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
 import { formatRupiah, formatRupiahExact } from '@/lib/utils'
 import type { PressureLevel } from '@/lib/scoring'
 import type { CustomChecklistInput, CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/lib/dashboardActions'
@@ -217,15 +218,6 @@ function getTimeGreeting(): string {
   return 'Selamat malam,'
 }
 
-function getCountdownNote(days: number | null): string | null {
-  if (days === null || days <= 0) return null
-  if (days <= 7)   return 'Hampir tiba — kalian pasti sudah siap.'
-  if (days <= 30)  return 'Satu bulan lagi — ini saatnya fokus ke detail terakhir.'
-  if (days <= 90)  return 'Tiga bulan ke depan jadi momen paling penting.'
-  if (days <= 180) return 'Masih ada waktu — tapi satu langkah hari ini selalu lebih baik.'
-  return 'Persiapan yang dimulai lebih awal terasa jauh lebih tenang.'
-}
-
 function ScoreRing({ score }: { score: number }) {
   const animatedRingScore = useAnimatedNumber(score, { duration: 700 })
   const pct = Math.min(100, Math.max(0, animatedRingScore))
@@ -270,13 +262,7 @@ function CardTitle({
   )
 }
 
-const SCORE_COPY: Record<string, string> = {
-  Healthy:     'Rencana kalian aman. Pertahankan ritme nabung.',
-  Moderate:    'Ada beberapa hal yang bisa diperbaiki pelan-pelan.',
-  'High Risk': 'Mulai dari satu langkah kecil yang paling terdekat.',
-}
-
-function MobileScoreStrip({ score, label }: { score: number; label: string }) {
+function MobileScoreStrip({ score, label, copy }: { score: number; label: string; copy: string }) {
   return (
     <Link
       href="/dashboard/summary"
@@ -305,11 +291,11 @@ function MobileScoreStrip({ score, label }: { score: number; label: string }) {
             {label}
           </span>
           <span className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.1em' }}>
-            Readiness
+            Rencana budget
           </span>
         </div>
         <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.4, margin: 0 }}>
-          {SCORE_COPY[label] ?? ''}
+          {copy}
         </p>
       </div>
       <ChevronRight size={18} className="text-nikah-muted flex-shrink-0" />
@@ -416,16 +402,12 @@ export function DashboardClient({
     allocation: alloc,
     weddingDate,
   })
-  const readinessTitle = score >= 70
-    ? 'Rencana kalian sudah berada di jalur yang aman.'
-    : score >= 40
-      ? 'Rencana kalian cukup baik, tinggal dirapikan pelan-pelan.'
-      : 'Rencana kalian masih bisa ditata dari hal yang paling dekat.'
-  const readinessCopy = score >= 70
-    ? 'Fokuskan energi ke pembayaran penting dan checklist terdekat agar persiapan tetap terasa terkendali.'
-    : score >= 40
-      ? 'Mulai dari prioritas minggu ini dulu, lalu rapikan bagian budget dan vendor yang paling dekat.'
-      : 'Tidak semua perlu selesai sekaligus. Ambil satu langkah kecil yang paling membantu minggu ini.'
+  const statusCopy = buildDashboardStatusCopy({
+    score,
+    days,
+    finance: guidance.finance,
+    reminders: buildVendorReminderSummary(liveVendorPayments),
+  })
 
   const OverviewCard = (
     <div
@@ -433,7 +415,7 @@ export function DashboardClient({
       style={{ borderRadius: 'var(--d-radius)', padding: 24, boxShadow: '0 12px 34px rgba(90, 30, 42, 0.055)' }}
     >
       <div className="flex items-center justify-between" style={{ marginBottom: 17 }}>
-        <CardTitle>Estimasi Readiness</CardTitle>
+        <CardTitle>Kelayakan Rencana Budget</CardTitle>
         <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-bold ${LABEL_COLORS[label] ?? ''}`}>
           {label}
         </span>
@@ -452,10 +434,10 @@ export function DashboardClient({
               margin: '0 0 8px',
             }}
           >
-            {readinessTitle}
+            {statusCopy.readinessTitle}
           </h2>
           <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: 0 }}>
-            {readinessCopy}
+            {statusCopy.readinessCopy}
           </p>
         </div>
       </div>
@@ -582,10 +564,9 @@ export function DashboardClient({
                 </div>
               )}
               {(() => {
-                const countdownNote = getCountdownNote(days)
-                return countdownNote ? (
+                return statusCopy.countdownNote ? (
                   <p className="text-nikah-muted" style={{ fontSize: 13.5, lineHeight: 1.45, margin: 0 }}>
-                    {countdownNote}
+                    {statusCopy.countdownNote}
                   </p>
                 ) : null
               })()}
@@ -594,7 +575,7 @@ export function DashboardClient({
           <div id="dashboard-actions" className="hidden lg:flex flex-wrap items-center justify-start lg:justify-end" style={{ gap: 10 }}>
             <Link
               href="/dashboard/summary"
-              className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm text-center hover:bg-nikah-bg transition-all active:scale-[0.97] active:brightness-90"
+              className="inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition-all active:scale-[0.97] active:brightness-90"
               style={{ padding: '13px 24px' }}
             >
               Lihat Ringkasan
@@ -603,7 +584,7 @@ export function DashboardClient({
               type="button"
               onClick={handleResetPlan}
               disabled={isResetting}
-              className="hidden lg:inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition-all active:scale-[0.97] active:brightness-90 disabled:opacity-60"
+              className="hidden lg:inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm text-center hover:bg-nikah-bg transition-all active:scale-[0.97] active:brightness-90 disabled:opacity-60"
               style={{ padding: '13px 24px' }}
             >
               {isResetting ? 'Membuka...' : 'Atur Ulang Data'}
@@ -624,7 +605,7 @@ export function DashboardClient({
         </div>
 
         <div className="lg:hidden" style={{ marginBottom: 20 }}>
-          <MobileScoreStrip score={score} label={label} />
+          <MobileScoreStrip score={score} label={label} copy={statusCopy.mobileReadinessCopy} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr]" style={{ gap: 20, marginBottom: 22 }}>
@@ -643,66 +624,69 @@ export function DashboardClient({
           </div>
         </div>
 
-        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve border-l-[3px] border-nikah-mauve pl-3" style={{ margin: '0 0 14px' }}>
-          <span className="lg:hidden">Dana &amp; Pembayaran</span>
-          <span className="hidden lg:inline">Dana &amp; Pembayaran</span>
-        </p>
-        {/* Baris 1: Tabungan (1/2) + Vendor (1/2) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 20, marginBottom: 20, alignItems: 'start' }}>
-          <div id="savings">
-            <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} onSaved={setLiveSavings} />
+        <div className="flex flex-col">
+          <p className="order-1 text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve border-l-[3px] border-nikah-mauve pl-3" style={{ margin: '0 0 14px' }}>
+            <span className="lg:hidden">Dana &amp; Pembayaran</span>
+            <span className="hidden lg:inline">Dana &amp; Pembayaran</span>
+          </p>
+          <div className="order-2 grid grid-cols-1 lg:grid-cols-2" style={{ gap: 20, marginBottom: 20, alignItems: 'start' }}>
+            <div id="savings">
+              <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} onSaved={setLiveSavings} />
+            </div>
+            <div id="vendor-payments">
+              <VendorPaymentTracker
+                initialPayments={vendorPayments}
+                onSaved={setLiveVendorPayments}
+                focusRequest={vendorFocusRequest}
+              />
+            </div>
           </div>
-          <div id="vendor-payments">
-            <VendorPaymentTracker
-              initialPayments={vendorPayments}
-              onSaved={setLiveVendorPayments}
-              focusRequest={vendorFocusRequest}
-            />
-          </div>
-        </div>
-        {/* Baris 2: Catatan */}
-        <div style={{ marginBottom: 28 }}>
-          <DashboardNote initialNote={dashboardNote} />
-        </div>
 
-        <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve border-l-[3px] border-nikah-mauve pl-3" style={{ margin: '0 0 14px' }}>
-          <span className="lg:hidden">Persiapan &amp; Referensi</span>
-          <span className="hidden lg:inline">Tugas &amp; Referensi</span>
-        </p>
-        <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1.1fr_0.95fr]" style={{ gap: 20, alignItems: 'start' }}>
-          <div id="checklist">
-            <ChecklistPernikahan
-              checkedIds={checklistChecked}
-              days={days}
-              customItems={customChecklistItems}
-              hiddenDefaultIds={hiddenChecklistItemIds}
-              onSaved={setLiveChecklistChecked}
-              onHiddenItemsSaved={setLiveHiddenChecklistItemIds}
-              focusRequest={checklistFocusRequest}
-            />
+          <div className="order-3 lg:order-5" style={{ marginBottom: 28 }}>
+            <DashboardNote initialNote={dashboardNote} />
           </div>
-          <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
-          <div id="allocation">{AllocationCard}</div>
-        </div>
 
-        {/* Mobile: bottom action buttons */}
-        <div className="lg:hidden" style={{ marginTop: 28, display: 'flex', flexDirection: 'column', gap: 10 }}>
-          <Link
-            href="/dashboard/summary"
-            className="w-full inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
-            style={{ padding: '15px 24px' }}
-          >
-            Lihat Ringkasan
-          </Link>
-          <button
-            type="button"
-            onClick={handleResetPlan}
-            disabled={isResetting}
-            className="w-full inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
-            style={{ padding: '15px 24px' }}
-          >
-            {isResetting ? 'Membuka...' : 'Atur Ulang Data'}
-          </button>
+          <p className="order-4 lg:order-3 text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve border-l-[3px] border-nikah-mauve pl-3" style={{ margin: '0 0 14px' }}>
+            <span className="lg:hidden">Persiapan &amp; Referensi</span>
+            <span className="hidden lg:inline">Tugas &amp; Referensi</span>
+          </p>
+          <div className="order-5 lg:order-4 grid grid-cols-1 lg:grid-cols-[1.08fr_0.92fr]" style={{ gap: 20, marginBottom: 28, alignItems: 'start' }}>
+            <div id="checklist">
+              <ChecklistPernikahan
+                checkedIds={checklistChecked}
+                days={days}
+                customItems={customChecklistItems}
+                hiddenDefaultIds={hiddenChecklistItemIds}
+                onSaved={setLiveChecklistChecked}
+                onHiddenItemsSaved={setLiveHiddenChecklistItemIds}
+                focusRequest={checklistFocusRequest}
+              />
+            </div>
+            <div className="grid" style={{ gap: 20 }}>
+              <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
+              <div id="allocation">{AllocationCard}</div>
+            </div>
+          </div>
+
+          {/* Mobile: bottom action buttons */}
+          <div className="order-6 flex flex-col lg:hidden" style={{ marginTop: 0, gap: 10 }}>
+            <Link
+              href="/dashboard/summary"
+              className="w-full inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
+              style={{ padding: '15px 24px' }}
+            >
+              Lihat Ringkasan
+            </Link>
+            <button
+              type="button"
+              onClick={handleResetPlan}
+              disabled={isResetting}
+              className="w-full inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
+              style={{ padding: '15px 24px' }}
+            >
+              {isResetting ? 'Membuka...' : 'Atur Ulang Data'}
+            </button>
+          </div>
         </div>
       </main>
     </>

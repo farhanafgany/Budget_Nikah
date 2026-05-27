@@ -1,4 +1,5 @@
 import type { VendorPaymentInput } from './dashboardActions'
+import type { VendorReminderSummary } from './dashboardReminders'
 import { formatRupiahExact } from './utils'
 
 export interface DashboardAllocationEntry {
@@ -33,6 +34,13 @@ export interface DashboardGuidanceInput {
   vendorPayments: VendorPaymentInput[]
   allocation: Record<string, DashboardAllocationEntry> | null
   weddingDate: string | null
+}
+
+export interface DashboardStatusCopy {
+  countdownNote: string | null
+  readinessTitle: string
+  readinessCopy: string
+  mobileReadinessCopy: string
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -90,6 +98,89 @@ export function calculateDashboardFinance({
     savingsSurplus,
     commitmentPercent,
     status,
+  }
+}
+
+export function buildDashboardStatusCopy({
+  score,
+  days,
+  finance,
+  reminders,
+}: {
+  score: number
+  days: number | null
+  finance: DashboardFinance
+  reminders: VendorReminderSummary
+}): DashboardStatusCopy {
+  const needsFunds = finance.savingsGap > 0
+  const hasUrgentPayment = reminders.overdueCount > 0 || reminders.dueSoonCount > 0
+
+  let countdownNote: string | null = null
+  if (days !== null && days > 0) {
+    if (reminders.overdueCount > 0) {
+      countdownNote = `${reminders.overdueCount} pembayaran terlambat perlu dibereskan lebih dulu.`
+    } else if (reminders.dueSoonCount > 0) {
+      countdownNote = 'Ada pembayaran jatuh tempo dalam 7 hari. Siapkan dari sekarang.'
+    } else if (needsFunds) {
+      countdownNote = 'Lengkapi dana untuk tagihan vendor agar rencana tetap terkendali.'
+    } else if (days <= 7) {
+      countdownNote = 'Hampir tiba - cek detail terakhir agar hari H terasa lebih tenang.'
+    } else if (days <= 30) {
+      countdownNote = 'Satu bulan lagi - ini saatnya fokus ke detail terakhir.'
+    } else if (days <= 90) {
+      countdownNote = 'Tiga bulan ke depan jadi momen paling penting.'
+    } else if (days <= 180) {
+      countdownNote = 'Masih ada waktu - satu langkah hari ini selalu membantu.'
+    } else {
+      countdownNote = 'Persiapan yang dimulai lebih awal terasa jauh lebih tenang.'
+    }
+  }
+
+  if (score >= 70 && finance.status === 'critical') {
+    return {
+      countdownNote,
+      readinessTitle: 'Score awal baik, tetapi komitmen vendor sudah melewati budget.',
+      readinessCopy: 'Score ini menilai rencana awal. Tinjau ulang biaya vendor sebelum menambah kebutuhan baru.',
+      mobileReadinessCopy: 'Score awal baik, tetapi komitmen vendor sudah melebihi budget.',
+    }
+  }
+
+  if (score >= 70 && (hasUrgentPayment || needsFunds)) {
+    return {
+      countdownNote,
+      readinessTitle: 'Rencana budget kalian baik, tapi pembayaran terdekat perlu perhatian.',
+      readinessCopy: needsFunds
+        ? `Score ini menilai rencana budget. Tambahkan ${formatRupiahExact(finance.savingsGap)} agar tagihan vendor terdekat tertutup.`
+        : 'Score ini menilai rencana budget. Siapkan pembayaran terdekat agar progres tetap aman.',
+      mobileReadinessCopy: needsFunds
+        ? `Budget terencana baik, tapi tagihan masih kurang ${formatRupiahExact(finance.savingsGap)}.`
+        : 'Budget terencana baik, tapi ada pembayaran dekat yang perlu disiapkan.',
+    }
+  }
+
+  if (score >= 70) {
+    return {
+      countdownNote,
+      readinessTitle: 'Rencana budget kalian sudah berada di jalur yang baik.',
+      readinessCopy: 'Pertahankan ritme tabungan dan lanjutkan checklist terdekat agar persiapan tetap terkendali.',
+      mobileReadinessCopy: 'Rencana budget terlihat baik. Pertahankan ritme tabungan.',
+    }
+  }
+
+  if (score >= 40) {
+    return {
+      countdownNote,
+      readinessTitle: 'Rencana kalian cukup baik, tinggal dirapikan pelan-pelan.',
+      readinessCopy: 'Mulai dari prioritas minggu ini dulu, lalu rapikan bagian budget dan vendor yang paling dekat.',
+      mobileReadinessCopy: 'Ada beberapa hal yang bisa dirapikan pelan-pelan.',
+    }
+  }
+
+  return {
+    countdownNote,
+    readinessTitle: 'Rencana kalian masih bisa ditata dari hal yang paling dekat.',
+    readinessCopy: 'Tidak semua perlu selesai sekaligus. Ambil satu langkah kecil yang paling membantu minggu ini.',
+    mobileReadinessCopy: 'Mulai dari satu langkah kecil yang paling dekat.',
   }
 }
 

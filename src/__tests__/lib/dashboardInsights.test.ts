@@ -1,4 +1,4 @@
-import { buildDashboardGuidance, calculateDashboardFinance } from '@/lib/dashboardInsights'
+import { buildDashboardGuidance, buildDashboardStatusCopy, calculateDashboardFinance } from '@/lib/dashboardInsights'
 import type { VendorPaymentInput } from '@/lib/dashboardActions'
 
 function payment(overrides: Partial<VendorPaymentInput> = {}): VendorPaymentInput {
@@ -93,5 +93,32 @@ describe('buildDashboardGuidance', () => {
 
     expect(guidance.insights[0].title).toContain('Tabungan masih kurang')
     expect(guidance.primaryAction.href).toBe('#savings')
+  })
+})
+
+describe('buildDashboardStatusCopy', () => {
+  it('does not call a plan safe when urgent vendor payments lack sufficient savings', () => {
+    const finance = calculateDashboardFinance({
+      totalBudget: 50_000_000,
+      savingsCollected: 40_000,
+      vendorPayments: [payment({ totalAmount: 1_000_000, paidAmount: 0 })],
+    })
+
+    const copy = buildDashboardStatusCopy({
+      score: 90,
+      days: 5,
+      finance,
+      reminders: {
+        overdueCount: 0,
+        dueSoonCount: 1,
+        unscheduledCount: 0,
+        urgentOutstanding: 1_000_000,
+      },
+    })
+
+    expect(copy.readinessTitle).toContain('pembayaran terdekat perlu perhatian')
+    expect(copy.readinessTitle).not.toContain('aman')
+    expect(copy.readinessCopy).toContain('Rp 960.000')
+    expect(copy.countdownNote).toContain('jatuh tempo dalam 7 hari')
   })
 })

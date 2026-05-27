@@ -5,7 +5,7 @@ import type { VendorPaymentInput } from '@/lib/dashboardActions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { track } from '@/lib/analytics'
 import { buildVendorReminderSummary, updateVendorDueDate } from '@/lib/dashboardReminders'
-import { formatRupiah } from '@/lib/utils'
+import { formatRupiah, formatRupiahExact } from '@/lib/utils'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
 import { ChevronDown, Plus, Trash2 } from 'lucide-react'
 
@@ -19,6 +19,11 @@ interface Props {
 }
 
 const CATEGORIES = ['Venue', 'Catering', 'Dekorasi', 'MUA', 'Dokumentasi', 'Hiburan', 'Lainnya']
+
+type ConfirmationAction =
+  | { type: 'markPaid'; vendorId: string }
+  | { type: 'delete'; vendorId: string }
+  | null
 
 function parseAmount(value: string) {
   return parseInt(value.replace(/\D/g, ''), 10) || 0
@@ -46,6 +51,7 @@ export function VendorPaymentTracker({ initialPayments, onSaved, focusRequest }:
   const [isPending, startTransition] = useTransition()
   const [retryPayload, setRetryPayload] = useState<VendorPaymentInput[] | null>(null)
   const [expandedAll, setExpandedAll] = useState(false)
+  const [confirmationAction, setConfirmationAction] = useState<ConfirmationAction>(null)
   const handledFocusRequest = useRef<number | null>(null)
   const handleActionError = useHandleActionError()
 
@@ -94,6 +100,7 @@ export function VendorPaymentTracker({ initialPayments, onSaved, focusRequest }:
 
   function persist(next: VendorPaymentInput[]) {
     setPayments(next)
+    setConfirmationAction(null)
     setHighlightedVendorId(null)
     setError('')
     setRetryPayload(null)
@@ -169,6 +176,15 @@ export function VendorPaymentTracker({ initialPayments, onSaved, focusRequest }:
       action: 'delete',
     })
     persist(payments.filter(item => item.id !== id))
+  }
+
+  function confirmSensitiveAction() {
+    if (!confirmationAction) return
+    if (confirmationAction.type === 'markPaid') {
+      markPaid(confirmationAction.vendorId)
+    } else {
+      removePayment(confirmationAction.vendorId)
+    }
   }
 
   function addInstallment(id: string) {
@@ -306,6 +322,9 @@ export function VendorPaymentTracker({ initialPayments, onSaved, focusRequest }:
             : 0
           const status = getVendorPaymentStatus(item)
           const hasScheduledDueDate = status.status !== 'unscheduled'
+          const pendingConfirmation = confirmationAction?.vendorId === item.id
+            ? confirmationAction
+            : null
           return (
             <div
               key={item.id}
@@ -357,7 +376,7 @@ export function VendorPaymentTracker({ initialPayments, onSaved, focusRequest }:
                   </span>
                   <button
                     type="button"
-                    onClick={() => removePayment(item.id)}
+                    onClick={() => setConfirmationAction({ type: 'delete', vendorId: item.id })}
                     disabled={isPending}
                     className="inline-flex text-nikah-muted opacity-45 transition-opacity hover:text-nikah-deep hover:opacity-100 md:opacity-0 md:group-hover:opacity-100 disabled:pointer-events-none"
                     style={{ border: 0, background: 'transparent', padding: 2 }}
@@ -435,7 +454,7 @@ export function VendorPaymentTracker({ initialPayments, onSaved, focusRequest }:
                   )}
                 </div>
 
-                {itemRemaining > 0 && installmentDraft.vendorId !== item.id && (
+                {itemRemaining > 0 && installmentDraft.vendorId !== item.id && !pendingConfirmation && (
                   <div className="flex items-center" style={{ gap: 8, marginTop: 10 }}>
                     <button
                       type="button"
@@ -448,16 +467,49 @@ export function VendorPaymentTracker({ initialPayments, onSaved, focusRequest }:
                     </button>
                     <button
                       type="button"
-                      onClick={() => markPaid(item.id)}
+                      onClick={() => setConfirmationAction({ type: 'markPaid', vendorId: item.id })}
                       disabled={isPending}
                       className="text-white font-bold active:scale-[0.96] active:brightness-90 transition-all disabled:opacity-50"
                       style={{ border: 0, background: 'var(--nikah-deep)', borderRadius: 10, fontSize: 12, padding: '10px 14px', whiteSpace: 'nowrap' }}
                     >
-                      {isPending ? '...' : 'Lunas'}
+                      {isPending ? '...' : 'Tandai Lunas'}
                     </button>
                   </div>
                 )}
               </div>
+
+              {pendingConfirmation && (
+                <div
+                  role="alert"
+                  className="bg-white border border-nikah-border"
+                  style={{ borderRadius: 12, marginTop: 10, padding: '11px 12px' }}
+                >
+                  <p className="font-bold text-nikah-text" style={{ fontSize: 12.5, lineHeight: 1.45, margin: '0 0 10px' }}>
+                    {pendingConfirmation.type === 'markPaid'
+                      ? `Tandai ${item.name} lunas? Sisa ${formatRupiahExact(itemRemaining)} akan dicatat sebagai pembayaran hari ini.`
+                      : `Hapus ${item.name}? Riwayat pembayaran vendor ini akan dihapus dari dashboard.`}
+                  </p>
+                  <div className="flex flex-wrap" style={{ gap: 8 }}>
+                    <button
+                      type="button"
+                      onClick={confirmSensitiveAction}
+                      disabled={isPending}
+                      className="bg-nikah-deep text-white font-bold disabled:opacity-50 active:scale-[0.97] active:brightness-90 transition-all"
+                      style={{ border: 0, borderRadius: 999, padding: '9px 13px', fontSize: 11.5 }}
+                    >
+                      {pendingConfirmation.type === 'markPaid' ? 'Ya, tandai lunas' : 'Ya, hapus vendor'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setConfirmationAction(null)}
+                      className="text-nikah-deep font-bold active:scale-[0.97] active:brightness-90 transition-all"
+                      style={{ border: '1px solid var(--landing-border, var(--nikah-border))', background: 'transparent', borderRadius: 999, padding: '9px 13px', fontSize: 11.5 }}
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {itemRemaining > 0 && installmentDraft.vendorId === item.id && (
                 <div className="grid grid-cols-[1fr_auto_auto]" style={{ gap: 8, marginTop: 10 }}>
