@@ -1,5 +1,5 @@
 'use client'
-import { useRef, useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { CHECKLIST_ITEMS, type ChecklistTimeline } from '@/lib/checklistItems'
 import { updateChecklistItems, updateCustomChecklistItems, updateHiddenChecklistItems } from '@/app/dashboard/actions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
@@ -32,6 +32,11 @@ interface Props {
   customItems?: CustomChecklistInput[]
   hiddenDefaultIds?: string[]
   onSaved?: (checkedIds: string[]) => void
+  onHiddenItemsSaved?: (hiddenDefaultIds: string[]) => void
+  focusRequest?: {
+    checklistId: string
+    requestId: number
+  } | null
 }
 
 function MiniProgressRing({ value }: { value: number }) {
@@ -58,7 +63,15 @@ function MiniProgressRing({ value }: { value: number }) {
   )
 }
 
-export function ChecklistPernikahan({ checkedIds, days, customItems = [], hiddenDefaultIds = [], onSaved }: Props) {
+export function ChecklistPernikahan({
+  checkedIds,
+  days,
+  customItems = [],
+  hiddenDefaultIds = [],
+  onSaved,
+  onHiddenItemsSaved,
+  focusRequest,
+}: Props) {
   const [localChecked, setLocalChecked] = useState<string[]>(checkedIds)
   const [localCustomItems, setLocalCustomItems] = useState<CustomChecklistInput[]>(customItems)
   const [localHiddenIds, setLocalHiddenIds] = useState<string[]>(hiddenDefaultIds)
@@ -67,10 +80,12 @@ export function ChecklistPernikahan({ checkedIds, days, customItems = [], hidden
   const currentTimeline = getDefaultTimeline(days)
   const [active, setActive] = useState<ChecklistTimeline>(() => getDefaultTimeline(days))
   const [expanded, setExpanded] = useState(false)
+  const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [retryFn, setRetryFn] = useState<(() => void) | null>(null)
   const [, startTransition] = useTransition()
   const handleActionError = useHandleActionError()
+  const handledFocusRequest = useRef<number | null>(null)
   // Ref untuk rollback delta per-item, aman terhadap concurrent toggles.
   const localCheckedRef = useRef<string[]>(checkedIds)
   localCheckedRef.current = localChecked
@@ -90,6 +105,38 @@ export function ChecklistPernikahan({ checkedIds, days, customItems = [], hidden
   const phaseCompleted =
     (activeDefaultItems.length + activeCustomItems.length) > 0 &&
     activeDone === (activeDefaultItems.length + activeCustomItems.length)
+
+  useEffect(() => {
+    if (!focusRequest || handledFocusRequest.current === focusRequest.requestId) return
+
+    handledFocusRequest.current = focusRequest.requestId
+    const selectedItem = CHECKLIST_ITEMS.find(item =>
+      item.id === focusRequest.checklistId && !localHiddenIds.includes(item.id))
+    if (!selectedItem) return
+
+    const phaseItems = CHECKLIST_ITEMS.filter(item =>
+      item.monthsBefore === selectedItem.monthsBefore && !localHiddenIds.includes(item.id))
+    const selectedIndex = phaseItems.findIndex(item => item.id === selectedItem.id)
+
+    setActive(selectedItem.monthsBefore)
+    if (selectedIndex >= PREVIEW_COUNT) setExpanded(true)
+    setHighlightedItemId(selectedItem.id)
+
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(`checklist-item-${selectedItem.id}`)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+    })
+    const timeout = window.setTimeout(() => {
+      setHighlightedItemId(current => current === selectedItem.id ? null : current)
+    }, 3600)
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.clearTimeout(timeout)
+    }
+  }, [focusRequest, localHiddenIds])
 
   const PHASE_CELEBRATION: Record<ChecklistTimeline, string> = {
     12: 'Fondasi sudah kuat. Langkah awal yang paling penting sudah terlewati.',
@@ -159,6 +206,7 @@ export function ChecklistPernikahan({ checkedIds, days, customItems = [], hidden
         setError('Item belum tersembunyi. Coba lagi.')
       } else {
         onSaved?.(nextChecked)
+        onHiddenItemsSaved?.(nextHidden)
       }
     })
   }
@@ -249,16 +297,14 @@ export function ChecklistPernikahan({ checkedIds, days, customItems = [], hidden
         </div>
       )}
 
-      {/* Tabs — horizontal scroll, no wrapping */}
+      {/* Keep every phase discoverable on mobile; desktop retains the compact row. */}
       <div
         role="tablist"
-        className="bg-nikah-bg rounded-[18px]"
+        className="grid grid-cols-6 sm:flex sm:flex-nowrap sm:overflow-x-auto bg-nikah-bg rounded-[18px]"
         style={{
-          display: 'flex',
           gap: 4,
           padding: 4,
           marginBottom: 14,
-          overflowX: 'auto',
           scrollbarWidth: 'none',
         }}
       >
@@ -276,7 +322,7 @@ export function ChecklistPernikahan({ checkedIds, days, customItems = [], hidden
                 setActive(timeline)
                 setExpanded(false)
               }}
-              className={`active:scale-[0.95] active:brightness-90 ${isActive ? 'bg-nikah-deep text-white' : 'text-nikah-muted hover:bg-white hover:text-nikah-deep'}`}
+              className={`${timeline <= 1 ? 'col-span-3' : 'col-span-2'} active:scale-[0.95] active:brightness-90 ${isActive ? 'bg-nikah-deep text-white' : 'text-nikah-muted hover:bg-white hover:text-nikah-deep'}`}
               style={{
                 flexShrink: 0,
                 padding: '10px 14px',
@@ -344,9 +390,14 @@ export function ChecklistPernikahan({ checkedIds, days, customItems = [], hidden
           return (
             <div
               key={item.id}
+              id={`checklist-item-${item.id}`}
               className="group flex items-center"
               style={{
                 borderBottom: idx < visibleItems.length - 1 ? '1px solid var(--nikah-border)' : 'none',
+                borderRadius: 10,
+                background: highlightedItemId === item.id ? 'rgba(248,225,231,0.62)' : 'transparent',
+                boxShadow: highlightedItemId === item.id ? '0 0 0 2px rgba(192,120,136,0.45)' : 'none',
+                transition: 'background 160ms ease, box-shadow 160ms ease',
               }}
             >
               <button

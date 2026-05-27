@@ -351,12 +351,21 @@ export function DashboardClient({
   const [isResetting, setIsResetting] = useState(false)
   const [liveSavings, setLiveSavings] = useState(tabunganCollected)
   const [liveChecklistChecked, setLiveChecklistChecked] = useState(checklistChecked)
+  const [liveHiddenChecklistItemIds, setLiveHiddenChecklistItemIds] = useState(hiddenChecklistItemIds)
   const [liveVendorPayments, setLiveVendorPayments] = useState(vendorPayments)
   const [vendorFocusRequest, setVendorFocusRequest] = useState<{ vendorId: string; requestId: number } | null>(null)
+  const [checklistFocusRequest, setChecklistFocusRequest] = useState<{ checklistId: string; requestId: number } | null>(null)
 
   function handleSelectVendor(vendorId: string) {
     setVendorFocusRequest(current => ({
       vendorId,
+      requestId: (current?.requestId ?? 0) + 1,
+    }))
+  }
+
+  function handleSelectChecklist(checklistId: string) {
+    setChecklistFocusRequest(current => ({
+      checklistId,
       requestId: (current?.requestId ?? 0) + 1,
     }))
   }
@@ -627,7 +636,9 @@ export function DashboardClient({
               days={days}
               checkedIds={liveChecklistChecked}
               vendorPayments={liveVendorPayments}
+              hiddenChecklistItemIds={liveHiddenChecklistItemIds}
               onSelectVendor={handleSelectVendor}
+              onSelectChecklist={handleSelectChecklist}
             />
           </div>
         </div>
@@ -660,7 +671,15 @@ export function DashboardClient({
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1.1fr_0.95fr]" style={{ gap: 20, alignItems: 'start' }}>
           <div id="checklist">
-            <ChecklistPernikahan checkedIds={checklistChecked} days={days} customItems={customChecklistItems} hiddenDefaultIds={hiddenChecklistItemIds} onSaved={setLiveChecklistChecked} />
+            <ChecklistPernikahan
+              checkedIds={checklistChecked}
+              days={days}
+              customItems={customChecklistItems}
+              hiddenDefaultIds={hiddenChecklistItemIds}
+              onSaved={setLiveChecklistChecked}
+              onHiddenItemsSaved={setLiveHiddenChecklistItemIds}
+              focusRequest={checklistFocusRequest}
+            />
           </div>
           <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
           <div id="allocation">{AllocationCard}</div>

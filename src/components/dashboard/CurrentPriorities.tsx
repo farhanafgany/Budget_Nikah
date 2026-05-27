@@ -23,7 +23,9 @@ interface Props {
   days: number | null
   checkedIds: string[]
   vendorPayments: VendorPaymentInput[]
+  hiddenChecklistItemIds?: string[]
   onSelectVendor?: (vendorId: string) => void
+  onSelectChecklist?: (checklistId: string) => void
 }
 
 interface PriorityItem {
@@ -36,6 +38,7 @@ interface PriorityItem {
   note: string
   href: string
   vendorId?: string
+  checklistId?: string
 }
 
 function getFocusWindow(days: number | null) {
@@ -46,7 +49,14 @@ function getFocusWindow(days: number | null) {
   return { label: '12 Bulan Sebelum', monthsBefore: 12 }
 }
 
-export function CurrentPriorities({ days, checkedIds, vendorPayments, onSelectVendor }: Props) {
+export function CurrentPriorities({
+  days,
+  checkedIds,
+  vendorPayments,
+  hiddenChecklistItemIds = [],
+  onSelectVendor,
+  onSelectChecklist,
+}: Props) {
   const focus = getFocusWindow(days)
   const hasTimeline = days !== null
   const reminders = buildVendorReminderSummary(vendorPayments)
@@ -76,7 +86,10 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments, onSelectVe
     })
 
   const checklistItems: PriorityItem[] = (hasTimeline ? CHECKLIST_ITEMS : [])
-    .filter(item => item.monthsBefore === focus.monthsBefore && !checkedIds.includes(item.id))
+    .filter(item =>
+      item.monthsBefore === focus.monthsBefore &&
+      !checkedIds.includes(item.id) &&
+      !hiddenChecklistItemIds.includes(item.id))
     .slice(0, 5)
     .map((item, index) => ({
       id: `checklist-${item.id}`,
@@ -87,10 +100,11 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments, onSelectVe
       badge: 'Checklist',
       note: 'Minggu ini',
       href: '#checklist',
+      checklistId: item.id,
     }))
 
   const fallbackChecklist: PriorityItem[] = (hasTimeline ? CHECKLIST_ITEMS : [])
-    .filter(item => !checkedIds.includes(item.id))
+    .filter(item => !checkedIds.includes(item.id) && !hiddenChecklistItemIds.includes(item.id))
     .slice(0, 5)
     .map((item, index) => ({
       id: `fallback-${item.id}`,
@@ -101,6 +115,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments, onSelectVe
       badge: 'Checklist',
       note: 'Berikutnya',
       href: '#checklist',
+      checklistId: item.id,
     }))
 
   const sourceChecklist = checklistItems.length > 0 ? checklistItems : fallbackChecklist
@@ -171,7 +186,10 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments, onSelectVe
           <a
             key={item.id}
             href={item.href}
-            onClick={() => item.vendorId && onSelectVendor?.(item.vendorId)}
+            onClick={() => {
+              if (item.vendorId) onSelectVendor?.(item.vendorId)
+              if (item.checklistId) onSelectChecklist?.(item.checklistId)
+            }}
             className="flex items-center"
             style={{
               gap: 14,
