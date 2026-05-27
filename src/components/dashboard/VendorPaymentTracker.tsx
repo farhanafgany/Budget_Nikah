@@ -10,6 +10,7 @@ import { ChevronDown, Plus, Trash2 } from 'lucide-react'
 
 interface Props {
   initialPayments: VendorPaymentInput[]
+  onSaved?: (payments: VendorPaymentInput[]) => void
 }
 
 const CATEGORIES = ['Venue', 'Catering', 'Dekorasi', 'MUA', 'Dokumentasi', 'Hiburan', 'Lainnya']
@@ -23,7 +24,7 @@ function formatInput(value: string | number) {
   return n ? new Intl.NumberFormat('id-ID').format(n) : ''
 }
 
-export function VendorPaymentTracker({ initialPayments }: Props) {
+export function VendorPaymentTracker({ initialPayments, onSaved }: Props) {
   const [payments, setPayments] = useState<VendorPaymentInput[]>(initialPayments)
   const [formOpen, setFormOpen] = useState(false)
   const [draft, setDraft] = useState({
@@ -59,7 +60,9 @@ export function VendorPaymentTracker({ initialPayments }: Props) {
       if (err) {
         setError('Pembayaran vendor belum tersimpan.')
         setRetryPayload(next)
+        return
       }
+      onSaved?.(next)
     })
   }
 

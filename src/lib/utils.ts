@@ -10,3 +10,7 @@ export function formatRupiah(n: number): string {
   if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(0)}jt`
   return `Rp ${n.toLocaleString('id-ID')}`
 }
+
+export function formatRupiahExact(n: number): string {
+  return `Rp ${Math.round(n).toLocaleString('id-ID')}`
+}

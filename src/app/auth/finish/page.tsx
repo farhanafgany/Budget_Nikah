@@ -2,7 +2,9 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
+import { getPostSyncPath, isProfileReplacementRequired, shouldSyncOnboardingAfterAuth } from '@/lib/authFlow'
 import { clearOnboardingStore, useOnboardingStore } from '@/stores/onboardingStore'
+import { ProfileReplacementDialog } from '@/components/auth/ProfileReplacementDialog'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 
 function getSafeNextPath(next: string | null) {
@@ -15,11 +17,15 @@ function FinishContent() {
   const searchParams = useSearchParams()
   const nextPath = getSafeNextPath(searchParams.get('next'))
   const onboarding = useOnboardingStore()
+  const isPremiumContinuation = shouldSyncOnboardingAfterAuth(nextPath)
   const [error, setError] = useState('')
+  const [replacementRequired, setReplacementRequired] = useState(false)
+  const [savingReplacement, setSavingReplacement] = useState(false)
+  const [storedPlanDestination, setStoredPlanDestination] = useState('/premium')
   const [retryCount, setRetryCount] = useState(0)
   const cancelledRef = useRef(false)
 
-  const runFinishAuth = useCallback(async () => {
+  const runFinishAuth = useCallback(async (replaceExisting = false) => {
     setError('')
     const supabase = createClient()
     const { data } = await supabase.auth.getSession()
@@ -30,23 +36,54 @@ function FinishContent() {
       return
     }
 
-    if (onboarding.isComplete()) {
+    let destination = nextPath
+
+    if (shouldSyncOnboardingAfterAuth(nextPath) && onboarding.isComplete()) {
       const response = await fetch('/api/onboarding/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ onboarding }),
+        body: JSON.stringify({ onboarding, replaceExisting }),
       })
 
       if (!response.ok) {
+        const data = await response.json().catch(() => null) as { code?: string; isPremium?: boolean } | null
+        if (isProfileReplacementRequired(response.status, data)) {
+          if (!cancelledRef.current) {
+            setSavingReplacement(false)
+            setStoredPlanDestination(getPostSyncPath(nextPath, Boolean(data?.isPremium)))
+            setReplacementRequired(true)
+          }
+          return
+        }
+
         if (!cancelledRef.current) setError('Gagal menyimpan data.')
         return
       }
 
-      await clearOnboardingStore()
+      const result = await response.json() as { isPremium?: boolean }
+      destination = getPostSyncPath(nextPath, Boolean(result.isPremium))
+
+      if (result.isPremium) {
+        await clearOnboardingStore()
+      }
     }
 
-    router.replace(nextPath)
+    router.replace(destination)
   }, [nextPath, onboarding, router])
+
+  async function keepStoredPlan() {
+    setReplacementRequired(false)
+    if (storedPlanDestination === '/dashboard') {
+      await clearOnboardingStore()
+    }
+    router.replace(storedPlanDestination)
+  }
+
+  function replaceStoredPlan() {
+    setReplacementRequired(false)
+    setSavingReplacement(true)
+    void runFinishAuth(true)
+  }
 
   useEffect(() => {
     cancelledRef.current = false
@@ -67,10 +104,10 @@ function FinishContent() {
           <BrandLogo size="md" />
         </div>
         <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve" style={{ marginBottom: 8 }}>
-          Menyimpan hasil
+          {isPremiumContinuation ? 'Menyimpan hasil' : 'Masuk berhasil'}
         </p>
         <h1 className="text-2xl font-extrabold text-nikah-text" style={{ marginBottom: 8 }}>
-          Sebentar ya.
+          {isPremiumContinuation ? 'Sebentar ya.' : 'Membuka dashboard.'}
         </h1>
 
         {error ? (
@@ -99,7 +136,9 @@ function FinishContent() {
         ) : (
           <>
             <p className="text-nikah-muted font-light" style={{ fontSize: 14, lineHeight: 1.6, margin: '0 0 16px' }}>
-              BudgetNikah sedang menghubungkan hasil analisis ke akun kamu.
+              {isPremiumContinuation
+                ? 'BudgetNikah sedang menghubungkan hasil analisis ke akun kamu.'
+                : 'BudgetNikah sedang membuka rencana yang sudah tersimpan.'}
             </p>
             <div className="flex items-center justify-center" style={{ gap: 5 }}>
               {[0, 1, 2].map(i => (
@@ -125,6 +164,13 @@ function FinishContent() {
           40% { opacity: 0.9; transform: scale(1); }
         }
       `}</style>
+      {replacementRequired && (
+        <ProfileReplacementDialog
+          busy={savingReplacement}
+          onKeepExisting={keepStoredPlan}
+          onReplace={replaceStoredPlan}
+        />
+      )}
     </main>
   )
 }

@@ -31,6 +31,7 @@ interface Props {
   days?: number | null
   customItems?: CustomChecklistInput[]
   hiddenDefaultIds?: string[]
+  onSaved?: (checkedIds: string[]) => void
 }
 
 function MiniProgressRing({ value }: { value: number }) {
@@ -57,7 +58,7 @@ function MiniProgressRing({ value }: { value: number }) {
   )
 }
 
-export function ChecklistPernikahan({ checkedIds, days, customItems = [], hiddenDefaultIds = [] }: Props) {
+export function ChecklistPernikahan({ checkedIds, days, customItems = [], hiddenDefaultIds = [], onSaved }: Props) {
   const [localChecked, setLocalChecked] = useState<string[]>(checkedIds)
   const [localCustomItems, setLocalCustomItems] = useState<CustomChecklistInput[]>(customItems)
   const [localHiddenIds, setLocalHiddenIds] = useState<string[]>(hiddenDefaultIds)
@@ -113,6 +114,7 @@ export function ChecklistPernikahan({ checkedIds, days, customItems = [], hidden
         })
       } else {
         setRetryFn(null)
+        onSaved?.(target)
       }
     })
   }
@@ -155,6 +157,8 @@ export function ChecklistPernikahan({ checkedIds, days, customItems = [], hidden
         setLocalHiddenIds(localHiddenIds)
         setLocalChecked(localCheckedRef.current)
         setError('Item belum tersembunyi. Coba lagi.')
+      } else {
+        onSaved?.(nextChecked)
       }
     })
   }
@@ -200,6 +204,8 @@ export function ChecklistPernikahan({ checkedIds, days, customItems = [], hidden
         setLocalCustomItems(localCustomItems)
         setLocalChecked(localCheckedRef.current)
         setError('Item belum terhapus. Coba lagi.')
+      } else {
+        onSaved?.(nextChecked)
       }
     })
   }

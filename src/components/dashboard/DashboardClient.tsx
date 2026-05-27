@@ -13,7 +13,8 @@ import { SeserahanList } from '@/components/dashboard/SeserahanList'
 import { DashboardNote } from '@/components/dashboard/DashboardNote'
 import { VendorPaymentTracker } from '@/components/dashboard/VendorPaymentTracker'
 import { CurrentPriorities } from '@/components/dashboard/CurrentPriorities'
-import { formatRupiah } from '@/lib/utils'
+import { buildDashboardGuidance, type DashboardFinance, type DashboardInsight } from '@/lib/dashboardInsights'
+import { formatRupiah, formatRupiahExact } from '@/lib/utils'
 import type { PressureLevel } from '@/lib/scoring'
 import type { CustomChecklistInput, CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/lib/dashboardActions'
 
@@ -45,17 +46,6 @@ interface Props {
   vendorPayments: VendorPaymentInput[]
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  catering: 'Catering',
-  venue: 'Venue',
-  decoration: 'Dekorasi',
-  documentation: 'Dokumentasi',
-  mua: 'MUA & Busana',
-  souvenir: 'Souvenir',
-  entertainment: 'Hiburan',
-  emergencyFund: 'Dana Darurat',
-}
-
 const LABEL_COLORS: Record<string, string> = {
   Healthy: 'bg-green-100 text-green-700',
   Moderate: 'bg-orange-100 text-orange-700',
@@ -69,37 +59,53 @@ function BudgetHealthCard({
   totalBudget,
   vendorPayments,
   tabunganCollected,
+  finance,
 }: {
   totalBudget: number
   vendorPayments: VendorPaymentInput[]
   tabunganCollected: number
+  finance: DashboardFinance
 }) {
-  const vendorTotal     = vendorPayments.reduce((sum, v) => sum + v.totalAmount, 0)
-  const vendorPaid      = vendorPayments.reduce((sum, v) => sum + v.paidAmount, 0)
-  const vendorRemaining = Math.max(0, vendorTotal - vendorPaid)
-  const commitPct       = totalBudget > 0 ? Math.min(100, Math.round((vendorTotal / totalBudget) * 100)) : 0
-  const savingsGap      = Math.max(0, vendorRemaining - tabunganCollected)
-  const savingsSurplus  = Math.max(0, tabunganCollected - vendorRemaining)
-
-  const isOverBudget  = vendorTotal > totalBudget
-  const isNearBudget  = !isOverBudget && vendorTotal > totalBudget * 0.9
-  const hasSavingsGap = !isOverBudget && savingsGap > 0
-  const status = isOverBudget ? 'critical' : isNearBudget ? 'warning' : hasSavingsGap ? 'attention' : 'good'
-
-  const STATUS_LABELS = { good: 'Aman', attention: 'Perlu Nabung', warning: 'Hampir Penuh', critical: 'Melewati Budget' }
-  const STATUS_COLORS = { good: 'bg-green-100 text-green-700', attention: 'bg-orange-100 text-orange-700', warning: 'bg-orange-100 text-orange-700', critical: 'bg-red-100 text-red-700' }
-  const barColor      = isOverBudget ? '#B42318' : isNearBudget ? '#B98C54' : '#6E2638'
-
-  const gapLine = vendorRemaining === 0
-    ? { text: 'Semua tagihan vendor sudah lunas ✓', isGood: true }
-    : savingsGap > 0
-      ? { text: `Tabungan kurang ${formatRupiah(savingsGap)} dari yang perlu dibayar — perlu ditambah`, isGood: false }
-      : { text: `Tabungan lebih ${formatRupiah(savingsSurplus)} dari yang perlu dibayar — kamu aman ✓`, isGood: true }
+  const STATUS_LABELS = {
+    neutral: 'Mulai Catat',
+    good: 'Aman',
+    attention: 'Perlu Dana',
+    warning: 'Ruang Tipis',
+    critical: 'Melewati Budget',
+  }
+  const STATUS_COLORS = {
+    neutral: 'bg-stone-100 text-stone-700',
+    good: 'bg-green-100 text-green-700',
+    attention: 'bg-orange-100 text-orange-700',
+    warning: 'bg-orange-100 text-orange-700',
+    critical: 'bg-red-100 text-red-700',
+  }
+  const status = finance.status
+  const barColor = status === 'critical' ? '#B42318' : status === 'warning' ? '#B98C54' : '#6E2638'
+  const safeBarPercentage = Math.min(100, Math.max(0, finance.commitmentPercent))
+  const headline = status === 'critical'
+    ? {
+        value: formatRupiahExact(Math.abs(finance.budgetRoom)),
+        label: 'Melewati budget',
+        color: '#B42318',
+      }
+    : {
+        value: formatRupiahExact(Math.max(0, finance.budgetRoom)),
+        label: 'Sisa ruang budget',
+        color: 'var(--nikah-deep)',
+      }
+  const summaryText = vendorPayments.length === 0
+    ? 'Catat biaya vendor yang sudah diketahui agar ruang budget ini makin akurat.'
+    : finance.savingsGap > 0
+      ? `Tagihan belum dibayar lebih besar ${formatRupiahExact(finance.savingsGap)} dari tabungan tersedia.`
+      : finance.vendorOutstanding > 0
+        ? 'Tabungan saat ini cukup untuk menutup tagihan vendor yang belum lunas.'
+        : 'Semua tagihan vendor yang dicatat sudah lunas.'
 
   return (
     <div
       className="bg-white border border-nikah-border"
-      style={{ borderRadius: 'var(--d-radius)', padding: '20px 22px', marginBottom: 20, boxShadow: '0 4px 20px rgba(90,30,42,0.06)' }}
+      style={{ borderRadius: 'var(--d-radius)', padding: '20px 22px', boxShadow: '0 4px 20px rgba(90,30,42,0.06)' }}
     >
       <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
         <span className="text-[11px] font-extrabold uppercase tracking-[0.13em] text-nikah-mauve">Kondisi Budget</span>
@@ -108,101 +114,97 @@ function BudgetHealthCard({
         </span>
       </div>
 
-      {vendorPayments.length > 0 ? (
-        <>
-          {/* Perbandingan utama: Perlu Dibayar vs Tabungan */}
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center" style={{ gap: 10, marginBottom: 10 }}>
-            <div
-              style={{
-                background: vendorRemaining === 0 ? '#F0FDF4' : '#FEF2F2',
-                border: `1px solid ${vendorRemaining === 0 ? '#BBF7D0' : '#FECACA'}`,
-                borderRadius: 10,
-                padding: '12px 14px',
-                textAlign: 'center',
-              }}
-            >
-              <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 22, lineHeight: 1.05, color: vendorRemaining === 0 ? '#166534' : '#991B1B', marginBottom: 4 }}>
-                {formatRupiah(vendorRemaining)}
-              </div>
-              <div className="font-bold uppercase text-nikah-muted" style={{ fontSize: 9.5, letterSpacing: '0.1em' }}>Perlu Dibayar</div>
+      <p className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9.5, letterSpacing: '0.12em', margin: '0 0 4px' }}>
+        Total budget nikah
+      </p>
+      <div className="text-nikah-deep" style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 26, lineHeight: 1.1, marginBottom: 14 }}>
+        {formatRupiahExact(totalBudget)}
+      </div>
+
+      <div className="bg-nikah-bg" style={{ borderRadius: 14, padding: '13px 14px', marginBottom: 14 }}>
+        <div style={{ color: headline.color, fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 30, lineHeight: 1.05 }}>
+          {headline.value}
+        </div>
+        <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.12em', marginTop: 5 }}>
+          {headline.label}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3" style={{ gap: 12, marginBottom: 14 }}>
+        {[
+          { val: formatRupiahExact(finance.vendorCommitted), lbl: 'Komitmen' },
+          { val: formatRupiahExact(finance.vendorOutstanding), lbl: 'Belum dibayar' },
+          { val: formatRupiahExact(tabunganCollected), lbl: 'Tabungan' },
+        ].map(item => (
+          <div key={item.lbl}>
+            <div className="font-extrabold text-nikah-deep tabular-nums" style={{ fontSize: 12.5, lineHeight: 1.2 }}>
+              {item.val}
             </div>
-
-            <span className="text-nikah-muted font-bold" style={{ fontSize: 11, letterSpacing: '0.05em' }}>VS</span>
-
-            <div
-              style={{
-                background: '#F0FDF4',
-                border: '1px solid #BBF7D0',
-                borderRadius: 10,
-                padding: '12px 14px',
-                textAlign: 'center',
-              }}
-            >
-              <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 22, lineHeight: 1.05, color: '#166534', marginBottom: 4 }}>
-                {formatRupiah(tabunganCollected)}
-              </div>
-              <div className="font-bold uppercase text-nikah-muted" style={{ fontSize: 9.5, letterSpacing: '0.1em' }}>Tabungan</div>
+            <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9, letterSpacing: '0.08em', marginTop: 4 }}>
+              {item.lbl}
             </div>
           </div>
+        ))}
+      </div>
 
-          {/* Baris kesimpulan */}
-          <div
-            style={{
-              background: gapLine.isGood ? '#DCFCE7' : '#FEE2E2',
-              borderRadius: 8,
-              padding: '8px 12px',
-              textAlign: 'center',
-              fontSize: 13,
-              fontWeight: 600,
-              color: gapLine.isGood ? '#166534' : '#991B1B',
-              marginBottom: 14,
-            }}
-          >
-            {gapLine.text}
-          </div>
+      <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 6, marginBottom: 6 }}>
+        <div
+          className="h-full rounded-full transition-all duration-700"
+          style={{ width: `${safeBarPercentage}%`, background: `linear-gradient(90deg, ${barColor}99, ${barColor})` }}
+        />
+      </div>
+      <p className="text-nikah-muted" style={{ fontSize: 11.5, lineHeight: 1.45, margin: 0 }}>
+        {vendorPayments.length > 0 && `${finance.commitmentPercent}% budget terikat ke ${vendorPayments.length} vendor. `}
+        {summaryText}
+      </p>
+    </div>
+  )
+}
 
-          {/* Progress bar — konteks sekunder */}
-          <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 5, marginBottom: 5 }}>
+function DashboardGuidanceCard({ insights }: { insights: DashboardInsight[] }) {
+  const KIND_STYLES = {
+    good: { background: '#F0FDF4', border: '#BBF7D0', text: '#166534' },
+    info: { background: '#FBF6F1', border: '#E8DACF', text: 'var(--nikah-deep)' },
+    warning: { background: '#FFFBEB', border: '#FDE68A', text: '#92400E' },
+    critical: { background: '#FEF2F2', border: '#FECACA', text: '#991B1B' },
+  }
+  const primary = insights[0]
+
+  if (!primary) return null
+
+  return (
+    <div className="bg-white border border-nikah-border shadow-sm" style={{ borderRadius: 'var(--d-radius)', padding: 20 }}>
+      <CardTitle>Langkah Terbaik Berikutnya</CardTitle>
+      <div className="grid" style={{ gap: 9, marginTop: 14, marginBottom: 16 }}>
+        {insights.map((insight, index) => {
+          const style = KIND_STYLES[insight.kind]
+          return (
             <div
-              className="h-full rounded-full transition-all duration-700"
-              style={{ width: `${commitPct}%`, background: `linear-gradient(90deg, ${barColor}99, ${barColor})` }}
-            />
-          </div>
-          <p className="text-nikah-muted" style={{ fontSize: 11, marginBottom: 14 }}>
-            {commitPct}% dari budget sudah terikat ke {vendorPayments.length} vendor
-          </p>
-
-          {/* Angka konteks */}
-          <div className="flex items-start border-t border-nikah-border" style={{ paddingTop: 12, gap: 20 }}>
-            {[
-              { val: formatRupiah(totalBudget), lbl: 'Total Budget' },
-              { val: formatRupiah(vendorTotal), lbl: 'Total Vendor', note: isOverBudget ? `+${formatRupiah(vendorTotal - totalBudget)} melewati` : undefined },
-              { val: String(vendorPayments.length), lbl: 'Vendor' },
-            ].map(item => (
-              <div key={item.lbl}>
-                <div style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 15, color: 'var(--nikah-deep)', lineHeight: 1.1 }}>
-                  {item.val}
-                </div>
-                <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9, letterSpacing: '0.1em', marginTop: 2 }}>
-                  {item.lbl}
-                </div>
-                {item.note && (
-                  <div className="font-bold" style={{ fontSize: 9.5, marginTop: 1, color: '#B42318' }}>{item.note}</div>
-                )}
+              key={insight.title}
+              style={{
+                background: style.background,
+                border: `1px solid ${style.border}`,
+                borderRadius: 12,
+                padding: index === 0 ? '12px 13px' : '10px 12px',
+              }}
+            >
+              <div style={{ color: style.text, fontSize: 13, fontWeight: 800, lineHeight: 1.35 }}>
+                {insight.title}
               </div>
-            ))}
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 8, marginBottom: 6 }}>
-            <div className="h-full rounded-full" style={{ width: '0%' }} />
-          </div>
-          <p className="text-nikah-muted" style={{ fontSize: 11.5 }}>
-            Belum ada vendor dicatat — tambah vendor untuk melihat perbandingan budget.
-          </p>
-        </>
-      )}
+              <p className="text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.45, margin: '4px 0 0' }}>
+                {insight.body}
+              </p>
+            </div>
+          )
+        })}
+      </div>
+      <a
+        href={primary.href}
+        className="w-full inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
+        style={{ padding: '12px 16px' }}
+      >
+        {primary.actionLabel}
+      </a>
     </div>
   )
 }
@@ -347,6 +349,9 @@ export function DashboardClient({
   // akibat perbedaan timezone server (UTC) vs device user (WIB/WITA/WIT).
   const [greeting, setGreeting] = useState('')
   const [isResetting, setIsResetting] = useState(false)
+  const [liveSavings, setLiveSavings] = useState(tabunganCollected)
+  const [liveChecklistChecked, setLiveChecklistChecked] = useState(checklistChecked)
+  const [liveVendorPayments, setLiveVendorPayments] = useState(vendorPayments)
 
   async function handleResetPlan() {
     setIsResetting(true)
@@ -373,7 +378,7 @@ export function DashboardClient({
 
   // Sebaran aktual: agregasi total vendor per kategori
   const spendByCategory: Record<string, number> = {}
-  vendorPayments.forEach(v => {
+  liveVendorPayments.forEach(v => {
     if (v.category) {
       spendByCategory[v.category] = (spendByCategory[v.category] ?? 0) + v.totalAmount
     }
@@ -387,6 +392,13 @@ export function DashboardClient({
     ? new Date(weddingDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })
     : null
   const timeLeftText = formatTimeLeft(days)
+  const guidance = buildDashboardGuidance({
+    totalBudget,
+    savingsCollected: liveSavings,
+    vendorPayments: liveVendorPayments,
+    allocation: alloc,
+    weddingDate,
+  })
   const readinessTitle = score >= 70
     ? 'Rencana kalian sudah berada di jalur yang aman.'
     : score >= 40
@@ -584,8 +596,13 @@ export function DashboardClient({
       </div>
 
       <main className="max-w-[1200px] mx-auto" style={{ padding: '0 var(--d-pad-page) 40px' }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr]" style={{ gap: 20, marginBottom: 16 }}>
-          <CurrentPriorities days={days} checkedIds={checklistChecked} vendorPayments={vendorPayments} />
+        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]" style={{ gap: 20, marginBottom: 20 }}>
+          <BudgetHealthCard
+            totalBudget={totalBudget}
+            vendorPayments={liveVendorPayments}
+            tabunganCollected={liveSavings}
+            finance={guidance.finance}
+          />
           <div className="hidden lg:block">{OverviewCard}</div>
         </div>
 
@@ -593,11 +610,14 @@ export function DashboardClient({
           <MobileScoreStrip score={score} label={label} />
         </div>
 
-        <BudgetHealthCard
-          totalBudget={totalBudget}
-          vendorPayments={vendorPayments}
-          tabunganCollected={tabunganCollected}
-        />
+        <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr]" style={{ gap: 20, marginBottom: 22 }}>
+          <div>
+            <DashboardGuidanceCard insights={guidance.insights} />
+          </div>
+          <div>
+            <CurrentPriorities days={days} checkedIds={liveChecklistChecked} vendorPayments={liveVendorPayments} />
+          </div>
+        </div>
 
         <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve border-l-[3px] border-nikah-mauve pl-3" style={{ margin: '0 0 14px' }}>
           <span className="lg:hidden">Dana &amp; Pembayaran</span>
@@ -605,8 +625,12 @@ export function DashboardClient({
         </p>
         {/* Baris 1: Tabungan (1/2) + Vendor (1/2) */}
         <div className="grid grid-cols-1 lg:grid-cols-2" style={{ gap: 20, marginBottom: 20, alignItems: 'start' }}>
-          <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} />
-          <VendorPaymentTracker initialPayments={vendorPayments} />
+          <div id="savings">
+            <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} onSaved={setLiveSavings} />
+          </div>
+          <div id="vendor-payments">
+            <VendorPaymentTracker initialPayments={vendorPayments} onSaved={setLiveVendorPayments} />
+          </div>
         </div>
         {/* Baris 2: Catatan */}
         <div style={{ marginBottom: 28 }}>
@@ -618,9 +642,9 @@ export function DashboardClient({
           <span className="hidden lg:inline">Tugas &amp; Referensi</span>
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1.1fr_0.95fr]" style={{ gap: 20, alignItems: 'start' }}>
-          <ChecklistPernikahan checkedIds={checklistChecked} days={days} customItems={customChecklistItems} hiddenDefaultIds={hiddenChecklistItemIds} />
+          <ChecklistPernikahan checkedIds={checklistChecked} days={days} customItems={customChecklistItems} hiddenDefaultIds={hiddenChecklistItemIds} onSaved={setLiveChecklistChecked} />
           <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
-          {AllocationCard}
+          <div id="allocation">{AllocationCard}</div>
         </div>
 
         {/* Mobile: bottom action buttons */}

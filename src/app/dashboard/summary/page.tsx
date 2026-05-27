@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
-import { formatRupiah } from '@/lib/utils'
+import { formatRupiahExact } from '@/lib/utils'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { PrintButton } from '@/components/dashboard/PrintButton'
 import { BrandLogo } from '@/components/ui/BrandLogo'
@@ -58,11 +58,22 @@ export default async function DashboardSummaryPage() {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/auth/login')
 
-  const { data: profile } = await supabase
-    .from('wedding_profiles')
-    .select('*')
-    .eq('user_id', user.id)
-    .single()
+  const [accountResult, profileResult] = await Promise.all([
+    supabase
+      .from('app_users')
+      .select('is_premium')
+      .eq('id', user.id)
+      .single(),
+    supabase
+      .from('wedding_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single(),
+  ])
+
+  if (!accountResult.data?.is_premium) redirect('/premium')
+
+  const profile = profileResult.data
 
   if (!profile) redirect('/dashboard')
 
@@ -123,10 +134,10 @@ export default async function DashboardSummaryPage() {
 
           <div className="grid grid-cols-2 md:grid-cols-4" style={{ gap: 10, marginBottom: 24 }}>
             {[
-              { label: 'Budget', value: formatRupiah(totalBudget) },
-              { label: 'Tabungan', value: formatRupiah(savingsCollected) },
-              { label: 'Nabung/bln', value: formatRupiah(monthlySavings) },
-              { label: 'Sisa vendor', value: formatRupiah(vendorRemaining) },
+              { label: 'Budget', value: formatRupiahExact(totalBudget) },
+              { label: 'Tabungan', value: formatRupiahExact(savingsCollected) },
+              { label: 'Nabung/bln', value: formatRupiahExact(monthlySavings) },
+              { label: 'Sisa vendor', value: formatRupiahExact(vendorRemaining) },
             ].map(item => (
               <div key={item.label} className="bg-nikah-bg" style={{ borderRadius: 12, padding: '12px 14px' }}>
                 <div className="font-extrabold text-nikah-deep" style={{ fontSize: 16, lineHeight: 1.1 }}>{item.value}</div>
@@ -157,7 +168,7 @@ export default async function DashboardSummaryPage() {
                     <div className="text-nikah-muted" style={{ fontSize: 11, marginTop: 3 }}>{item.category}</div>
                   </div>
                   <div className="text-right text-nikah-deep font-bold" style={{ fontSize: 13 }}>
-                    {formatRupiah(Math.max(0, item.totalAmount - item.paidAmount))}
+                    {formatRupiahExact(Math.max(0, item.totalAmount - item.paidAmount))}
                   </div>
                 </div>
               )) : (
@@ -174,7 +185,7 @@ export default async function DashboardSummaryPage() {
                   <div className="font-bold text-nikah-text" style={{ fontSize: 14 }}>
                     {({'catering':'Catering','venue':'Venue','decoration':'Dekorasi','documentation':'Dokumentasi','mua':'MUA & Busana','souvenir':'Souvenir','entertainment':'Hiburan','emergencyFund':'Dana Darurat'} as Record<string,string>)[key] ?? key}
                   </div>
-                  <div className="text-nikah-muted" style={{ fontSize: 11, marginTop: 3 }}>{formatRupiah(item.estimatedAmount)} · {item.percentage}%</div>
+                  <div className="text-nikah-muted" style={{ fontSize: 11, marginTop: 3 }}>{formatRupiahExact(item.estimatedAmount)} · {item.percentage}%</div>
                 </div>
               ))}
             </div>

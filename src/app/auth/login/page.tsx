@@ -4,7 +4,9 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { track } from '@/lib/analytics'
-import { useOnboardingStore } from '@/stores/onboardingStore'
+import { getPostSyncPath, isProfileReplacementRequired, shouldSyncOnboardingAfterAuth } from '@/lib/authFlow'
+import { clearOnboardingStore, useOnboardingStore } from '@/stores/onboardingStore'
+import { ProfileReplacementDialog } from '@/components/auth/ProfileReplacementDialog'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { AlarmClock, BriefcaseBusiness, Coins } from 'lucide-react'
 
@@ -47,6 +49,8 @@ function LoginContent() {
   const [password, setPassword] = useState('')
   const [error, setError]       = useState('')
   const [loading, setLoading]   = useState(false)
+  const [replacementRequired, setReplacementRequired] = useState(false)
+  const [storedPlanDestination, setStoredPlanDestination] = useState('/premium')
   const router = useRouter()
   const searchParams = useSearchParams()
   const nextPath = getSafeNextPath(searchParams.get('next'))
@@ -54,36 +58,64 @@ function LoginContent() {
   const signupHref = `/auth/signup?next=${encodeURIComponent(nextPath)}`
   const onboarding = useOnboardingStore()
   const isPremiumContinuation = nextPath === '/premium'
-  const authEyebrow = isPremiumContinuation ? 'Simpan sebelum pembayaran' : 'Simpan hasil perencanaan kalian'
+  const authEyebrow = isPremiumContinuation ? 'Simpan sebelum pembayaran' : 'Dashboard pernikahan'
   const authTitle = isPremiumContinuation
     ? 'Simpan hasil kalian sebelum lanjut pembayaran.'
     : 'Lanjutkan persiapan pernikahan dengan lebih tenang.'
   const authCopy = isPremiumContinuation
     ? 'Masuk untuk menyimpan hasil simulasi, lalu lanjut ke pembayaran premium tanpa mulai dari awal.'
-    : 'Masuk untuk menyimpan hasil simulasi dan melanjutkan persiapan pernikahan di satu tempat.'
-  const formTitle = isPremiumContinuation ? 'Masuk untuk lanjut pembayaran' : 'Simpan hasil perencanaan kalian'
+    : 'Masuk untuk membuka dashboard dan melanjutkan rencana yang sudah tersimpan.'
+  const formTitle = isPremiumContinuation ? 'Masuk untuk lanjut pembayaran' : 'Masuk ke dashboard kalian'
   const formCopy = isPremiumContinuation
     ? 'Hasil kalian akan disimpan dulu, lalu kalian kembali ke halaman premium.'
-    : 'Masuk untuk menyimpan hasil simulasi dan melanjutkan persiapan.'
+    : 'Masuk untuk membuka kembali dashboard perencanaan kalian.'
 
-  async function syncAndRedirect() {
-    if (onboarding.isComplete()) {
+  async function syncAndRedirect(replaceExisting = false) {
+    let destination = nextPath
+
+    if (shouldSyncOnboardingAfterAuth(nextPath) && onboarding.isComplete()) {
       const response = await fetch('/api/onboarding/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ onboarding }),
+        body: JSON.stringify({ onboarding, replaceExisting }),
       })
 
       if (!response.ok) {
+        const data = await response.json().catch(() => null) as { code?: string; isPremium?: boolean } | null
+        if (isProfileReplacementRequired(response.status, data)) {
+          setStoredPlanDestination(getPostSyncPath(nextPath, Boolean(data?.isPremium)))
+          setReplacementRequired(true)
+          setLoading(false)
+          return
+        }
+
         setError('Gagal menyimpan data. Silakan coba lagi.')
         setLoading(false)
         return
       }
 
-      // Jangan clear localStorage di sini — biarkan user bisa kembali ke /result
-      // setelah login. localStorage akan dibersihkan saat /premium/success dimuat.
+      const result = await response.json() as { isPremium?: boolean }
+      destination = getPostSyncPath(nextPath, Boolean(result.isPremium))
+
+      if (result.isPremium) {
+        await clearOnboardingStore()
+      }
     }
-    router.replace(nextPath)
+    router.replace(destination)
+  }
+
+  async function keepStoredPlan() {
+    setReplacementRequired(false)
+    if (storedPlanDestination === '/dashboard') {
+      await clearOnboardingStore()
+    }
+    router.replace(storedPlanDestination)
+  }
+
+  async function replaceStoredPlan() {
+    setReplacementRequired(false)
+    setLoading(true)
+    await syncAndRedirect(true)
   }
 
   async function handleEmail(e: React.FormEvent) {
@@ -279,6 +311,13 @@ function LoginContent() {
           </div>
         </section>
       </div>
+      {replacementRequired && (
+        <ProfileReplacementDialog
+          busy={loading}
+          onKeepExisting={keepStoredPlan}
+          onReplace={replaceStoredPlan}
+        />
+      )}
     </main>
   )
 }

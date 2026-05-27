@@ -43,6 +43,7 @@ function getFocusWindow(days: number | null) {
 
 export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
   const focus = getFocusWindow(days)
+  const hasTimeline = days !== null
 
   const vendorItems: PriorityItem[] = vendorPayments
     .filter(item => item.totalAmount > item.paidAmount && item.dueDate)
@@ -63,7 +64,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
       }
     })
 
-  const checklistItems: PriorityItem[] = CHECKLIST_ITEMS
+  const checklistItems: PriorityItem[] = (hasTimeline ? CHECKLIST_ITEMS : [])
     .filter(item => item.monthsBefore === focus.monthsBefore && !checkedIds.includes(item.id))
     .slice(0, 5)
     .map((item, index) => ({
@@ -76,7 +77,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
       note: 'Minggu ini',
     }))
 
-  const fallbackChecklist: PriorityItem[] = CHECKLIST_ITEMS
+  const fallbackChecklist: PriorityItem[] = (hasTimeline ? CHECKLIST_ITEMS : [])
     .filter(item => !checkedIds.includes(item.id))
     .slice(0, 5)
     .map((item, index) => ({
@@ -120,7 +121,9 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
           </span>
         </div>
         <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: 0 }}>
-          Mulai dari yang paling dekat. Tidak semua harus selesai sekarang.
+          {hasTimeline
+            ? 'Mulai dari yang paling dekat. Tidak semua harus selesai sekarang.'
+            : 'Lengkapi tanggal rencana agar checklist bisa disusun berdasarkan waktu yang tersedia.'}
         </p>
       </div>
 
@@ -161,7 +164,9 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
           </div>
         )) : (
           <p className="text-sm text-nikah-muted" style={{ margin: 0, padding: '14px 22px 18px' }}>
-            Belum ada prioritas dekat. Tambahkan vendor atau lanjutkan checklist agar dashboard bisa membantu menyusun fokus berikutnya.
+            {hasTimeline
+              ? 'Belum ada prioritas dekat. Tambahkan vendor atau lanjutkan checklist agar dashboard bisa membantu menyusun fokus berikutnya.'
+              : 'Belum ada pembayaran mendesak yang dicatat. Tanggal rencana akan membantu menyusun prioritas berikutnya.'}
           </p>
         )}
       </div>

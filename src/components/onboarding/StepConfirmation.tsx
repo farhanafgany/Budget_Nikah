@@ -3,8 +3,10 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { clearOnboardingStore, useOnboardingStore } from '@/stores/onboardingStore'
 import { bucketBudget, bucketGuests, track } from '@/lib/analytics'
+import { isProfileReplacementRequired } from '@/lib/authFlow'
 import { getCityTier } from '@/lib/cityTiers'
 import { createClient } from '@/lib/supabase/client'
+import { ProfileReplacementDialog } from '@/components/auth/ProfileReplacementDialog'
 import { StepWrapper } from './StepWrapper'
 
 const STYLE_LABELS: Record<string, string> = {
@@ -46,6 +48,7 @@ export function StepConfirmation() {
   const router = useRouter()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [replacementRequired, setReplacementRequired] = useState(false)
   const {
     partnerOneName,
     partnerTwoName,
@@ -72,18 +75,20 @@ export function StepConfirmation() {
     ...(planningPriority ? [{ label: 'Prioritas', value: PRIORITY_LABELS[planningPriority] ?? planningPriority }] : []),
   ]
 
-  async function handleNext() {
+  async function handleNext(replaceExisting = false) {
     if (saving) return
     setError('')
     setSaving(true)
-    track('onboarding_completed', {
-      budget_bucket: bucketBudget(totalBudget),
-      guest_bucket: bucketGuests(guestCount),
-      city_tier: weddingCity ? getCityTier(weddingCity) : 'unknown',
-      wedding_style: weddingStyle,
-      event_type: eventType,
-      planning_priority: planningPriority,
-    })
+    if (!replaceExisting) {
+      track('onboarding_completed', {
+        budget_bucket: bucketBudget(totalBudget),
+        guest_bucket: bucketGuests(guestCount),
+        city_tier: weddingCity ? getCityTier(weddingCity) : 'unknown',
+        wedding_style: weddingStyle,
+        event_type: eventType,
+        planning_priority: planningPriority,
+      })
+    }
 
     const supabase = createClient()
     const { data } = await supabase.auth.getSession()
@@ -103,10 +108,18 @@ export function StepConfirmation() {
             eventType,
             planningPriority,
           },
+          replaceExisting,
         }),
       })
 
       if (!response.ok) {
+        const data = await response.json().catch(() => null)
+        if (isProfileReplacementRequired(response.status, data)) {
+          setSaving(false)
+          setReplacementRequired(true)
+          return
+        }
+
         setSaving(false)
         setError('Data belum tersimpan. Coba lagi sebentar lagi.')
         return
@@ -123,10 +136,20 @@ export function StepConfirmation() {
     router.push('/result')
   }
 
+  function keepStoredPlan() {
+    setReplacementRequired(false)
+    router.push('/result')
+  }
+
+  function replaceStoredPlan() {
+    setReplacementRequired(false)
+    void handleNext(true)
+  }
+
   return (
     <StepWrapper
       stepIndex={6}
-      onNext={handleNext}
+      onNext={() => { void handleNext() }}
       onBack={prevStep}
       nextLabel={saving ? 'Menyimpan...' : 'Lihat hasilnya →'}
       hideStepCounter
@@ -180,6 +203,14 @@ export function StepConfirmation() {
         <p className="text-xs text-red-600 font-medium" style={{ marginTop: 12, lineHeight: 1.5 }}>
           {error}
         </p>
+      )}
+      {replacementRequired && (
+        <ProfileReplacementDialog
+          busy={saving}
+          keepLabel="Lihat hasil tanpa mengganti data"
+          onKeepExisting={keepStoredPlan}
+          onReplace={replaceStoredPlan}
+        />
       )}
     </StepWrapper>
   )

@@ -5,7 +5,7 @@ import type { SavingsHistoryInput } from '@/lib/dashboardActions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { track } from '@/lib/analytics'
 import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
-import { formatRupiah } from '@/lib/utils'
+import { formatRupiah, formatRupiahExact } from '@/lib/utils'
 import { ChevronDown } from 'lucide-react'
 
 interface Props {
@@ -13,9 +13,10 @@ interface Props {
   target: number
   weddingDate: string | null
   history: SavingsHistoryInput[]
+  onSaved?: (collected: number) => void
 }
 
-export function TabunganNikah({ collected, target, weddingDate, history }: Props) {
+export function TabunganNikah({ collected, target, weddingDate, history, onSaved }: Props) {
   const [localCollected, setLocalCollected] = useState(collected)
   const [localHistory, setLocalHistory] = useState<SavingsHistoryInput[]>(history)
   const [mode, setMode] = useState<'add' | 'subtract'>('add')
@@ -75,7 +76,9 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
         // Kembalikan nilai ke input agar user bisa coba lagi tanpa ketik ulang.
         setInputRaw(formatInputRp(n))
         setError('Belum tersimpan — coba simpan lagi.')
+        return
       }
+      onSaved?.(next)
     })
   }
 
@@ -112,16 +115,18 @@ export function TabunganNikah({ collected, target, weddingDate, history }: Props
             className="text-nikah-deep"
             style={{ fontFamily: 'var(--font-playfair), Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 32, lineHeight: 1 }}
           >
-            {formatRupiah(localCollected)}
+            {formatRupiahExact(localCollected)}
           </div>
-          <div className="text-nikah-muted" style={{ fontSize: 12, marginTop: 4 }}>dari target {formatRupiah(target)}</div>
+          <div className="text-nikah-muted" style={{ fontSize: 12, marginTop: 4 }}>dari target {formatRupiahExact(target)}</div>
         </div>
         {months > 0 ? (
           <div className="text-right">
             <div className="text-nikah-mauve font-extrabold" style={{ fontSize: 14 }}>
-              {formatRupiah(monthly)}/bln
+              {formatRupiahExact(monthly)}/bln
             </div>
-            <div className="text-nikah-muted font-normal" style={{ fontSize: 11, marginTop: 4 }}>selama {months} bln lagi</div>
+            <div className="text-nikah-muted font-normal" style={{ fontSize: 11, marginTop: 4 }}>
+              {weddingDate ? `selama ${months} bln lagi` : 'estimasi rencana 12 bulan'}
+            </div>
           </div>
         ) : (
           <div className="text-right">

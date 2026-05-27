@@ -1,0 +1,211 @@
+import type { VendorPaymentInput } from './dashboardActions'
+import { formatRupiahExact } from './utils'
+
+export interface DashboardAllocationEntry {
+  percentage: number
+  estimatedAmount: number
+}
+
+export type DashboardFinanceStatus = 'neutral' | 'good' | 'attention' | 'warning' | 'critical'
+
+export interface DashboardFinance {
+  vendorCommitted: number
+  vendorPaid: number
+  vendorOutstanding: number
+  budgetRoom: number
+  savingsGap: number
+  savingsSurplus: number
+  commitmentPercent: number
+  status: DashboardFinanceStatus
+}
+
+export interface DashboardInsight {
+  kind: 'good' | 'info' | 'warning' | 'critical'
+  title: string
+  body: string
+  actionLabel: string
+  href: string
+}
+
+export interface DashboardGuidanceInput {
+  totalBudget: number
+  savingsCollected: number
+  vendorPayments: VendorPaymentInput[]
+  allocation: Record<string, DashboardAllocationEntry> | null
+  weddingDate: string | null
+}
+
+const CATEGORY_LABELS: Record<string, string> = {
+  catering: 'Catering',
+  venue: 'Venue',
+  decoration: 'Dekorasi',
+  documentation: 'Dokumentasi',
+  mua: 'MUA dan Busana',
+  souvenir: 'Souvenir',
+  entertainment: 'Hiburan',
+}
+
+function getAllocationKey(category: string) {
+  const normalized = category.toLowerCase()
+  if (normalized.includes('catering') || normalized.includes('katering')) return 'catering'
+  if (normalized.includes('venue') || normalized.includes('gedung')) return 'venue'
+  if (normalized.includes('dekor')) return 'decoration'
+  if (normalized.includes('dokument') || normalized.includes('foto') || normalized.includes('video')) return 'documentation'
+  if (normalized.includes('mua') || normalized.includes('busana')) return 'mua'
+  if (normalized.includes('souvenir')) return 'souvenir'
+  if (normalized.includes('hiburan') || normalized.includes('entertain')) return 'entertainment'
+  return null
+}
+
+export function calculateDashboardFinance({
+  totalBudget,
+  savingsCollected,
+  vendorPayments,
+}: Pick<DashboardGuidanceInput, 'totalBudget' | 'savingsCollected' | 'vendorPayments'>): DashboardFinance {
+  const vendorCommitted = vendorPayments.reduce((sum, item) => sum + item.totalAmount, 0)
+  const vendorPaid = vendorPayments.reduce((sum, item) => sum + item.paidAmount, 0)
+  const vendorOutstanding = Math.max(0, vendorCommitted - vendorPaid)
+  const budgetRoom = totalBudget - vendorCommitted
+  const savingsGap = Math.max(0, vendorOutstanding - savingsCollected)
+  const savingsSurplus = Math.max(0, savingsCollected - vendorOutstanding)
+  const commitmentPercent = totalBudget > 0 ? Math.round((vendorCommitted / totalBudget) * 100) : 0
+
+  let status: DashboardFinanceStatus = 'good'
+  if (totalBudget <= 0 || vendorPayments.length === 0) {
+    status = 'neutral'
+  } else if (budgetRoom < 0) {
+    status = 'critical'
+  } else if (vendorCommitted >= totalBudget * 0.9) {
+    status = 'warning'
+  } else if (savingsGap > 0) {
+    status = 'attention'
+  }
+
+  return {
+    vendorCommitted,
+    vendorPaid,
+    vendorOutstanding,
+    budgetRoom,
+    savingsGap,
+    savingsSurplus,
+    commitmentPercent,
+    status,
+  }
+}
+
+export function buildDashboardGuidance(input: DashboardGuidanceInput) {
+  const finance = calculateDashboardFinance(input)
+  const insights: DashboardInsight[] = []
+  const hasComfortableBudgetRoom =
+    input.totalBudget > 0 &&
+    input.vendorPayments.length > 0 &&
+    finance.budgetRoom >= input.totalBudget * 0.1
+  const add = (insight: DashboardInsight) => {
+    if (insights.length < 3) insights.push(insight)
+  }
+
+  if (input.totalBudget <= 0) {
+    add({
+      kind: 'info',
+      title: 'Total budget belum tersedia.',
+      body: 'Lengkapi rencana budget agar dashboard bisa menghitung ruang aman dan risiko pengeluaran.',
+      actionLabel: 'Atur ulang data',
+      href: '#dashboard-actions',
+    })
+  } else if (input.vendorPayments.length === 0) {
+    add({
+      kind: 'info',
+      title: 'Belum ada biaya vendor yang dicatat.',
+      body: `Total budget kamu ${formatRupiahExact(input.totalBudget)}. Catat vendor pertama agar sisa ruang budget bisa dipantau.`,
+      actionLabel: 'Tambah vendor',
+      href: '#vendor-payments',
+    })
+  } else if (finance.budgetRoom < 0) {
+    add({
+      kind: 'critical',
+      title: `Komitmen vendor melewati budget ${formatRupiahExact(Math.abs(finance.budgetRoom))}.`,
+      body: 'Cek vendor dengan biaya terbesar sebelum menambah pembayaran atau kebutuhan baru.',
+      actionLabel: 'Cek pembayaran vendor',
+      href: '#vendor-payments',
+    })
+  } else if (finance.vendorCommitted >= input.totalBudget * 0.9) {
+    add({
+      kind: 'warning',
+      title: `Ruang budget tersisa ${formatRupiahExact(finance.budgetRoom)}.`,
+      body: 'Komitmen vendor sudah mendekati batas rencana. Sisakan ruang untuk kebutuhan tidak terduga.',
+      actionLabel: 'Tinjau vendor',
+      href: '#vendor-payments',
+    })
+  }
+
+  if (finance.vendorOutstanding > 0 && finance.savingsGap > 0) {
+    add({
+      kind: 'warning',
+      title: `Tabungan masih kurang ${formatRupiahExact(finance.savingsGap)} untuk tagihan vendor.`,
+      body: 'Tambahkan tabungan atau sesuaikan jadwal pembayaran yang paling dekat lebih dulu.',
+      actionLabel: 'Perbarui tabungan',
+      href: '#savings',
+    })
+  }
+
+  if (hasComfortableBudgetRoom) {
+    add({
+      kind: 'good',
+      title: `Kamu masih punya ruang budget ${formatRupiahExact(finance.budgetRoom)}.`,
+      body: 'Pertahankan ruang ini sambil melengkapi vendor dan kebutuhan yang belum dicatat.',
+      actionLabel: 'Lihat vendor',
+      href: '#vendor-payments',
+    })
+  }
+
+  const committedByCategory = input.vendorPayments.reduce<Record<string, number>>((result, item) => {
+    const key = getAllocationKey(item.category)
+    if (key) result[key] = (result[key] ?? 0) + item.totalAmount
+    return result
+  }, {})
+  const exceededReference = Object.entries(committedByCategory)
+    .map(([key, amount]) => {
+      const reference = input.allocation?.[key]?.estimatedAmount ?? 0
+      return { key, exceededBy: amount - reference, reference }
+    })
+    .filter(item => item.reference > 0 && item.exceededBy > 0)
+    .sort((a, b) => b.exceededBy - a.exceededBy)[0]
+
+  if (exceededReference) {
+    add({
+      kind: 'warning',
+      title: `${CATEGORY_LABELS[exceededReference.key] ?? exceededReference.key} melewati referensi ${formatRupiahExact(exceededReference.exceededBy)}.`,
+      body: 'Bandingkan kembali paket vendor dengan alokasi awal sebelum mengunci kebutuhan tambahan.',
+      actionLabel: 'Cek alokasi',
+      href: '#allocation',
+    })
+  } else if (
+    input.vendorPayments.length > 0 &&
+    (input.allocation?.documentation?.estimatedAmount ?? 0) > 0 &&
+    committedByCategory.documentation === undefined
+  ) {
+    add({
+      kind: 'info',
+      title: 'Dokumentasi belum dicatat sebagai vendor.',
+      body: 'Pastikan foto atau video hari H masuk perhitungan sebelum ruang budget terpakai untuk kebutuhan lain.',
+      actionLabel: 'Tambah dokumentasi',
+      href: '#vendor-payments',
+    })
+  }
+
+  if (!input.weddingDate) {
+    add({
+      kind: 'info',
+      title: 'Tanggal rencana belum dilengkapi.',
+      body: 'Tanggal membantu dashboard menyusun target tabungan dan checklist berdasarkan waktu yang tersedia.',
+      actionLabel: 'Atur ulang data',
+      href: '#dashboard-actions',
+    })
+  }
+
+  return {
+    finance,
+    insights,
+    primaryAction: insights[0],
+  }
+}
