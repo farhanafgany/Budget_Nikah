@@ -3,7 +3,9 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
 import { formatRupiahExact } from '@/lib/utils'
-import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
+import { buildSummaryChecklistPriorities } from '@/lib/dashboardSummary'
+import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
+import { getVendorPaymentStatus } from '@/lib/vendorPayments'
 import { PrintButton } from '@/components/dashboard/PrintButton'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import type { VendorPaymentInput } from '@/lib/dashboardActions'
@@ -45,12 +47,10 @@ function normalizeVendorPayments(value: unknown): VendorPaymentInput[] {
     .filter(item => item.name)
 }
 
-function getFocusWindow(days: number | null) {
-  if (days === null || days <= 7) return 0
-  if (days <= 45) return 1
-  if (days <= 120) return 3
-  if (days <= 240) return 6
-  return 12
+function normalizeStringArray(value: unknown): string[] {
+  return Array.isArray(value)
+    ? value.filter((item): item is string => typeof item === 'string')
+    : []
 }
 
 export default async function DashboardSummaryPage() {
@@ -85,11 +85,21 @@ export default async function DashboardSummaryPage() {
   const days = daysUntil(weddingDate)
   const months = monthsUntilDate(weddingDate)
   const monthlySavings = calculateMonthlySavings(totalBudget, savingsCollected, months)
-  const checklistChecked = (profile.checklist_checked as string[] | null) ?? []
+  const checklistChecked = normalizeStringArray(profile.checklist_checked)
+  const hiddenChecklistItemIds = normalizeStringArray(profile.hidden_checklist_item_ids)
   const vendorPayments = normalizeVendorPayments(profile.vendor_payments)
   const vendorTotal = vendorPayments.reduce((sum, item) => sum + item.totalAmount, 0)
   const vendorPaid = vendorPayments.reduce((sum, item) => sum + item.paidAmount, 0)
   const vendorRemaining = Math.max(0, vendorTotal - vendorPaid)
+  const vendorReminders = buildVendorReminderSummary(vendorPayments)
+  const urgentVendorCount = vendorReminders.overdueCount + vendorReminders.dueSoonCount
+  const vendorAttentionText = urgentVendorCount > 0
+    ? `${formatRupiahExact(vendorReminders.urgentOutstanding)} perlu perhatian: ada pembayaran terlambat atau jatuh tempo dalam 7 hari.`
+    : vendorReminders.unscheduledCount > 0
+      ? `${vendorReminders.unscheduledCount} vendor belum punya tanggal pembayaran. Atur deadline dari dashboard.`
+      : vendorPayments.length > 0
+        ? 'Pembayaran vendor yang dicatat belum menunjukkan tenggat mendesak.'
+        : null
   const alloc = profile.allocation_result as Record<string, AllocEntry> | null
   const topAlloc = alloc
     ? (Object.entries(alloc) as [string, AllocEntry][])
@@ -97,27 +107,28 @@ export default async function DashboardSummaryPage() {
         .sort((a, b) => b[1].estimatedAmount - a[1].estimatedAmount)
         .slice(0, 4)
     : []
-  const focusWindow = getFocusWindow(days)
-  const priorities = CHECKLIST_ITEMS
-    .filter(item => item.monthsBefore === focusWindow && !checklistChecked.includes(item.id))
-    .slice(0, 5)
+  const priorities = buildSummaryChecklistPriorities({
+    daysUntilWedding: days,
+    checkedIds: checklistChecked,
+    hiddenIds: hiddenChecklistItemIds,
+  })
   const note = (profile.dashboard_note as string | null) ?? ''
 
   return (
-    <main className="min-h-screen bg-nikah-bg px-6 py-8 print:bg-white print:px-0 print:py-0">
+    <main className="min-h-screen bg-nikah-bg px-4 py-4 sm:px-6 sm:py-8 print:bg-white print:px-0 print:py-0">
       <div className="max-w-[900px] mx-auto bg-white border border-nikah-border shadow-sm print:border-0 print:shadow-none" style={{ borderRadius: 'var(--d-radius)' }}>
-        <div className="flex items-center justify-between gap-4 border-b border-nikah-border print:hidden" style={{ padding: '22px 26px' }}>
+        <div className="flex items-center justify-between gap-4 border-b border-nikah-border px-4 py-4 sm:px-[26px] sm:py-[22px] print:hidden">
           <Link href="/dashboard" className="text-sm font-bold text-nikah-deep">← Dashboard</Link>
           <PrintButton />
         </div>
 
-        <div style={{ padding: '34px 34px 40px' }}>
+        <div className="px-4 pb-7 pt-6 sm:px-[34px] sm:pb-10 sm:pt-[34px]">
           <div className="flex items-start justify-between gap-6" style={{ marginBottom: 28 }}>
             <div>
               <BrandLogo size="md" />
               <h1
                 className="text-nikah-text"
-                style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 34, margin: '24px 0 8px', lineHeight: 1.08 }}
+                style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontWeight: 500, fontSize: 'clamp(28px, 8vw, 34px)', margin: '24px 0 8px', lineHeight: 1.08 }}
               >
                 Ringkasan rencana pernikahan
               </h1>
@@ -149,30 +160,71 @@ export default async function DashboardSummaryPage() {
           <section style={{ marginBottom: 24 }}>
             <h2 className="text-xs font-extrabold uppercase tracking-[0.14em] text-nikah-mauve" style={{ margin: '0 0 10px' }}>Prioritas sekarang</h2>
             <div className="grid" style={{ gap: 8 }}>
-              {(priorities.length > 0 ? priorities : CHECKLIST_ITEMS.filter(item => !checklistChecked.includes(item.id)).slice(0, 5)).map(item => (
+              {priorities.map(item => (
                 <div key={item.id} className="bg-nikah-bg" style={{ borderRadius: 12, padding: '11px 13px' }}>
                   <div className="font-bold text-nikah-text" style={{ fontSize: 14 }}>{item.label}</div>
                   <div className="text-nikah-muted" style={{ fontSize: 11, marginTop: 3 }}>{item.category}</div>
                 </div>
               ))}
+              {priorities.length === 0 && (
+                <p className="text-sm text-nikah-muted" style={{ margin: 0 }}>
+                  {days === null
+                    ? 'Tambahkan tanggal pernikahan di dashboard agar prioritas bisa disusun sesuai waktunya.'
+                    : 'Tidak ada tugas aktif yang perlu ditampilkan dalam ringkasan ini.'}
+                </p>
+              )}
             </div>
           </section>
 
           <section style={{ marginBottom: 24 }}>
             <h2 className="text-xs font-extrabold uppercase tracking-[0.14em] text-nikah-mauve" style={{ margin: '0 0 10px' }}>Pembayaran vendor</h2>
+            {vendorAttentionText && (
+              <p
+                className="text-sm"
+                style={{
+                  margin: '0 0 10px',
+                  borderRadius: 12,
+                  padding: '11px 13px',
+                  color: urgentVendorCount > 0 ? '#9A5B00' : 'var(--nikah-muted)',
+                  background: urgentVendorCount > 0 ? '#FEF0C7' : 'var(--nikah-bg)',
+                }}
+              >
+                {vendorAttentionText}
+              </p>
+            )}
             <div className="grid" style={{ gap: 8 }}>
-              {vendorPayments.length > 0 ? vendorPayments.slice(0, 6).map(item => (
-                <div key={item.id} className="flex justify-between gap-4 bg-nikah-bg" style={{ borderRadius: 12, padding: '11px 13px' }}>
-                  <div>
-                    <div className="font-bold text-nikah-text" style={{ fontSize: 14 }}>{item.name}</div>
-                    <div className="text-nikah-muted" style={{ fontSize: 11, marginTop: 3 }}>{item.category}</div>
+              {vendorPayments.length > 0 ? vendorPayments.slice(0, 6).map(item => {
+                const status = getVendorPaymentStatus(item)
+                const remaining = Math.max(0, item.totalAmount - item.paidAmount)
+
+                return (
+                  <div key={item.id} className="flex justify-between gap-4 bg-nikah-bg" style={{ borderRadius: 12, padding: '11px 13px' }}>
+                    <div>
+                      <div className="font-bold text-nikah-text" style={{ fontSize: 14 }}>{item.name}</div>
+                      <div className="text-nikah-muted" style={{ fontSize: 11, marginTop: 3 }}>{item.category}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-nikah-deep font-bold" style={{ fontSize: 13 }}>
+                        {remaining > 0 ? formatRupiahExact(remaining) : 'Lunas'}
+                      </div>
+                      <span
+                        className="inline-block font-bold"
+                        style={{
+                          borderRadius: 999,
+                          marginTop: 5,
+                          padding: '3px 8px',
+                          fontSize: 10,
+                          color: status.color,
+                          background: status.background,
+                        }}
+                      >
+                        {status.label}
+                      </span>
+                    </div>
                   </div>
-                  <div className="text-right text-nikah-deep font-bold" style={{ fontSize: 13 }}>
-                    {formatRupiahExact(Math.max(0, item.totalAmount - item.paidAmount))}
-                  </div>
-                </div>
-              )) : (
-                <p className="text-sm text-nikah-muted" style={{ margin: 0 }}>Belum ada vendor yang dicatat.</p>
+                )
+              }) : (
+                <p className="text-sm text-nikah-muted" style={{ margin: 0 }}>Belum ada vendor yang dicatat. Tambahkan vendor dari dashboard untuk melihat jadwal pembayaran.</p>
               )}
             </div>
           </section>
@@ -194,7 +246,7 @@ export default async function DashboardSummaryPage() {
           {note && (
             <section>
               <h2 className="text-xs font-extrabold uppercase tracking-[0.14em] text-nikah-mauve" style={{ margin: '0 0 10px' }}>Catatan</h2>
-              <p className="bg-nikah-bg text-nikah-text" style={{ borderRadius: 12, padding: 14, fontSize: 14, lineHeight: 1.6, whiteSpace: 'pre-wrap', margin: 0 }}>{note}</p>
+              <p className="bg-nikah-bg text-nikah-text" style={{ borderRadius: 12, padding: 14, fontSize: 14, lineHeight: 1.6, whiteSpace: 'pre-wrap', overflowWrap: 'anywhere', margin: 0 }}>{note}</p>
             </section>
           )}
         </div>
