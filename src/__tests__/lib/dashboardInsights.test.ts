@@ -1,4 +1,10 @@
-import { buildDashboardGuidance, buildDashboardStatusCopy, calculateDashboardFinance } from '@/lib/dashboardInsights'
+import {
+  buildDashboardGuidance,
+  buildDashboardStatusCopy,
+  calculateDashboardChecklistProgress,
+  calculateDashboardFinance,
+  calculateDashboardReadiness,
+} from '@/lib/dashboardInsights'
 import type { VendorPaymentInput } from '@/lib/dashboardActions'
 
 function payment(overrides: Partial<VendorPaymentInput> = {}): VendorPaymentInput {
@@ -120,5 +126,85 @@ describe('buildDashboardStatusCopy', () => {
     expect(copy.readinessTitle).not.toContain('aman')
     expect(copy.readinessCopy).toContain('Rp 960.000')
     expect(copy.countdownNote).toContain('jatuh tempo dalam 7 hari')
+  })
+})
+
+describe('calculateDashboardReadiness', () => {
+  it('downgrades a high initial score when urgent vendor bills are not covered by savings', () => {
+    const finance = calculateDashboardFinance({
+      totalBudget: 50_000_000,
+      savingsCollected: 40_000,
+      vendorPayments: [payment({ totalAmount: 1_000_000, paidAmount: 0 })],
+    })
+    const checklist = calculateDashboardChecklistProgress({
+      checkedIds: [],
+      customChecklistItems: [],
+      hiddenChecklistItemIds: [],
+    })
+
+    const readiness = calculateDashboardReadiness({
+      baseScore: 90,
+      finance,
+      reminders: {
+        overdueCount: 0,
+        dueSoonCount: 1,
+        unscheduledCount: 0,
+        urgentOutstanding: 1_000_000,
+      },
+      checklist,
+      days: 5,
+    })
+
+    expect(readiness.score).toBeLessThan(70)
+    expect(readiness.label).toBe('Moderate')
+    expect(readiness.adjustments.map(item => item.label)).toEqual(
+      expect.arrayContaining([
+        'Tabungan belum menutup tagihan vendor',
+        'Ada pembayaran dalam 7 hari',
+        'Checklist masih perlu dikejar',
+      ]),
+    )
+  })
+
+  it('caps the dashboard score as high risk when committed vendor cost exceeds the total budget', () => {
+    const finance = calculateDashboardFinance({
+      totalBudget: 100_000_000,
+      savingsCollected: 120_000_000,
+      vendorPayments: [payment({ totalAmount: 110_000_000, paidAmount: 110_000_000 })],
+    })
+    const checklist = calculateDashboardChecklistProgress({
+      checkedIds: [],
+      customChecklistItems: [],
+      hiddenChecklistItemIds: [],
+    })
+
+    const readiness = calculateDashboardReadiness({
+      baseScore: 95,
+      finance,
+      reminders: {
+        overdueCount: 0,
+        dueSoonCount: 0,
+        unscheduledCount: 0,
+        urgentOutstanding: 0,
+      },
+      checklist,
+      days: 180,
+    })
+
+    expect(readiness.score).toBe(39)
+    expect(readiness.label).toBe('High Risk')
+  })
+
+  it('counts visible default and custom checklist items in progress', () => {
+    const progress = calculateDashboardChecklistProgress({
+      checkedIds: ['tentukan-tanggal', 'custom-keluarga'],
+      customChecklistItems: [
+        { id: 'custom-keluarga', label: 'Konfirmasi keluarga', monthsBefore: 0 },
+      ],
+      hiddenChecklistItemIds: ['tentukan-budget'],
+    })
+
+    expect(progress.completed).toBe(2)
+    expect(progress.total).toBeGreaterThan(50)
   })
 })

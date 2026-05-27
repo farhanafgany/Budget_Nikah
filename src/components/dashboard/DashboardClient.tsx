@@ -13,7 +13,14 @@ import { SeserahanList } from '@/components/dashboard/SeserahanList'
 import { DashboardNote } from '@/components/dashboard/DashboardNote'
 import { VendorPaymentTracker } from '@/components/dashboard/VendorPaymentTracker'
 import { CurrentPriorities } from '@/components/dashboard/CurrentPriorities'
-import { buildDashboardGuidance, buildDashboardStatusCopy, type DashboardFinance, type DashboardInsight } from '@/lib/dashboardInsights'
+import {
+  buildDashboardGuidance,
+  buildDashboardStatusCopy,
+  calculateDashboardChecklistProgress,
+  calculateDashboardReadiness,
+  type DashboardFinance,
+  type DashboardInsight,
+} from '@/lib/dashboardInsights'
 import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
 import { formatRupiah, formatRupiahExact } from '@/lib/utils'
 import type { PressureLevel } from '@/lib/scoring'
@@ -291,7 +298,7 @@ function MobileScoreStrip({ score, label, copy }: { score: number; label: string
             {label}
           </span>
           <span className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.1em' }}>
-            Rencana budget
+            Score dashboard
           </span>
         </div>
         <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.4, margin: 0 }}>
@@ -313,7 +320,6 @@ export function DashboardClient({
   userName1,
   userName2,
   score,
-  label,
   days,
   alloc,
   totalBudget,
@@ -371,15 +377,6 @@ export function DashboardClient({
     setGreeting(getTimeGreeting())
   }, [])
 
-  useEffect(() => {
-    track('dashboard_viewed', {
-      score_band: scoreBand(score),
-      budget_bucket: bucketBudget(totalBudget),
-      guest_bucket: bucketGuests(guestCount),
-      has_wedding_date: Boolean(weddingDate),
-    })
-  }, [score, totalBudget, guestCount, weddingDate])
-
   // Sebaran aktual: agregasi total vendor per kategori
   const spendByCategory: Record<string, number> = {}
   liveVendorPayments.forEach(v => {
@@ -403,12 +400,37 @@ export function DashboardClient({
     allocation: alloc,
     weddingDate,
   })
+  const reminders = buildVendorReminderSummary(liveVendorPayments)
+  const checklistProgress = calculateDashboardChecklistProgress({
+    checkedIds: liveChecklistChecked,
+    customChecklistItems: liveCustomChecklistItems,
+    hiddenChecklistItemIds: liveHiddenChecklistItemIds,
+  })
+  const readiness = calculateDashboardReadiness({
+    baseScore: score,
+    finance: guidance.finance,
+    reminders,
+    checklist: checklistProgress,
+    days,
+  })
   const statusCopy = buildDashboardStatusCopy({
-    score,
+    score: readiness.score,
     days,
     finance: guidance.finance,
-    reminders: buildVendorReminderSummary(liveVendorPayments),
+    reminders,
   })
+  const readinessDeltaText = readiness.delta === 0
+    ? 'Score dinamis mengikuti data budget, pembayaran vendor, tabungan, dan checklist.'
+    : `Score ${readiness.delta > 0 ? 'naik' : 'turun'} ${Math.abs(readiness.delta)} poin dari score awal karena data dashboard terbaru.`
+
+  useEffect(() => {
+    track('dashboard_viewed', {
+      score_band: scoreBand(readiness.score),
+      budget_bucket: bucketBudget(totalBudget),
+      guest_bucket: bucketGuests(guestCount),
+      has_wedding_date: Boolean(weddingDate),
+    })
+  }, [readiness.score, totalBudget, guestCount, weddingDate])
 
   const OverviewCard = (
     <div
@@ -416,13 +438,13 @@ export function DashboardClient({
       style={{ borderRadius: 'var(--d-radius)', padding: 24, boxShadow: '0 12px 34px rgba(90, 30, 42, 0.055)' }}
     >
       <div className="flex items-center justify-between" style={{ marginBottom: 17 }}>
-        <CardTitle>Kelayakan Rencana Budget</CardTitle>
-        <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-bold ${LABEL_COLORS[label] ?? ''}`}>
-          {label}
+        <CardTitle>Kesiapan Dashboard</CardTitle>
+        <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-bold ${LABEL_COLORS[readiness.label] ?? ''}`}>
+          {readiness.label}
         </span>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] items-center" style={{ gap: 18 }}>
-        <ScoreRing score={score} />
+        <ScoreRing score={readiness.score} />
         <div>
           <h2
             className="text-nikah-text"
@@ -439,6 +461,9 @@ export function DashboardClient({
           </h2>
           <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: 0 }}>
             {statusCopy.readinessCopy}
+          </p>
+          <p className="text-nikah-muted" style={{ fontSize: 11.5, lineHeight: 1.45, margin: '8px 0 0' }}>
+            {readinessDeltaText} Checklist selesai {readiness.checklistProgress.percentage}%.
           </p>
         </div>
       </div>
@@ -606,7 +631,7 @@ export function DashboardClient({
         </div>
 
         <div className="lg:hidden" style={{ marginBottom: 20 }}>
-          <MobileScoreStrip score={score} label={label} copy={statusCopy.mobileReadinessCopy} />
+          <MobileScoreStrip score={readiness.score} label={readiness.label} copy={statusCopy.mobileReadinessCopy} />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr]" style={{ gap: 20, marginBottom: 22 }}>

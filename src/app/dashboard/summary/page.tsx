@@ -5,6 +5,7 @@ import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
 import { formatRupiahExact } from '@/lib/utils'
 import { buildSummaryChecklistPriorities } from '@/lib/dashboardSummary'
 import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
+import { calculateDashboardChecklistProgress, calculateDashboardFinance, calculateDashboardReadiness } from '@/lib/dashboardInsights'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
 import { PrintButton } from '@/components/dashboard/PrintButton'
 import { BrandLogo } from '@/components/ui/BrandLogo'
@@ -92,8 +93,7 @@ export default async function DashboardSummaryPage() {
 
   if (!profile) redirect('/dashboard')
 
-  const score = (profile.readiness_score as number | null) ?? 0
-  const label = score >= 70 ? 'Healthy' : score >= 40 ? 'Moderate' : 'High Risk'
+  const baseScore = (profile.readiness_score as number | null) ?? 0
   const totalBudget = (profile.total_budget as number | null) ?? 0
   const savingsCollected = (profile.savings_collected as number | null) ?? 0
   const weddingDate = (profile.wedding_date as string | null)
@@ -104,10 +104,26 @@ export default async function DashboardSummaryPage() {
   const hiddenChecklistItemIds = normalizeStringArray(profile.hidden_checklist_item_ids)
   const customChecklistItems = normalizeCustomChecklistItems(profile.custom_checklist_items)
   const vendorPayments = normalizeVendorPayments(profile.vendor_payments)
+  const finance = calculateDashboardFinance({
+    totalBudget,
+    savingsCollected,
+    vendorPayments,
+  })
   const vendorTotal = vendorPayments.reduce((sum, item) => sum + item.totalAmount, 0)
   const vendorPaid = vendorPayments.reduce((sum, item) => sum + item.paidAmount, 0)
   const vendorRemaining = Math.max(0, vendorTotal - vendorPaid)
   const vendorReminders = buildVendorReminderSummary(vendorPayments)
+  const readiness = calculateDashboardReadiness({
+    baseScore,
+    finance,
+    reminders: vendorReminders,
+    checklist: calculateDashboardChecklistProgress({
+      checkedIds: checklistChecked,
+      customChecklistItems,
+      hiddenChecklistItemIds,
+    }),
+    days,
+  })
   const urgentVendorCount = vendorReminders.overdueCount + vendorReminders.dueSoonCount
   const vendorAttentionText = urgentVendorCount > 0
     ? `${formatRupiahExact(vendorReminders.urgentOutstanding)} perlu perhatian: ada pembayaran terlambat atau jatuh tempo dalam 7 hari.`
@@ -155,8 +171,9 @@ export default async function DashboardSummaryPage() {
               </p>
             </div>
             <div className="text-right">
-              <div className="text-nikah-deep" style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontSize: 44, lineHeight: 1 }}>{score}</div>
-              <div className="text-xs font-extrabold uppercase tracking-[0.14em] text-nikah-mauve">{label}</div>
+              <div className="text-nikah-deep" style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontSize: 44, lineHeight: 1 }}>{readiness.score}</div>
+              <div className="text-xs font-extrabold uppercase tracking-[0.14em] text-nikah-mauve">{readiness.label}</div>
+              <div className="text-[10px] font-bold text-nikah-muted" style={{ marginTop: 4 }}>score dinamis</div>
             </div>
           </div>
 
