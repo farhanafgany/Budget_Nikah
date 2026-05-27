@@ -1,10 +1,10 @@
 'use client'
-import { useState, useTransition } from 'react'
+import { useEffect, useRef, useState, useTransition } from 'react'
 import { updateVendorPayments } from '@/app/dashboard/actions'
 import type { VendorPaymentInput } from '@/lib/dashboardActions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { track } from '@/lib/analytics'
-import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
+import { buildVendorReminderSummary, updateVendorDueDate } from '@/lib/dashboardReminders'
 import { formatRupiah } from '@/lib/utils'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
 import { ChevronDown, Plus, Trash2 } from 'lucide-react'
@@ -12,6 +12,10 @@ import { ChevronDown, Plus, Trash2 } from 'lucide-react'
 interface Props {
   initialPayments: VendorPaymentInput[]
   onSaved?: (payments: VendorPaymentInput[]) => void
+  focusRequest?: {
+    vendorId: string
+    requestId: number
+  } | null
 }
 
 const CATEGORIES = ['Venue', 'Catering', 'Dekorasi', 'MUA', 'Dokumentasi', 'Hiburan', 'Lainnya']
@@ -25,7 +29,7 @@ function formatInput(value: string | number) {
   return n ? new Intl.NumberFormat('id-ID').format(n) : ''
 }
 
-export function VendorPaymentTracker({ initialPayments, onSaved }: Props) {
+export function VendorPaymentTracker({ initialPayments, onSaved, focusRequest }: Props) {
   const [payments, setPayments] = useState<VendorPaymentInput[]>(initialPayments)
   const [formOpen, setFormOpen] = useState(false)
   const [draft, setDraft] = useState({
@@ -36,10 +40,13 @@ export function VendorPaymentTracker({ initialPayments, onSaved }: Props) {
     dueDate: '',
   })
   const [installmentDraft, setInstallmentDraft] = useState({ vendorId: '', amount: '' })
+  const [dueDateDraft, setDueDateDraft] = useState({ vendorId: '', dueDate: '' })
+  const [highlightedVendorId, setHighlightedVendorId] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
   const [retryPayload, setRetryPayload] = useState<VendorPaymentInput[] | null>(null)
   const [expandedAll, setExpandedAll] = useState(false)
+  const handledFocusRequest = useRef<number | null>(null)
   const handleActionError = useHandleActionError()
 
   const total = payments.reduce((sum, item) => sum + item.totalAmount, 0)
@@ -55,8 +62,39 @@ export function VendorPaymentTracker({ initialPayments, onSaved }: Props) {
         ? `${reminders.unscheduledCount} tanpa tanggal`
         : 'Terpantau'
 
+  useEffect(() => {
+    if (!focusRequest || handledFocusRequest.current === focusRequest.requestId) return
+
+    handledFocusRequest.current = focusRequest.requestId
+    const selectedIndex = payments.findIndex(item => item.id === focusRequest.vendorId)
+    const selectedVendor = payments[selectedIndex]
+    if (!selectedVendor) return
+
+    if (selectedIndex >= 4) setExpandedAll(true)
+    setHighlightedVendorId(selectedVendor.id)
+    if (getVendorPaymentStatus(selectedVendor).status === 'unscheduled') {
+      setDueDateDraft({ vendorId: selectedVendor.id, dueDate: '' })
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      document.getElementById(`vendor-payment-${selectedVendor.id}`)?.scrollIntoView({
+        behavior: 'smooth',
+        block: 'center',
+      })
+    })
+    const timeout = window.setTimeout(() => {
+      setHighlightedVendorId(current => current === selectedVendor.id ? null : current)
+    }, 2200)
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      window.clearTimeout(timeout)
+    }
+  }, [focusRequest, payments])
+
   function persist(next: VendorPaymentInput[]) {
     setPayments(next)
+    setHighlightedVendorId(null)
     setError('')
     setRetryPayload(null)
     startTransition(async () => {
@@ -164,6 +202,25 @@ export function VendorPaymentTracker({ initialPayments, onSaved }: Props) {
     setInstallmentDraft({ vendorId: '', amount: '' })
   }
 
+  function editDueDate(item: VendorPaymentInput) {
+    const currentDate = getVendorPaymentStatus(item).status === 'unscheduled' ? '' : item.dueDate
+    setDueDateDraft({ vendorId: item.id, dueDate: currentDate })
+  }
+
+  function saveDueDate(id: string) {
+    if (!dueDateDraft.dueDate) {
+      setError('Pilih tanggal pembayaran dulu.')
+      return
+    }
+
+    track('dashboard_feature_used', {
+      feature: 'vendor_tracker',
+      action: 'update_due_date',
+    })
+    persist(updateVendorDueDate(payments, id, dueDateDraft.dueDate))
+    setDueDateDraft({ vendorId: '', dueDate: '' })
+  }
+
   return (
     <div
       className="bg-white border"
@@ -248,14 +305,18 @@ export function VendorPaymentTracker({ initialPayments, onSaved }: Props) {
             ? Math.min(100, Math.round((item.paidAmount / item.totalAmount) * 100))
             : 0
           const status = getVendorPaymentStatus(item)
+          const hasScheduledDueDate = status.status !== 'unscheduled'
           return (
             <div
               key={item.id}
+              id={`vendor-payment-${item.id}`}
               className="group relative"
               style={{
                 padding: '11px 12px 11px 18px',
                 borderRadius: 12,
                 background: itemRemaining > 0 ? '#FBF0F0' : '#EFE3D9',
+                boxShadow: highlightedVendorId === item.id ? '0 0 0 2px rgba(192,120,136,0.62)' : 'none',
+                transition: 'box-shadow 160ms ease',
               }}
             >
               <span
@@ -276,7 +337,9 @@ export function VendorPaymentTracker({ initialPayments, onSaved }: Props) {
                   <div className="font-bold text-nikah-text truncate" style={{ fontSize: 14, lineHeight: 1.25 }}>{item.name}</div>
                   <div className="text-nikah-muted" style={{ fontSize: 11, marginTop: 3 }}>
                     {item.category}
-                    {item.dueDate ? ` · jatuh tempo ${new Date(item.dueDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}` : ''}
+                    {hasScheduledDueDate
+                      ? ` · jatuh tempo ${new Date(item.dueDate).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}`
+                      : ' · tanggal belum diatur'}
                   </div>
                 </div>
                 <div className="flex items-center" style={{ gap: 6, flexShrink: 0 }}>
@@ -304,6 +367,53 @@ export function VendorPaymentTracker({ initialPayments, onSaved }: Props) {
                   </button>
                 </div>
               </div>
+
+              {itemRemaining > 0 && dueDateDraft.vendorId !== item.id && (
+                <button
+                  type="button"
+                  onClick={() => editDueDate(item)}
+                  disabled={isPending}
+                  className="text-nikah-deep font-bold hover:underline underline-offset-2 disabled:opacity-50"
+                  style={{ border: 0, background: 'transparent', padding: '7px 0 0', fontSize: 11.5 }}
+                >
+                  {hasScheduledDueDate ? 'Ubah tanggal pembayaran' : '+ Atur tanggal pembayaran'}
+                </button>
+              )}
+
+              {itemRemaining > 0 && dueDateDraft.vendorId === item.id && (
+                <div className="grid bg-white" style={{ gap: 8, borderRadius: 12, padding: 10, marginTop: 9 }}>
+                  <label className="text-nikah-muted font-bold" style={{ fontSize: 11 }}>
+                    Tanggal pembayaran berikutnya
+                  </label>
+                  <input
+                    type="date"
+                    value={dueDateDraft.dueDate}
+                    onChange={(event) => setDueDateDraft({ vendorId: item.id, dueDate: event.target.value })}
+                    className="w-full border border-nikah-border bg-white text-nikah-text outline-none focus:border-nikah-mauve"
+                    style={{ borderRadius: 10, padding: '10px 11px', fontSize: 13 }}
+                    autoFocus
+                  />
+                  <div className="grid grid-cols-2" style={{ gap: 8 }}>
+                    <button
+                      type="button"
+                      onClick={() => saveDueDate(item.id)}
+                      disabled={isPending}
+                      className="bg-nikah-deep text-white font-bold disabled:opacity-50 active:scale-[0.97] active:brightness-90 transition-all"
+                      style={{ border: 0, borderRadius: 999, padding: '10px 12px', fontSize: 12 }}
+                    >
+                      {isPending ? 'Menyimpan...' : 'Simpan Tanggal'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setDueDateDraft({ vendorId: '', dueDate: '' })}
+                      className="text-nikah-deep font-bold active:scale-[0.97] active:brightness-90 transition-all"
+                      style={{ border: '1px solid var(--landing-border, var(--nikah-border))', background: 'transparent', borderRadius: 999, padding: '10px 12px', fontSize: 12 }}
+                    >
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <div style={{ background: 'rgba(255,255,255,0.68)', height: 5, borderRadius: 999, marginTop: 10, overflow: 'hidden' }}>
                 <div

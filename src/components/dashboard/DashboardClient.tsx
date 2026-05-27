@@ -352,6 +352,14 @@ export function DashboardClient({
   const [liveSavings, setLiveSavings] = useState(tabunganCollected)
   const [liveChecklistChecked, setLiveChecklistChecked] = useState(checklistChecked)
   const [liveVendorPayments, setLiveVendorPayments] = useState(vendorPayments)
+  const [vendorFocusRequest, setVendorFocusRequest] = useState<{ vendorId: string; requestId: number } | null>(null)
+
+  function handleSelectVendor(vendorId: string) {
+    setVendorFocusRequest(current => ({
+      vendorId,
+      requestId: (current?.requestId ?? 0) + 1,
+    }))
+  }
 
   async function handleResetPlan() {
     setIsResetting(true)
@@ -615,7 +623,12 @@ export function DashboardClient({
             <DashboardGuidanceCard insights={guidance.insights} />
           </div>
           <div>
-            <CurrentPriorities days={days} checkedIds={liveChecklistChecked} vendorPayments={liveVendorPayments} />
+            <CurrentPriorities
+              days={days}
+              checkedIds={liveChecklistChecked}
+              vendorPayments={liveVendorPayments}
+              onSelectVendor={handleSelectVendor}
+            />
           </div>
         </div>
 
@@ -629,7 +642,11 @@ export function DashboardClient({
             <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} onSaved={setLiveSavings} />
           </div>
           <div id="vendor-payments">
-            <VendorPaymentTracker initialPayments={vendorPayments} onSaved={setLiveVendorPayments} />
+            <VendorPaymentTracker
+              initialPayments={vendorPayments}
+              onSaved={setLiveVendorPayments}
+              focusRequest={vendorFocusRequest}
+            />
           </div>
         </div>
         {/* Baris 2: Catatan */}

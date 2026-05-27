@@ -23,6 +23,7 @@ interface Props {
   days: number | null
   checkedIds: string[]
   vendorPayments: VendorPaymentInput[]
+  onSelectVendor?: (vendorId: string) => void
 }
 
 interface PriorityItem {
@@ -34,6 +35,7 @@ interface PriorityItem {
   badge: string
   note: string
   href: string
+  vendorId?: string
 }
 
 function getFocusWindow(days: number | null) {
@@ -44,7 +46,7 @@ function getFocusWindow(days: number | null) {
   return { label: '12 Bulan Sebelum', monthsBefore: 12 }
 }
 
-export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
+export function CurrentPriorities({ days, checkedIds, vendorPayments, onSelectVendor }: Props) {
   const focus = getFocusWindow(days)
   const hasTimeline = days !== null
   const reminders = buildVendorReminderSummary(vendorPayments)
@@ -69,6 +71,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
         badge: 'Vendor',
         note: relLabel,
         href: '#vendor-payments',
+        vendorId: item.id,
       }
     })
 
@@ -168,6 +171,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
           <a
             key={item.id}
             href={item.href}
+            onClick={() => item.vendorId && onSelectVendor?.(item.vendorId)}
             className="flex items-center"
             style={{
               gap: 14,

@@ -1,4 +1,4 @@
-import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
+import { buildVendorReminderSummary, updateVendorDueDate } from '@/lib/dashboardReminders'
 import type { VendorPaymentInput } from '@/lib/dashboardActions'
 
 function payment(overrides: Partial<VendorPaymentInput>): VendorPaymentInput {
@@ -40,5 +40,20 @@ describe('buildVendorReminderSummary', () => {
     expect(summary.overdueCount).toBe(0)
     expect(summary.dueSoonCount).toBe(0)
     expect(summary.urgentOutstanding).toBe(0)
+  })
+})
+
+describe('updateVendorDueDate', () => {
+  it('updates only the selected vendor deadline', () => {
+    const original = [
+      payment({ id: 'venue', dueDate: '' }),
+      payment({ id: 'catering', dueDate: '2026-06-01' }),
+    ]
+
+    const updated = updateVendorDueDate(original, 'venue', '2026-06-07')
+
+    expect(updated[0].dueDate).toBe('2026-06-07')
+    expect(updated[1].dueDate).toBe('2026-06-01')
+    expect(original[0].dueDate).toBe('')
   })
 })

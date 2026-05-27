@@ -37,3 +37,13 @@ export function buildVendorReminderSummary(
 
   return summary
 }
+
+export function updateVendorDueDate(
+  payments: VendorPaymentInput[],
+  vendorId: string,
+  dueDate: string,
+): VendorPaymentInput[] {
+  return payments.map(payment => payment.id === vendorId
+    ? { ...payment, dueDate }
+    : payment)
+}
