@@ -1,9 +1,11 @@
 import { CHECKLIST_ITEMS, type ChecklistItem, type ChecklistTimeline } from './checklistItems'
+import type { CustomChecklistInput } from './dashboardActions'
 
 interface SummaryChecklistOptions {
   daysUntilWedding: number | null
   checkedIds: string[]
   hiddenIds: string[]
+  customItems?: CustomChecklistInput[]
   limit?: number
 }
 
@@ -19,11 +21,16 @@ export function buildSummaryChecklistPriorities({
   daysUntilWedding,
   checkedIds,
   hiddenIds,
+  customItems = [],
   limit = 5,
 }: SummaryChecklistOptions): ChecklistItem[] {
   if (daysUntilWedding === null) return []
 
-  const pendingItems = CHECKLIST_ITEMS.filter(item =>
+  const personalizedItems: ChecklistItem[] = customItems.map(item => ({
+    ...item,
+    category: 'Tugas pribadi',
+  }))
+  const pendingItems = [...personalizedItems, ...CHECKLIST_ITEMS].filter(item =>
     !checkedIds.includes(item.id) && !hiddenIds.includes(item.id))
   const focusWindow = getFocusWindow(daysUntilWedding)
   const currentItems = pendingItems.filter(item => item.monthsBefore === focusWindow)

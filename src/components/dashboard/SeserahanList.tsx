@@ -44,6 +44,7 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
   const [localHiddenDefaultIds, setLocalHiddenDefaultIds] = useState<string[]>(hiddenDefaultIds)
   const [draftLabel, setDraftLabel] = useState('')
   const [expanded, setExpanded] = useState(false)
+  const [hiddenItemsOpen, setHiddenItemsOpen] = useState(false)
   const [formOpen, setFormOpen] = useState(false)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
@@ -54,6 +55,7 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
       .filter(item => !localHiddenDefaultIds.includes(item.id))
       .map(item => ({ ...item, isCustom: false })),
   ]
+  const hiddenDefaultItems = SESERAHAN_ITEMS.filter(item => localHiddenDefaultIds.includes(item.id))
   const totalDone = localChecked.length
   const totalItems = allItems.length
   const totalProgress = totalItems > 0 ? Math.round((totalDone / totalItems) * 100) : 0
@@ -144,6 +146,23 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
         setLocalHiddenDefaultIds(localHiddenDefaultIds)
         setLocalChecked(localChecked)
         setError('Item belum terhapus. Coba lagi.')
+      }
+    })
+  }
+
+  function handleRestoreDefault(id: string) {
+    const nextHidden = localHiddenDefaultIds.filter(hiddenId => hiddenId !== id)
+    track('dashboard_feature_used', {
+      feature: 'seserahan',
+      action: 'restore_default',
+    })
+    setLocalHiddenDefaultIds(nextHidden)
+    setError('')
+    startTransition(async () => {
+      const result = await updateHiddenSeserahanItems(nextHidden)
+      if (result.error) {
+        setLocalHiddenDefaultIds(localHiddenDefaultIds)
+        setError('Item belum dipulihkan. Coba lagi.')
       }
     })
   }
@@ -337,6 +356,45 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
             }}
           />
         </button>
+      )}
+
+      {hiddenDefaultItems.length > 0 && (
+        <>
+          <button
+            type="button"
+            aria-expanded={hiddenItemsOpen}
+            onClick={() => setHiddenItemsOpen(value => !value)}
+            className="w-full inline-flex items-center justify-center text-nikah-muted font-bold transition-all hover:bg-nikah-bg hover:text-nikah-deep"
+            style={{
+              gap: 6,
+              marginTop: 8,
+              padding: '9px 14px',
+              border: '1px dashed var(--landing-border, var(--nikah-border))',
+              borderRadius: 999,
+              fontSize: 12,
+              background: 'transparent',
+            }}
+          >
+            {hiddenItemsOpen ? 'Tutup item tersembunyi' : `Lihat item tersembunyi (${hiddenDefaultItems.length})`}
+          </button>
+          {hiddenItemsOpen && (
+            <div className="bg-nikah-bg rounded-xl" style={{ marginTop: 8, padding: '8px 10px' }}>
+              {hiddenDefaultItems.map(item => (
+                <div key={item.id} className="flex items-center justify-between" style={{ gap: 10, padding: '7px 4px' }}>
+                  <p className="text-nikah-text" style={{ fontSize: 12, margin: 0 }}>{item.label}</p>
+                  <button
+                    type="button"
+                    onClick={() => handleRestoreDefault(item.id)}
+                    className="flex-shrink-0 text-xs font-bold text-nikah-deep hover:underline underline-offset-2"
+                    aria-label={`Pulihkan ${item.label}`}
+                  >
+                    Pulihkan
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   )

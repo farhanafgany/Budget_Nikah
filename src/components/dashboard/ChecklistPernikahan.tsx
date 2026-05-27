@@ -32,6 +32,7 @@ interface Props {
   customItems?: CustomChecklistInput[]
   hiddenDefaultIds?: string[]
   onSaved?: (checkedIds: string[]) => void
+  onCustomItemsSaved?: (customItems: CustomChecklistInput[]) => void
   onHiddenItemsSaved?: (hiddenDefaultIds: string[]) => void
   focusRequest?: {
     checklistId: string
@@ -69,6 +70,7 @@ export function ChecklistPernikahan({
   customItems = [],
   hiddenDefaultIds = [],
   onSaved,
+  onCustomItemsSaved,
   onHiddenItemsSaved,
   focusRequest,
 }: Props) {
@@ -80,6 +82,7 @@ export function ChecklistPernikahan({
   const currentTimeline = getDefaultTimeline(days)
   const [active, setActive] = useState<ChecklistTimeline>(() => getDefaultTimeline(days))
   const [expanded, setExpanded] = useState(false)
+  const [hiddenItemsOpen, setHiddenItemsOpen] = useState(false)
   const [highlightedItemId, setHighlightedItemId] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [retryFn, setRetryFn] = useState<(() => void) | null>(null)
@@ -91,6 +94,7 @@ export function ChecklistPernikahan({
   localCheckedRef.current = localChecked
 
   const visibleDefaultItems = CHECKLIST_ITEMS.filter(i => !localHiddenIds.includes(i.id))
+  const hiddenDefaultItems = CHECKLIST_ITEMS.filter(i => localHiddenIds.includes(i.id))
   const totalDone = localChecked.filter(id => {
     const isDefault = CHECKLIST_ITEMS.some(i => i.id === id)
     return !isDefault || !localHiddenIds.includes(id)
@@ -110,12 +114,12 @@ export function ChecklistPernikahan({
     if (!focusRequest || handledFocusRequest.current === focusRequest.requestId) return
 
     handledFocusRequest.current = focusRequest.requestId
-    const selectedItem = CHECKLIST_ITEMS.find(item =>
-      item.id === focusRequest.checklistId && !localHiddenIds.includes(item.id))
+    const selectedItem = [...visibleDefaultItems, ...localCustomItems].find(item =>
+      item.id === focusRequest.checklistId)
     if (!selectedItem) return
 
-    const phaseItems = CHECKLIST_ITEMS.filter(item =>
-      item.monthsBefore === selectedItem.monthsBefore && !localHiddenIds.includes(item.id))
+    const phaseItems = visibleDefaultItems.filter(item =>
+      item.monthsBefore === selectedItem.monthsBefore)
     const selectedIndex = phaseItems.findIndex(item => item.id === selectedItem.id)
 
     setActive(selectedItem.monthsBefore)
@@ -136,7 +140,7 @@ export function ChecklistPernikahan({
       window.cancelAnimationFrame(frame)
       window.clearTimeout(timeout)
     }
-  }, [focusRequest, localHiddenIds])
+  }, [focusRequest, localHiddenIds, localCustomItems, visibleDefaultItems])
 
   const PHASE_CELEBRATION: Record<ChecklistTimeline, string> = {
     12: 'Fondasi sudah kuat. Langkah awal yang paling penting sudah terlewati.',
@@ -211,6 +215,23 @@ export function ChecklistPernikahan({
     })
   }
 
+  function handleRestoreDefault(id: string) {
+    const nextHidden = localHiddenIds.filter(hiddenId => hiddenId !== id)
+    track('dashboard_feature_used', { feature: 'checklist', action: 'restore_default' })
+    setLocalHiddenIds(nextHidden)
+    setError('')
+    startTransition(async () => {
+      const result = await updateHiddenChecklistItems(nextHidden)
+      const err = handleActionError(result.error)
+      if (err) {
+        setLocalHiddenIds(localHiddenIds)
+        setError('Item belum dipulihkan. Coba lagi.')
+      } else {
+        onHiddenItemsSaved?.(nextHidden)
+      }
+    })
+  }
+
   function handleAddCustom() {
     const label = draftLabel.trim()
     if (!label) return
@@ -231,6 +252,8 @@ export function ChecklistPernikahan({
       if (err) {
         setLocalCustomItems(localCustomItems)
         setError('Item custom belum tersimpan. Coba lagi.')
+      } else {
+        onCustomItemsSaved?.(nextItems)
       }
     })
   }
@@ -254,6 +277,7 @@ export function ChecklistPernikahan({
         setError('Item belum terhapus. Coba lagi.')
       } else {
         onSaved?.(nextChecked)
+        onCustomItemsSaved?.(nextItems)
       }
     })
   }
@@ -309,8 +333,12 @@ export function ChecklistPernikahan({
         }}
       >
         {TIMELINES.map(timeline => {
-          const doneCnt = CHECKLIST_ITEMS.filter(i => i.monthsBefore === timeline && localChecked.includes(i.id)).length
-          const totalCnt = CHECKLIST_ITEMS.filter(i => i.monthsBefore === timeline).length
+          const phaseItems = [
+            ...visibleDefaultItems.filter(i => i.monthsBefore === timeline),
+            ...localCustomItems.filter(i => i.monthsBefore === timeline),
+          ]
+          const doneCnt = phaseItems.filter(i => localChecked.includes(i.id)).length
+          const totalCnt = phaseItems.length
           const isActive = active === timeline
           return (
             <button
@@ -482,11 +510,16 @@ export function ChecklistPernikahan({
             return (
               <div
                 key={item.id}
+                id={`checklist-item-${item.id}`}
                 className="group flex items-center"
                 style={{
                   gap: 12,
                   padding: '11px 8px',
                   borderBottom: idx < activeCustomItems.length - 1 ? '1px solid var(--nikah-border)' : 'none',
+                  borderRadius: 10,
+                  background: highlightedItemId === item.id ? 'rgba(248,225,231,0.62)' : 'transparent',
+                  boxShadow: highlightedItemId === item.id ? '0 0 0 2px rgba(192,120,136,0.45)' : 'none',
+                  transition: 'background 160ms ease, box-shadow 160ms ease',
                 }}
               >
                 <button
@@ -577,6 +610,48 @@ export function ChecklistPernikahan({
       >
         {formOpen ? 'Tutup' : '+ Tambah item sendiri'}
       </button>
+
+      {hiddenDefaultItems.length > 0 && (
+        <>
+          <button
+            type="button"
+            aria-expanded={hiddenItemsOpen}
+            onClick={() => setHiddenItemsOpen(value => !value)}
+            className="w-full inline-flex items-center justify-center text-nikah-muted font-bold transition-all hover:bg-nikah-bg hover:text-nikah-deep"
+            style={{
+              gap: 6,
+              marginTop: 8,
+              padding: '9px 14px',
+              border: '1px dashed var(--landing-border, var(--nikah-border))',
+              borderRadius: 999,
+              fontSize: 12,
+              background: 'transparent',
+            }}
+          >
+            {hiddenItemsOpen ? 'Tutup item tersembunyi' : `Lihat item tersembunyi (${hiddenDefaultItems.length})`}
+          </button>
+          {hiddenItemsOpen && (
+            <div className="bg-nikah-bg rounded-xl" style={{ marginTop: 8, padding: '8px 10px' }}>
+              {hiddenDefaultItems.map(item => (
+                <div key={item.id} className="flex items-center justify-between" style={{ gap: 10, padding: '7px 4px' }}>
+                  <div className="min-w-0">
+                    <p className="text-nikah-text" style={{ fontSize: 12, margin: 0 }}>{item.label}</p>
+                    <p className="text-nikah-muted" style={{ fontSize: 10, margin: '2px 0 0' }}>{TIMELINE_LABELS[item.monthsBefore]}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => handleRestoreDefault(item.id)}
+                    className="flex-shrink-0 text-xs font-bold text-nikah-deep hover:underline underline-offset-2"
+                    aria-label={`Pulihkan ${item.label}`}
+                  >
+                    Pulihkan
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }

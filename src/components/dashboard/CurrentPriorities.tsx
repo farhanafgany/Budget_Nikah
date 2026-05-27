@@ -1,4 +1,4 @@
-import type { VendorPaymentInput } from '@/lib/dashboardActions'
+import type { CustomChecklistInput, VendorPaymentInput } from '@/lib/dashboardActions'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
 import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
 import { formatRupiahExact } from '@/lib/utils'
@@ -23,6 +23,7 @@ interface Props {
   days: number | null
   checkedIds: string[]
   vendorPayments: VendorPaymentInput[]
+  customChecklistItems?: CustomChecklistInput[]
   hiddenChecklistItemIds?: string[]
   onSelectVendor?: (vendorId: string) => void
   onSelectChecklist?: (checklistId: string) => void
@@ -53,6 +54,7 @@ export function CurrentPriorities({
   days,
   checkedIds,
   vendorPayments,
+  customChecklistItems = [],
   hiddenChecklistItemIds = [],
   onSelectVendor,
   onSelectChecklist,
@@ -85,39 +87,73 @@ export function CurrentPriorities({
       }
     })
 
-  const checklistItems: PriorityItem[] = (hasTimeline ? CHECKLIST_ITEMS : [])
-    .filter(item =>
-      item.monthsBefore === focus.monthsBefore &&
-      !checkedIds.includes(item.id) &&
-      !hiddenChecklistItemIds.includes(item.id))
-    .slice(0, 5)
-    .map((item, index) => ({
-      id: `checklist-${item.id}`,
-      title: item.label,
-      meta: `${item.category} · ${focus.label}`,
-      urgency: 30 + index,
-      color: 'var(--landing-mauve, var(--nikah-mauve))',
-      badge: 'Checklist',
-      note: 'Minggu ini',
-      href: '#checklist',
-      checklistId: item.id,
-    }))
+  const checklistItems: PriorityItem[] = [
+    ...(hasTimeline ? customChecklistItems : [])
+      .filter(item =>
+        item.monthsBefore === focus.monthsBefore &&
+        !checkedIds.includes(item.id))
+      .map((item, index) => ({
+        id: `checklist-${item.id}`,
+        title: item.label,
+        meta: `Tugas pribadi · ${focus.label}`,
+        urgency: 25 + index,
+        color: 'var(--landing-mauve, var(--nikah-mauve))',
+        badge: 'Checklist',
+        note: 'Minggu ini',
+        href: '#checklist',
+        checklistId: item.id,
+      })),
+    ...(hasTimeline ? CHECKLIST_ITEMS : [])
+      .filter(item =>
+        item.monthsBefore === focus.monthsBefore &&
+        !checkedIds.includes(item.id) &&
+        !hiddenChecklistItemIds.includes(item.id))
+      .map((item, index) => ({
+        id: `checklist-${item.id}`,
+        title: item.label,
+        meta: `${item.category} · ${focus.label}`,
+        urgency: 30 + index,
+        color: 'var(--landing-mauve, var(--nikah-mauve))',
+        badge: 'Checklist',
+        note: 'Minggu ini',
+        href: '#checklist',
+        checklistId: item.id,
+      })),
+  ].slice(0, 5)
 
-  const fallbackChecklist: PriorityItem[] = (hasTimeline ? CHECKLIST_ITEMS : [])
-    .filter(item => !checkedIds.includes(item.id) && !hiddenChecklistItemIds.includes(item.id))
-    .slice(0, 5)
-    .map((item, index) => ({
-      id: `fallback-${item.id}`,
-      title: item.label,
-      meta: `${item.category} · prioritas berikutnya`,
-      urgency: 50 + index,
-      color: 'var(--landing-mauve, var(--nikah-mauve))',
-      badge: 'Checklist',
-      note: 'Berikutnya',
-      href: '#checklist',
-      checklistId: item.id,
-    }))
+  const fallbackChecklist: PriorityItem[] = [
+    ...(hasTimeline ? customChecklistItems : [])
+      .filter(item => !checkedIds.includes(item.id))
+      .map((item, index) => ({
+        id: `fallback-${item.id}`,
+        title: item.label,
+        meta: 'Tugas pribadi · prioritas berikutnya',
+        urgency: 45 + index,
+        color: 'var(--landing-mauve, var(--nikah-mauve))',
+        badge: 'Checklist',
+        note: 'Berikutnya',
+        href: '#checklist',
+        checklistId: item.id,
+      })),
+    ...(hasTimeline ? CHECKLIST_ITEMS : [])
+      .filter(item => !checkedIds.includes(item.id) && !hiddenChecklistItemIds.includes(item.id))
+      .map((item, index) => ({
+        id: `fallback-${item.id}`,
+        title: item.label,
+        meta: `${item.category} · prioritas berikutnya`,
+        urgency: 50 + index,
+        color: 'var(--landing-mauve, var(--nikah-mauve))',
+        badge: 'Checklist',
+        note: 'Berikutnya',
+        href: '#checklist',
+        checklistId: item.id,
+      })),
+  ].slice(0, 5)
 
+  /*
+   * A personally added task is shown before template suggestions in the same
+   * timeline because it reflects a decision the couple explicitly made.
+   */
   const sourceChecklist = checklistItems.length > 0 ? checklistItems : fallbackChecklist
   const items = [...vendorItems, ...sourceChecklist]
     .sort((a, b) => a.urgency - b.urgency)

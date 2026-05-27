@@ -44,4 +44,25 @@ describe('buildSummaryChecklistPriorities', () => {
 
     expect(priorities).toEqual([])
   })
+
+  it('includes a custom task from the current timeline before template suggestions', () => {
+    const priorities = buildSummaryChecklistPriorities({
+      daysUntilWedding: 6,
+      checkedIds: [],
+      hiddenIds: [],
+      customItems: [
+        { id: 'custom-hubungi-penghulu', label: 'Hubungi penghulu keluarga', monthsBefore: 0 },
+      ],
+      limit: 1,
+    })
+
+    expect(priorities).toEqual([
+      {
+        id: 'custom-hubungi-penghulu',
+        label: 'Hubungi penghulu keluarga',
+        category: 'Tugas pribadi',
+        monthsBefore: 0,
+      },
+    ])
+  })
 })

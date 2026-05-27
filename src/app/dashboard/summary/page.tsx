@@ -8,7 +8,7 @@ import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
 import { PrintButton } from '@/components/dashboard/PrintButton'
 import { BrandLogo } from '@/components/ui/BrandLogo'
-import type { VendorPaymentInput } from '@/lib/dashboardActions'
+import type { CustomChecklistInput, VendorPaymentInput } from '@/lib/dashboardActions'
 
 interface AllocEntry {
   percentage: number
@@ -53,6 +53,21 @@ function normalizeStringArray(value: unknown): string[] {
     : []
 }
 
+function normalizeCustomChecklistItems(value: unknown): CustomChecklistInput[] {
+  const validMonths = new Set([0, 1, 3, 6, 12])
+  if (!Array.isArray(value)) return []
+  return value
+    .filter((item): item is Record<string, unknown> => typeof item === 'object' && item !== null)
+    .map(item => ({
+      id: typeof item.id === 'string' ? item.id : crypto.randomUUID(),
+      label: typeof item.label === 'string' ? item.label : '',
+      monthsBefore: (validMonths.has(item.monthsBefore as number)
+        ? item.monthsBefore
+        : 12) as CustomChecklistInput['monthsBefore'],
+    }))
+    .filter(item => item.label)
+}
+
 export default async function DashboardSummaryPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -87,6 +102,7 @@ export default async function DashboardSummaryPage() {
   const monthlySavings = calculateMonthlySavings(totalBudget, savingsCollected, months)
   const checklistChecked = normalizeStringArray(profile.checklist_checked)
   const hiddenChecklistItemIds = normalizeStringArray(profile.hidden_checklist_item_ids)
+  const customChecklistItems = normalizeCustomChecklistItems(profile.custom_checklist_items)
   const vendorPayments = normalizeVendorPayments(profile.vendor_payments)
   const vendorTotal = vendorPayments.reduce((sum, item) => sum + item.totalAmount, 0)
   const vendorPaid = vendorPayments.reduce((sum, item) => sum + item.paidAmount, 0)
@@ -111,6 +127,7 @@ export default async function DashboardSummaryPage() {
     daysUntilWedding: days,
     checkedIds: checklistChecked,
     hiddenIds: hiddenChecklistItemIds,
+    customItems: customChecklistItems,
   })
   const note = (profile.dashboard_note as string | null) ?? ''
 

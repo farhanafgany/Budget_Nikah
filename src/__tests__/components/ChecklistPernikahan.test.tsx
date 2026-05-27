@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { updateHiddenChecklistItems } from '@/app/dashboard/actions'
 import { ChecklistPernikahan } from '@/components/dashboard/ChecklistPernikahan'
 
 jest.mock('@/app/dashboard/actions', () => ({
@@ -16,11 +17,18 @@ jest.mock('@/lib/analytics', () => ({
 }))
 
 describe('ChecklistPernikahan priority focus', () => {
+  const mockedUpdateHiddenChecklistItems = jest.mocked(updateHiddenChecklistItems)
+
   beforeAll(() => {
     Object.defineProperty(Element.prototype, 'scrollIntoView', {
       configurable: true,
       value: jest.fn(),
     })
+  })
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    mockedUpdateHiddenChecklistItems.mockResolvedValue({})
   })
 
   it('opens the requested timeline and expands a focused task outside the preview', async () => {
@@ -34,5 +42,27 @@ describe('ChecklistPernikahan priority focus', () => {
 
     expect(await screen.findByText('Pilih parfum untuk hari H')).toBeInTheDocument()
     expect(screen.getByRole('tab', { name: '6 bln' })).toHaveAttribute('aria-selected', 'true')
+  })
+
+  it('allows a hidden default item to be restored', async () => {
+    const onHiddenItemsSaved = jest.fn()
+
+    render(
+      <ChecklistPernikahan
+        checkedIds={[]}
+        days={3}
+        hiddenDefaultIds={['packing-honeymoon']}
+        onHiddenItemsSaved={onHiddenItemsSaved}
+      />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'Lihat item tersembunyi (1)' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Pulihkan Packing untuk bulan madu' }))
+
+    await waitFor(() => {
+      expect(mockedUpdateHiddenChecklistItems).toHaveBeenCalledWith([])
+      expect(onHiddenItemsSaved).toHaveBeenCalledWith([])
+    })
+    expect(screen.getByText('Packing untuk bulan madu')).toBeInTheDocument()
   })
 })

@@ -32,4 +32,25 @@ describe('CurrentPriorities checklist actions', () => {
 
     expect(onSelectChecklist).toHaveBeenCalledWith('packing-honeymoon')
   })
+
+  it('promotes an unfinished custom checklist item in the current timeline', () => {
+    const onSelectChecklist = jest.fn()
+
+    render(
+      <CurrentPriorities
+        days={3}
+        checkedIds={[]}
+        vendorPayments={[]}
+        customChecklistItems={[
+          { id: 'custom-konfirmasi-keluarga', label: 'Konfirmasi susunan keluarga', monthsBefore: 0 },
+        ]}
+        onSelectChecklist={onSelectChecklist}
+      />,
+    )
+
+    fireEvent.click(screen.getByText('Konfirmasi susunan keluarga'))
+
+    expect(screen.getByText(/Tugas pribadi/)).toBeInTheDocument()
+    expect(onSelectChecklist).toHaveBeenCalledWith('custom-konfirmasi-keluarga')
+  })
 })

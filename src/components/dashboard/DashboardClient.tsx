@@ -337,6 +337,7 @@ export function DashboardClient({
   const [isResetting, setIsResetting] = useState(false)
   const [liveSavings, setLiveSavings] = useState(tabunganCollected)
   const [liveChecklistChecked, setLiveChecklistChecked] = useState(checklistChecked)
+  const [liveCustomChecklistItems, setLiveCustomChecklistItems] = useState(customChecklistItems)
   const [liveHiddenChecklistItemIds, setLiveHiddenChecklistItemIds] = useState(hiddenChecklistItemIds)
   const [liveVendorPayments, setLiveVendorPayments] = useState(vendorPayments)
   const [vendorFocusRequest, setVendorFocusRequest] = useState<{ vendorId: string; requestId: number } | null>(null)
@@ -617,6 +618,7 @@ export function DashboardClient({
               days={days}
               checkedIds={liveChecklistChecked}
               vendorPayments={liveVendorPayments}
+              customChecklistItems={liveCustomChecklistItems}
               hiddenChecklistItemIds={liveHiddenChecklistItemIds}
               onSelectVendor={handleSelectVendor}
               onSelectChecklist={handleSelectChecklist}
@@ -658,6 +660,7 @@ export function DashboardClient({
                 customItems={customChecklistItems}
                 hiddenDefaultIds={hiddenChecklistItemIds}
                 onSaved={setLiveChecklistChecked}
+                onCustomItemsSaved={setLiveCustomChecklistItems}
                 onHiddenItemsSaved={setLiveHiddenChecklistItemIds}
                 focusRequest={checklistFocusRequest}
               />
