@@ -642,7 +642,9 @@ export function DashboardClient({
           <span className="hidden lg:inline">Tugas &amp; Referensi</span>
         </p>
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1.1fr_0.95fr]" style={{ gap: 20, alignItems: 'start' }}>
-          <ChecklistPernikahan checkedIds={checklistChecked} days={days} customItems={customChecklistItems} hiddenDefaultIds={hiddenChecklistItemIds} onSaved={setLiveChecklistChecked} />
+          <div id="checklist">
+            <ChecklistPernikahan checkedIds={checklistChecked} days={days} customItems={customChecklistItems} hiddenDefaultIds={hiddenChecklistItemIds} onSaved={setLiveChecklistChecked} />
+          </div>
           <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
           <div id="allocation">{AllocationCard}</div>
         </div>

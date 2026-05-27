@@ -4,6 +4,7 @@ import { updateVendorPayments } from '@/app/dashboard/actions'
 import type { VendorPaymentInput } from '@/lib/dashboardActions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { track } from '@/lib/analytics'
+import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
 import { formatRupiah } from '@/lib/utils'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
 import { ChevronDown, Plus, Trash2 } from 'lucide-react'
@@ -45,10 +46,14 @@ export function VendorPaymentTracker({ initialPayments, onSaved }: Props) {
   const paid = payments.reduce((sum, item) => sum + item.paidAmount, 0)
   const remaining = Math.max(0, total - paid)
   const visiblePayments = expandedAll ? payments : payments.slice(0, 4)
-  const attentionCount = payments.filter(item => {
-    const status = getVendorPaymentStatus(item)
-    return status.status === 'overdue' || status.status === 'dueSoon'
-  }).length
+  const reminders = buildVendorReminderSummary(payments)
+  const attentionLabel = reminders.overdueCount > 0
+    ? `${reminders.overdueCount} terlambat`
+    : reminders.dueSoonCount > 0
+      ? `${reminders.dueSoonCount} segera`
+      : reminders.unscheduledCount > 0
+        ? `${reminders.unscheduledCount} tanpa tanggal`
+        : 'Terpantau'
 
   function persist(next: VendorPaymentInput[]) {
     setPayments(next)
@@ -177,7 +182,7 @@ export function VendorPaymentTracker({ initialPayments, onSaved }: Props) {
           className="text-xs font-extrabold rounded-full"
           style={{ color: 'var(--nikah-deep)', background: 'var(--nikah-bg)', padding: '5px 10px' }}
         >
-          {attentionCount > 0 ? `${attentionCount} jatuh tempo` : 'Terpantau'}
+          {attentionLabel}
         </span>
       </div>
 

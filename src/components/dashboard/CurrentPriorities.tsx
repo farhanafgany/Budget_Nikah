@@ -1,7 +1,9 @@
 import type { VendorPaymentInput } from '@/lib/dashboardActions'
 import { CHECKLIST_ITEMS } from '@/lib/checklistItems'
+import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
+import { formatRupiahExact } from '@/lib/utils'
 import { getVendorPaymentStatus } from '@/lib/vendorPayments'
-import { Circle } from 'lucide-react'
+import { ArrowRight, Circle } from 'lucide-react'
 
 function getRelativeDateLabel(dateStr: string): string {
   const due = new Date(dateStr)
@@ -31,6 +33,7 @@ interface PriorityItem {
   color: string
   badge: string
   note: string
+  href: string
 }
 
 function getFocusWindow(days: number | null) {
@@ -44,23 +47,28 @@ function getFocusWindow(days: number | null) {
 export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
   const focus = getFocusWindow(days)
   const hasTimeline = days !== null
+  const reminders = buildVendorReminderSummary(vendorPayments)
+  const urgentCount = reminders.overdueCount + reminders.dueSoonCount
 
   const vendorItems: PriorityItem[] = vendorPayments
-    .filter(item => item.totalAmount > item.paidAmount && item.dueDate)
+    .filter(item => item.totalAmount > item.paidAmount)
     .map(item => {
       const status = getVendorPaymentStatus(item)
-      const dueDate = new Date(item.dueDate)
-      const relLabel = getRelativeDateLabel(item.dueDate)
       const isOverdue = status.status === 'overdue'
       const isDueSoon = status.status === 'dueSoon'
+      const isUnscheduled = status.status === 'unscheduled'
+      const dueDate = isUnscheduled ? null : new Date(item.dueDate)
+      const relLabel = dueDate ? getRelativeDateLabel(item.dueDate) : 'Belum dijadwalkan'
+      const remaining = Math.max(0, item.totalAmount - item.paidAmount)
       return {
         id: `vendor-${item.id}`,
-        title: `Bayar ${item.name}`,
-        meta: `${item.category} · ${dueDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}`,
-        urgency: status.daysUntilDue ?? 999,
+        title: isUnscheduled ? `Atur deadline ${item.name}` : `Bayar ${item.name}`,
+        meta: `${formatRupiahExact(remaining)} tersisa · ${item.category}${dueDate ? ` · ${dueDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}` : ''}`,
+        urgency: isUnscheduled ? 15 : status.daysUntilDue ?? 999,
         color: isOverdue ? '#B42318' : isDueSoon ? '#B98C54' : 'var(--landing-mauve, var(--nikah-mauve))',
         badge: 'Vendor',
         note: relLabel,
+        href: '#vendor-payments',
       }
     })
 
@@ -75,6 +83,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
       color: 'var(--landing-mauve, var(--nikah-mauve))',
       badge: 'Checklist',
       note: 'Minggu ini',
+      href: '#checklist',
     }))
 
   const fallbackChecklist: PriorityItem[] = (hasTimeline ? CHECKLIST_ITEMS : [])
@@ -88,6 +97,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
       color: 'var(--landing-mauve, var(--nikah-mauve))',
       badge: 'Checklist',
       note: 'Berikutnya',
+      href: '#checklist',
     }))
 
   const sourceChecklist = checklistItems.length > 0 ? checklistItems : fallbackChecklist
@@ -111,7 +121,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
       <div style={{ padding: '20px 22px 14px' }}>
         <div className="flex items-center justify-between" style={{ gap: 18, marginBottom: 10 }}>
           <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: 0 }}>
-            Fokus Minggu Ini
+            Prioritas Sekarang
           </p>
           <span
             className="text-xs font-extrabold rounded-full"
@@ -121,17 +131,43 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
           </span>
         </div>
         <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: 0 }}>
-          {hasTimeline
-            ? 'Mulai dari yang paling dekat. Tidak semua harus selesai sekarang.'
+          {reminders.overdueCount > 0
+            ? `${reminders.overdueCount} pembayaran terlambat perlu ditangani lebih dulu.`
+            : reminders.dueSoonCount > 0
+              ? `${formatRupiahExact(reminders.urgentOutstanding)} perlu disiapkan untuk pembayaran dalam 7 hari.`
+              : reminders.unscheduledCount > 0
+                ? `${reminders.unscheduledCount} vendor belum memiliki tanggal pembayaran.`
+                : hasTimeline
+                  ? 'Mulai dari yang paling dekat. Tidak semua harus selesai sekarang.'
             : 'Lengkapi tanggal rencana agar checklist bisa disusun berdasarkan waktu yang tersedia.'}
         </p>
+        {(urgentCount > 0 || reminders.unscheduledCount > 0) && (
+          <div className="flex flex-wrap" style={{ gap: 7, marginTop: 13 }}>
+            {reminders.overdueCount > 0 && (
+              <span className="rounded-full bg-red-50 px-3 py-1.5 text-[11px] font-bold text-red-700">
+                {reminders.overdueCount} terlambat
+              </span>
+            )}
+            {reminders.dueSoonCount > 0 && (
+              <span className="rounded-full bg-amber-50 px-3 py-1.5 text-[11px] font-bold text-amber-800">
+                {reminders.dueSoonCount} dalam 7 hari
+              </span>
+            )}
+            {reminders.unscheduledCount > 0 && (
+              <span className="rounded-full bg-nikah-bg px-3 py-1.5 text-[11px] font-bold text-nikah-muted">
+                {reminders.unscheduledCount} belum dijadwalkan
+              </span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Items */}
       <div style={{ padding: '4px 0 4px' }}>
         {items.length > 0 ? items.map((item, index) => (
-          <div
+          <a
             key={item.id}
+            href={item.href}
             className="flex items-center"
             style={{
               gap: 14,
@@ -161,7 +197,7 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
             >
               {item.note}
             </span>
-          </div>
+          </a>
         )) : (
           <p className="text-sm text-nikah-muted" style={{ margin: 0, padding: '14px 22px 18px' }}>
             {hasTimeline
@@ -171,6 +207,22 @@ export function CurrentPriorities({ days, checkedIds, vendorPayments }: Props) {
         )}
       </div>
 
+      <div className="flex flex-wrap border-t border-nikah-border" style={{ gap: 10, padding: '14px 22px 18px' }}>
+        <a
+          href="#vendor-payments"
+          className="inline-flex items-center text-sm font-bold text-nikah-deep hover:underline underline-offset-4"
+          style={{ gap: 4 }}
+        >
+          Cek pembayaran <ArrowRight size={14} />
+        </a>
+        <a
+          href="#checklist"
+          className="inline-flex items-center text-sm font-bold text-nikah-muted hover:text-nikah-deep hover:underline underline-offset-4"
+          style={{ gap: 4 }}
+        >
+          Lihat checklist <ArrowRight size={14} />
+        </a>
+      </div>
     </div>
   )
 }
