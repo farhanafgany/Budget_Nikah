@@ -31,7 +31,7 @@ export function MobileHero() {
       </h1>
 
       <p className="mt-3 max-w-[330px] text-[14.5px] leading-6 text-[#6E5359]">
-        Masukkan budget, tamu, kota, dan gaya acara. BudgetNikah bantu membaca mana keputusan yang terasa cantik tapi berat di belakang.
+        Cek budget, tamu, kota, dan gaya acara sebelum DP vendor. BudgetNikah bantu baca mana yang aman, mana yang perlu direm.
       </p>
 
       <div className="mt-5 rounded-[8px] border border-[#E2CFC3] bg-[#FFF9F3] p-4 shadow-[0_16px_38px_rgba(90,30,42,0.095)]">
