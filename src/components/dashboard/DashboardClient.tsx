@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
 import { ChevronRight } from 'lucide-react'
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber'
@@ -13,6 +13,8 @@ import { SeserahanList } from '@/components/dashboard/SeserahanList'
 import { DashboardNote } from '@/components/dashboard/DashboardNote'
 import { VendorPaymentTracker } from '@/components/dashboard/VendorPaymentTracker'
 import { CurrentPriorities } from '@/components/dashboard/CurrentPriorities'
+import { DashboardActivityTimeline } from '@/components/dashboard/DashboardActivityTimeline'
+import { DashboardMinimizableSection } from '@/components/dashboard/DashboardMinimizableSection'
 import {
   buildDashboardGuidance,
   buildDashboardStatusCopy,
@@ -21,6 +23,7 @@ import {
   type DashboardFinance,
   type DashboardInsight,
 } from '@/lib/dashboardInsights'
+import { buildDashboardActivities } from '@/lib/dashboardActivity'
 import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
 import { formatRupiah, formatRupiahExact } from '@/lib/utils'
 import type { PressureLevel } from '@/lib/scoring'
@@ -342,6 +345,7 @@ export function DashboardClient({
   const [greeting, setGreeting] = useState('')
   const [isResetting, setIsResetting] = useState(false)
   const [liveSavings, setLiveSavings] = useState(tabunganCollected)
+  const [liveSavingsHistory, setLiveSavingsHistory] = useState(savingsHistory)
   const [liveChecklistChecked, setLiveChecklistChecked] = useState(checklistChecked)
   const [liveCustomChecklistItems, setLiveCustomChecklistItems] = useState(customChecklistItems)
   const [liveHiddenChecklistItemIds, setLiveHiddenChecklistItemIds] = useState(hiddenChecklistItemIds)
@@ -422,6 +426,11 @@ export function DashboardClient({
   const readinessDeltaText = readiness.delta === 0
     ? 'Score dinamis mengikuti data budget, pembayaran vendor, tabungan, dan checklist.'
     : `Score ${readiness.delta > 0 ? 'naik' : 'turun'} ${Math.abs(readiness.delta)} poin dari score awal karena data dashboard terbaru.`
+  const activityItems = buildDashboardActivities({
+    savingsHistory: liveSavingsHistory,
+    vendorPayments: liveVendorPayments,
+    checklistProgress,
+  })
 
   useEffect(() => {
     track('dashboard_viewed', {
@@ -490,10 +499,12 @@ export function DashboardClient({
     </div>
   )
 
-  const AllocationCard = (
+  function renderAllocationCard(headerAction?: ReactNode) {
+    return (
     <div className="bg-white border border-nikah-border shadow-sm" style={{ borderRadius: 'var(--d-radius)', padding: 24 }}>
-      <div style={{ marginBottom: 4 }}>
+      <div className="flex items-start justify-between" style={{ gap: 12, marginBottom: 4 }}>
         <CardTitle>Sebaran Budget</CardTitle>
+        {headerAction}
       </div>
       <p className="text-nikah-muted" style={{ fontSize: 11, marginBottom: spreadEntries.length > 0 ? 16 : 10, lineHeight: 1.4 }}>
         Berdasarkan vendor yang sudah dicatat
@@ -547,7 +558,8 @@ export function DashboardClient({
         </p>
       )}
     </div>
-  )
+    )
+  }
 
   return (
     <>
@@ -648,6 +660,17 @@ export function DashboardClient({
               onSelectVendor={handleSelectVendor}
               onSelectChecklist={handleSelectChecklist}
             />
+            <div style={{ marginTop: 20 }}>
+              <DashboardMinimizableSection
+                sectionId="activity"
+                title="Aktivitas Terbaru"
+                badge={`${activityItems.length} update`}
+              >
+                {({ minimizeButton }) => (
+                  <DashboardActivityTimeline items={activityItems} headerAction={minimizeButton} />
+                )}
+              </DashboardMinimizableSection>
+            </div>
           </div>
         </div>
 
@@ -658,7 +681,16 @@ export function DashboardClient({
           </p>
           <div className="order-2 grid grid-cols-1 lg:grid-cols-2" style={{ gap: 20, marginBottom: 20, alignItems: 'start' }}>
             <div id="savings">
-              <TabunganNikah collected={tabunganCollected} target={totalBudget} weddingDate={weddingDate} history={savingsHistory} onSaved={setLiveSavings} />
+              <TabunganNikah
+                collected={tabunganCollected}
+                target={totalBudget}
+                weddingDate={weddingDate}
+                history={savingsHistory}
+                onSaved={(collected, history) => {
+                  setLiveSavings(collected)
+                  setLiveSavingsHistory(history)
+                }}
+              />
             </div>
             <div id="vendor-payments">
               <VendorPaymentTracker
@@ -691,8 +723,29 @@ export function DashboardClient({
               />
             </div>
             <div className="grid" style={{ gap: 20 }}>
-              <SeserahanList checkedIds={seserahanChecked} customItems={customSeserahanItems} hiddenDefaultIds={hiddenSeserahanItemIds} />
-              <div id="allocation">{AllocationCard}</div>
+              <DashboardMinimizableSection
+                sectionId="seserahan"
+                title="Seserahan"
+                badge={`${seserahanChecked.length} siap`}
+              >
+                {({ minimizeButton }) => (
+                  <SeserahanList
+                    checkedIds={seserahanChecked}
+                    customItems={customSeserahanItems}
+                    hiddenDefaultIds={hiddenSeserahanItemIds}
+                    headerAction={minimizeButton}
+                  />
+                )}
+              </DashboardMinimizableSection>
+              <div id="allocation">
+                <DashboardMinimizableSection
+                  sectionId="allocation"
+                  title="Sebaran Budget"
+                  badge={spreadEntries.length > 0 ? `${spreadEntries.length} kategori` : 'Belum ada vendor'}
+                >
+                  {({ minimizeButton }) => renderAllocationCard(minimizeButton)}
+                </DashboardMinimizableSection>
+              </div>
             </div>
           </div>
 

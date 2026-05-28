@@ -1,5 +1,5 @@
 'use client'
-import { useState, useTransition } from 'react'
+import { useRef, useState, useTransition } from 'react'
 import { updateDashboardNote } from '@/app/dashboard/actions'
 import { useHandleActionError } from '@/hooks/useDashboardAction'
 import { track } from '@/lib/analytics'
@@ -8,14 +8,47 @@ interface Props {
   initialNote: string
 }
 
+const NOTE_TEMPLATES = [
+  {
+    label: 'Prioritas minggu ini',
+    text: 'Prioritas minggu ini:\n- \n- \n',
+  },
+  {
+    label: 'Follow-up vendor',
+    text: 'Follow-up vendor:\n- Vendor:\n- Yang perlu ditanya:\n- Deadline:\n',
+  },
+  {
+    label: 'Keputusan fix',
+    text: 'Keputusan yang sudah fix:\n- \nAlasan:\n',
+  },
+]
+
 export function DashboardNote({ initialNote }: Props) {
   const [note, setNote] = useState(initialNote)
   const [savedNote, setSavedNote] = useState(initialNote)
   const [error, setError] = useState('')
   const [isPending, startTransition] = useTransition()
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null)
   const handleActionError = useHandleActionError()
 
   const hasChanges = note !== savedNote
+
+  function insertTemplate(template: typeof NOTE_TEMPLATES[number]) {
+    const separator = note.trim().length > 0 ? '\n\n' : ''
+    const next = `${note.trimEnd()}${separator}${template.text}`.slice(0, 500)
+    setNote(next)
+    setError('')
+    track('dashboard_feature_used', {
+      feature: 'note',
+      action: 'insert_template',
+      template: template.label,
+    })
+    window.requestAnimationFrame(() => {
+      const textarea = textareaRef.current
+      textarea?.focus()
+      textarea?.setSelectionRange(next.length, next.length)
+    })
+  }
 
   function handleSave() {
     setError('')
@@ -79,7 +112,28 @@ export function DashboardNote({ initialNote }: Props) {
         </div>
       )}
 
+      <div className="grid" style={{ gap: 8, marginBottom: 10 }}>
+        <p className="text-xs font-bold text-nikah-muted" style={{ margin: 0 }}>
+          Catat cepat:
+        </p>
+        <div className="flex flex-wrap" style={{ gap: 8 }}>
+          {NOTE_TEMPLATES.map(template => (
+            <button
+              key={template.label}
+              type="button"
+              onClick={() => insertTemplate(template)}
+              disabled={note.length >= 500}
+              className="rounded-full border border-nikah-border bg-white text-nikah-deep font-bold transition-all hover:bg-nikah-bg active:scale-[0.97] disabled:opacity-50"
+              style={{ padding: '8px 11px', fontSize: 12 }}
+            >
+              + {template.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <textarea
+        ref={textareaRef}
         value={note}
         onChange={(e) => setNote(e.target.value.slice(0, 500))}
         placeholder="Tulis apapun — ide venue, reminder vendor, atau sekadar perasaan hari ini."

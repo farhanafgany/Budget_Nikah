@@ -476,6 +476,49 @@ export function ChecklistPernikahan({
         })}
       </div>
 
+      {/* Form tambah item kustom */}
+      {formOpen && (
+        <div className="grid grid-cols-[1fr_auto]" style={{ gap: 8, marginTop: 10 }}>
+          <input
+            value={draftLabel}
+            onChange={e => setDraftLabel(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustom() } }}
+            placeholder={`Tambah item untuk ${TIMELINE_LABELS[active].toLowerCase()}`}
+            className="w-full border border-nikah-border bg-nikah-bg text-nikah-text outline-none focus:border-nikah-mauve focus:bg-white"
+            style={{ minWidth: 0, borderRadius: 999, padding: '9px 13px', fontSize: 12 }}
+            // eslint-disable-next-line jsx-a11y/no-autofocus
+            autoFocus
+          />
+          <button
+            type="button"
+            onClick={handleAddCustom}
+            disabled={!draftLabel.trim()}
+            className="inline-flex items-center justify-center bg-nikah-deep text-white disabled:opacity-40"
+            style={{ width: 36, height: 36, border: 0, borderRadius: 999, flexShrink: 0 }}
+            aria-label="Tambah item"
+          >
+            <Plus size={16} />
+          </button>
+        </div>
+      )}
+
+      <button
+        type="button"
+        onClick={() => { setFormOpen(v => !v); setDraftLabel('') }}
+        className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-all hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
+        style={{
+          gap: 6,
+          marginTop: 10,
+          padding: '9px 14px',
+          border: '1px solid var(--landing-border, var(--nikah-border))',
+          borderRadius: 999,
+          fontSize: 12,
+          background: 'transparent',
+        }}
+      >
+        {formOpen ? 'Tutup' : '+ Tambah item sendiri'}
+      </button>
+
       {hiddenCount > 0 && (
         <button
           type="button"
@@ -567,49 +610,6 @@ export function ChecklistPernikahan({
           })}
         </div>
       )}
-
-      {/* Form tambah item kustom */}
-      {formOpen && (
-        <div className="grid grid-cols-[1fr_auto]" style={{ gap: 8, marginTop: 10 }}>
-          <input
-            value={draftLabel}
-            onChange={e => setDraftLabel(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddCustom() } }}
-            placeholder={`Tambah item untuk ${TIMELINE_LABELS[active].toLowerCase()}`}
-            className="w-full border border-nikah-border bg-nikah-bg text-nikah-text outline-none focus:border-nikah-mauve focus:bg-white"
-            style={{ minWidth: 0, borderRadius: 999, padding: '9px 13px', fontSize: 12 }}
-            // eslint-disable-next-line jsx-a11y/no-autofocus
-            autoFocus
-          />
-          <button
-            type="button"
-            onClick={handleAddCustom}
-            disabled={!draftLabel.trim()}
-            className="inline-flex items-center justify-center bg-nikah-deep text-white disabled:opacity-40"
-            style={{ width: 36, height: 36, border: 0, borderRadius: 999, flexShrink: 0 }}
-            aria-label="Tambah item"
-          >
-            <Plus size={16} />
-          </button>
-        </div>
-      )}
-
-      <button
-        type="button"
-        onClick={() => { setFormOpen(v => !v); setDraftLabel('') }}
-        className="w-full inline-flex items-center justify-center text-nikah-deep font-bold transition-all hover:bg-nikah-bg active:scale-[0.97] active:brightness-90"
-        style={{
-          gap: 6,
-          marginTop: 10,
-          padding: '9px 14px',
-          border: '1px solid var(--landing-border, var(--nikah-border))',
-          borderRadius: 999,
-          fontSize: 12,
-          background: 'transparent',
-        }}
-      >
-        {formOpen ? 'Tutup' : '+ Tambah item sendiri'}
-      </button>
 
       {hiddenDefaultItems.length > 0 && (
         <>

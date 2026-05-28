@@ -65,4 +65,18 @@ describe('ChecklistPernikahan priority focus', () => {
     })
     expect(screen.getByText('Packing untuk bulan madu')).toBeInTheDocument()
   })
+
+  it('shows the custom item action before expanding the hidden preview', () => {
+    render(
+      <ChecklistPernikahan
+        checkedIds={[]}
+        days={120}
+      />,
+    )
+
+    const addButton = screen.getByRole('button', { name: '+ Tambah item sendiri' })
+    const expandButton = screen.getByRole('button', { name: 'Lihat semua (6 lagi)' })
+
+    expect(Boolean(addButton.compareDocumentPosition(expandButton) & Node.DOCUMENT_POSITION_FOLLOWING)).toBe(true)
+  })
 })

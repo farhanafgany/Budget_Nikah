@@ -13,7 +13,7 @@ interface Props {
   target: number
   weddingDate: string | null
   history: SavingsHistoryInput[]
-  onSaved?: (collected: number) => void
+  onSaved?: (collected: number, history: SavingsHistoryInput[]) => void
 }
 
 export function TabunganNikah({ collected, target, weddingDate, history, onSaved }: Props) {
@@ -78,7 +78,7 @@ export function TabunganNikah({ collected, target, weddingDate, history, onSaved
         setError('Belum tersimpan — coba simpan lagi.')
         return
       }
-      onSaved?.(next)
+      onSaved?.(next, nextHistory)
     })
   }
 

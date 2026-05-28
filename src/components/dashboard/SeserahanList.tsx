@@ -1,5 +1,5 @@
 'use client'
-import { useState, useTransition } from 'react'
+import { useState, useTransition, type ReactNode } from 'react'
 import { SESERAHAN_ITEMS } from '@/lib/seserahanItems'
 import { updateCustomSeserahanItems, updateHiddenSeserahanItems, updateSeserahanItems } from '@/app/dashboard/actions'
 import type { CustomSeserahanInput } from '@/lib/dashboardActions'
@@ -10,6 +10,7 @@ interface Props {
   checkedIds: string[]
   customItems: CustomSeserahanInput[]
   hiddenDefaultIds: string[]
+  headerAction?: ReactNode
 }
 
 const PREVIEW_COUNT = 5
@@ -38,7 +39,7 @@ function MiniProgressRing({ value }: { value: number }) {
   )
 }
 
-export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Props) {
+export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds, headerAction }: Props) {
   const [localChecked, setLocalChecked] = useState<string[]>(checkedIds)
   const [localCustomItems, setLocalCustomItems] = useState<CustomSeserahanInput[]>(customItems)
   const [localHiddenDefaultIds, setLocalHiddenDefaultIds] = useState<string[]>(hiddenDefaultIds)
@@ -176,7 +177,10 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
         <span className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-nikah-mauve">
           Seserahan
         </span>
-        <MiniProgressRing value={totalProgress} />
+        <div className="flex flex-shrink-0 items-center" style={{ gap: 8 }}>
+          {headerAction}
+          <MiniProgressRing value={totalProgress} />
+        </div>
       </div>
 
       <div style={{ marginBottom: 14 }}>
@@ -200,8 +204,8 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
         </span>
       </div>
 
-      <div className="grid grid-cols-1" style={{ gap: 6 }}>
-        {visibleItems.map((item) => {
+      <div style={{ borderTop: '1px solid var(--nikah-border)' }}>
+        {visibleItems.map((item, index) => {
           const checked = localChecked.includes(item.id)
           return (
             <div
@@ -216,12 +220,13 @@ export function SeserahanList({ checkedIds, customItems, hiddenDefaultIds }: Pro
                 }
               }}
               data-checked={checked}
-              className="group w-full flex items-center text-left transition-all hover:brightness-[0.98] active:scale-[0.985] active:brightness-90"
+              className="group w-full flex items-center text-left transition-all hover:bg-nikah-bg active:scale-[0.985] active:brightness-90"
               style={{
                 gap: 12,
-                padding: '10px 12px',
-                borderRadius: 12,
-                background: 'var(--landing-pink, #F8E9EE)',
+                padding: '13px 8px',
+                borderRadius: 10,
+                borderBottom: index < visibleItems.length - 1 ? '1px solid var(--nikah-border)' : 'none',
+                background: 'transparent',
               }}
             >
               <span
