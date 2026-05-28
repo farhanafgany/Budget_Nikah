@@ -1,5 +1,7 @@
 import { withSentryConfig } from '@sentry/nextjs'
 
+const disableSentrySourceMapUpload = process.env.SENTRY_DISABLE_SOURCE_MAP_UPLOAD === '1'
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
@@ -37,6 +39,10 @@ export default withSentryConfig(nextConfig, {
 
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
+
+  sourcemaps: {
+    disable: disableSentrySourceMapUpload,
+  },
 
   // Uncomment to route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   // This can increase your server load as well as your hosting bill.
