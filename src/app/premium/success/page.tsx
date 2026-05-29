@@ -1,6 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { CheckCircle2 } from 'lucide-react'
 import { BrandLogo } from '@/components/ui/BrandLogo'
@@ -8,14 +9,32 @@ import { clearOnboardingStore } from '@/stores/onboardingStore'
 import { firePurchaseConversion } from '@/lib/googleAds'
 import { PREMIUM_PRICE } from '@/lib/payment'
 
-export default function PremiumSuccessPage() {
-  // Bersihkan localStorage onboarding setelah payment sukses,
-  // bukan saat login — agar user bisa kembali ke /result sebelum bayar.
-  // Fire Google Ads purchase conversion event sekali saat halaman ini dibuka.
+function SuccessContent() {
+  const searchParams = useSearchParams()
+  const orderId = searchParams.get('order_id')
+
   useEffect(() => {
+    // Selalu bersihkan localStorage onboarding setelah masuk halaman ini.
     clearOnboardingStore()
-    firePurchaseConversion(PREMIUM_PRICE)
-  }, [])
+
+    // Hanya fire Google Ads conversion kalau order_id ada di URL
+    // (artinya redirect datang dari Midtrans onSuccess, bukan URL diketik manual)
+    // dan confirm API memverifikasi bahwa pembayaran benar-benar settled.
+    if (!orderId) return
+
+    fetch('/api/payments/midtrans/confirm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ order_id: orderId }),
+    })
+      .then((r) => r.json())
+      .then((data: { is_premium?: boolean }) => {
+        if (data.is_premium) {
+          firePurchaseConversion(PREMIUM_PRICE)
+        }
+      })
+      .catch(() => null)
+  }, [orderId])
 
   return (
     <main
@@ -79,5 +98,13 @@ export default function PremiumSuccessPage() {
         </Link>
       </section>
     </main>
+  )
+}
+
+export default function PremiumSuccessPage() {
+  return (
+    <Suspense>
+      <SuccessContent />
+    </Suspense>
   )
 }

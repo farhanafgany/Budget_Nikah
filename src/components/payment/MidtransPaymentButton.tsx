@@ -134,7 +134,7 @@ export function MidtransPaymentButton({ isProduction = false, loginRedirectHref 
             }).catch(() => null)
           }
 
-          window.location.replace('/premium/success')
+          window.location.replace(`/premium/success?order_id=${encodeURIComponent(finalOrderId)}`)
         },
         onPending: () => {
           cachedTokenRef.current = null
