@@ -4,7 +4,8 @@ import { TrustMetrics }       from '@/components/landing/TrustMetrics'
 import { PainCards }          from '@/components/landing/PainCards'
 import { FeatureShowcase }    from '@/components/landing/FeatureShowcase'
 import { SimulationPreview }  from '@/components/landing/SimulationPreview'
-import { SocialProof }        from '@/components/landing/SocialProof'
+import { FounderNote }        from '@/components/landing/FounderNote'
+import { Testimonials }       from '@/components/landing/Testimonials'
 import { PricingSection }     from '@/components/landing/PricingSection'
 import { FAQSection }         from '@/components/landing/FAQSection'
 import { FinalCTA }           from '@/components/landing/FinalCTA'
@@ -23,7 +24,8 @@ export default function LandingPage() {
         <PainCards />
         <FeatureShowcase />
         <SimulationPreview />
-        <SocialProof />
+        <FounderNote />
+        <Testimonials />
         <PricingSection />
         <FAQSection />
         <FinalCTA />

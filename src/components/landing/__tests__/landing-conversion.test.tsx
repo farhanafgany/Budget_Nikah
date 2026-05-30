@@ -42,10 +42,10 @@ describe('TrustMetrics', () => {
     expect(screen.queryByText(/garansi tanpa pertanyaan/i)).toBeNull()
   })
 
-  it('menampilkan metric 12 bulan timeline', () => {
+  it('menampilkan fakta gabungan: tier kota dan readiness score', () => {
     render(<TrustMetrics />)
-    expect(screen.getByText('12')).toBeInTheDocument()
-    expect(screen.getByText(/bulan timeline/i)).toBeInTheDocument()
+    expect(screen.getByText(/tier kota/i)).toBeInTheDocument()
+    expect(screen.getByText(/readiness score/i)).toBeInTheDocument()
   })
 
   it('menampilkan heading utama TrustMetrics', () => {
