@@ -43,7 +43,7 @@ describe('analytics helpers', () => {
     })
 
     expect(global.fetch).toHaveBeenCalledWith(
-      'https://posthog.test/capture/',
+      '/ingest/capture',
       expect.objectContaining({
         method: 'POST',
         keepalive: true,
@@ -89,7 +89,7 @@ describe('analytics helpers', () => {
     track('result_premium_cta_clicked', { cta_location: 'result_inline_mobile' })
 
     expect(sendBeacon).toHaveBeenCalledWith(
-      'https://posthog.test/capture/',
+      '/ingest/capture',
       expect.any(Blob),
     )
     expect(global.fetch).not.toHaveBeenCalled()

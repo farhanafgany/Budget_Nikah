@@ -4,6 +4,11 @@ const DEFAULT_POSTHOG_HOST = 'https://app.posthog.com'
 const ANONYMOUS_ID_KEY = 'budgetnikah-anonymous-id'
 const PENDING_NAVIGATION_EVENT_KEY = 'budgetnikah-pending-navigation-event'
 
+// Browser events go through a same-origin reverse proxy (see `rewrites` in
+// next.config.mjs) so ad blockers / tracking protection that block *.posthog.com
+// can't drop them. Server events keep hitting PostHog directly.
+const CLIENT_INGEST_PATH = '/ingest'
+
 function getPostHogConfig() {
   const apiKey = process.env.NEXT_PUBLIC_POSTHOG_KEY || process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN
   if (!apiKey) return null
@@ -38,7 +43,9 @@ function getAnonymousId() {
 export function track(event: string, properties: AnalyticsProps = {}) {
   const config = getPostHogConfig()
   if (!config || typeof fetch === 'undefined') return
-  const url = `${config.host.replace(/\/$/, '')}/capture/`
+  // No trailing slash: Next.js 308-redirects `/capture/` -> `/capture`, and
+  // sendBeacon does not follow redirects, so the event would be dropped.
+  const url = `${CLIENT_INGEST_PATH}/capture`
   const body = JSON.stringify({
     api_key: config.apiKey,
     event,
