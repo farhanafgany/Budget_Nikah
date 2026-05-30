@@ -54,7 +54,7 @@ export function FounderNote() {
           </blockquote>
 
           <p className="font-bold text-nikah-text" style={{ fontSize: 15 }}>Farhan Afgany</p>
-          <p className="text-nikah-muted" style={{ fontSize: 13, marginTop: 2 }}>Pembuat BudgetNikah</p>
+          <p className="text-nikah-muted" style={{ fontSize: 13, marginTop: 2 }}>Creator BudgetNikah</p>
 
           {waUrl && (
             <a
