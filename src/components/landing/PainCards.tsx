@@ -3,7 +3,7 @@ import Link from 'next/link'
 const PAINS = [
   {
     q: 'Takut overbudget sebelum hari H?',
-    note: 'Tanpa angka yang jelas, setiap pengeluaran terasa mencekam.',
+    note: 'Tanpa angka yang jelas, setiap pengeluaran terasa berat.',
   },
   {
     q: 'Bingung harus mulai dari mana?',
@@ -54,7 +54,7 @@ export function PainCards() {
             className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm transition-colors hover:opacity-90 active:scale-95"
             style={{ padding: '16px 32px' }}
           >
-            Cek Kesiapan Nikahmu — Gratis →
+            Cek kesiapan nikahmu — gratis →
           </Link>
           <p className="mt-3 text-xs text-nikah-muted font-light">Tanpa daftar · Selesai 2 menit</p>
         </div>

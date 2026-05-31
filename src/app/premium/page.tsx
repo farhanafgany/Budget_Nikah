@@ -166,7 +166,7 @@ export default async function PremiumPage() {
             }}
           >
             <p className="font-extrabold uppercase" style={{ fontSize: 11, letterSpacing: '0.12em', margin: 0 }}>
-              Akses Seumur Hidup
+              Akses Sampai Hari H
             </p>
             <span
               style={{

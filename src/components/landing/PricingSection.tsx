@@ -31,7 +31,7 @@ export function PricingSection() {
         >
           <div className="grid grid-cols-1 md:grid-cols-[0.78fr_1fr] md:items-center" style={{ gap: 28 }}>
             <div>
-              <p className="text-[10px] font-extrabold uppercase tracking-widest text-nikah-mauve mb-3">Akses Seumur Hidup</p>
+              <p className="text-[10px] font-extrabold uppercase tracking-widest text-nikah-mauve mb-3">Akses Sampai Hari H</p>
               <div className="text-nikah-deep mb-1" style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 46, fontWeight: 500, letterSpacing: '-0.02em', lineHeight: 1 }}>
                 Rp 149rb
               </div>
@@ -46,7 +46,7 @@ export function PricingSection() {
                 className="inline-flex w-full md:w-auto items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm text-center transition-colors active:scale-95 hover:opacity-90"
                 style={{ padding: '16px 28px' }}
               >
-                Beli Akses Premium — Rp 149rb →
+                Beli akses premium — Rp 149rb →
               </TrackedLink>
               <TrackedLink
                 href="/onboarding"
