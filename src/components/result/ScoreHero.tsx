@@ -4,6 +4,7 @@ import Link from 'next/link'
 import type { ReadinessLabel } from '@/lib/scoring'
 import { monthsUntilDate } from '@/lib/savings'
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber'
+import { TrackedLink } from '@/components/analytics/TrackedLink'
 import { Lock } from 'lucide-react'
 
 const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
@@ -21,7 +22,7 @@ const DISPLAY_LABEL: Record<ReadinessLabel, string> = {
 }
 
 const HEADLINE: Record<ReadinessLabel, string> = {
-  Healthy:     'Rencana kalian sudah berada di jalur yang aman.',
+  Healthy:     'Rencana kalian aman — asal disusun dari sekarang.',
   Moderate:    'Rencana kalian masih bisa dibuat lebih aman.',
   'High Risk': 'Rencana kalian perlu beberapa penyesuaian.',
 }
@@ -208,7 +209,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
             className="text-nikah-muted"
             style={{ fontSize: 'clamp(16px, 1.7vw, 19px)', lineHeight: 1.6, margin: '0 0 28px' }}
           >
-            {partnerOneName ? `${partnerOneName}, ` : ''}rencana nikah{weddingCity ? ` di ${weddingCity}` : ''} dengan sisa {monthCopy(months)} — beberapa detail kecil mudah tercecer kalau tidak disusun dari sekarang. Kami sudah siapkan panduan khusus berdasarkan jawaban kalian.
+            {partnerOneName ? `${partnerOneName}, ` : ''}rencana nikah{weddingCity ? ` di ${weddingCity}` : ''} dengan sisa {monthCopy(months)} — detail kecil mudah tercecer dan jadwal cepat menumpuk kalau tidak disusun dari sekarang. Kami sudah siapkan panduan khusus berdasarkan jawaban kalian.
           </p>
 
           {/* Desktop CTAs */}
@@ -351,82 +352,87 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
         ))}
       </div>
 
-      {/* ── Priority preview — wrapper handles the fade mask ── */}
+      {/* ── Prioritas Sekarang — locked teaser ── */}
       <div
+        className="border border-nikah-border"
         style={{
           position: 'relative',
           marginTop: 28,
-          paddingBottom: 28,
-          WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 32%, transparent 70%)',
-          maskImage: 'linear-gradient(to bottom, black 0%, black 32%, transparent 70%)',
-        }}
-      >
-      <div
-        className="relative overflow-hidden"
-        style={{
           borderRadius: 24,
-          height: 300,
-          padding: '24px 24px 0',
+          padding: '24px 22px 22px',
           boxShadow: '0 4px 20px rgba(90,30,42,0.07)',
           background: 'linear-gradient(180deg, #FFFFFF 0%, #FAF5F2 100%)',
         }}
       >
         {/* Header */}
-        <div className="flex items-start justify-between" style={{ gap: 16, marginBottom: 14 }}>
-          <div>
-            <p className="text-nikah-muted font-bold uppercase" style={{ fontSize: 11, letterSpacing: '0.18em', margin: 0 }}>
-              <span className="md:hidden">Prioritas Minggu Ini</span>
-              <span className="hidden md:inline">Preview · Prioritas Sekarang</span>
-            </p>
-          </div>
+        <div className="flex items-center justify-between" style={{ gap: 16, marginBottom: 8 }}>
+          <p className="text-nikah-muted font-bold uppercase" style={{ fontSize: 11, letterSpacing: '0.18em', margin: 0 }}>
+            Prioritas Sekarang
+          </p>
           <span
-            className="rounded-full font-extrabold flex-shrink-0"
-            style={{ background: '#F7E5E7', color: '#D18790', fontSize: 11, padding: '5px 11px', whiteSpace: 'nowrap' }}
+            className="inline-flex items-center rounded-full font-extrabold flex-shrink-0"
+            style={{ gap: 5, background: '#F7E5E7', color: '#C16E73', fontSize: 11, padding: '5px 11px', whiteSpace: 'nowrap' }}
           >
-            <span className="md:hidden">4 hal</span>
-            <span className="hidden md:inline">5 item utama</span>
+            <Lock size={11} strokeWidth={2} aria-hidden="true" />
+            Terkunci
           </span>
         </div>
 
-        {/* Items */}
-        <div
-          className="grid grid-cols-1 md:grid-cols-2"
-          style={{ gap: 10 }}
-          aria-hidden="true"
-        >
-          {priorityPreviewItems.map((item, i) => (
-            <div
-              key={item.title}
-              className={`flex items-start${i >= 3 ? ' hidden md:flex' : ''}`}
-              style={{ gap: 12, borderRadius: 12, background: '#F8F0EA', padding: '12px 14px' }}
-            >
-              <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--nikah-mauve)', flexShrink: 0, marginTop: 5, display: 'inline-block' }} />
-              <div>
-                <p className="text-nikah-text font-extrabold" style={{ fontSize: 13.5, lineHeight: 1.3, margin: '0 0 2px' }}>
-                  {item.title}
-                </p>
-                <p className="text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.35, margin: 0 }}>
-                  {item.meta}
-                </p>
+        <p className="text-nikah-text" style={{ fontSize: 14, lineHeight: 1.5, margin: '0 0 16px' }}>
+          <strong>{priorityPreviewItems.length} langkah</strong> paling dekat sudah kami susun dari jawaban kalian — tinggal dibuka saat kalian mulai.
+        </p>
+
+        {/* Locked rows — kategori terbaca, judul aksi disembunyikan */}
+        <div className="grid grid-cols-1 md:grid-cols-2" style={{ gap: 10, marginBottom: 18 }}>
+          {priorityPreviewItems.map((item, i) => {
+            const category = item.meta.split('·')[0].trim()
+            const barWidth = ['68%', '54%', '62%', '48%'][i % 4]
+            return (
+              <div
+                key={item.title}
+                className="flex items-center"
+                style={{ gap: 11, borderRadius: 12, background: '#F8F0EA', padding: '13px 14px' }}
+                aria-label={`${category} — langkah terkunci`}
+              >
+                <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: '50%', background: 'var(--nikah-mauve)', flexShrink: 0 }} />
+                <span className="text-nikah-text font-extrabold" style={{ fontSize: 13, flexShrink: 0 }}>
+                  {category}
+                </span>
+                <span
+                  aria-hidden="true"
+                  style={{
+                    flex: 1,
+                    maxWidth: barWidth,
+                    height: 9,
+                    borderRadius: 999,
+                    background: 'linear-gradient(90deg, #E7D6DC 0%, #EFE3E6 100%)',
+                  }}
+                />
+                <Lock size={13} strokeWidth={1.8} aria-hidden="true" style={{ color: 'var(--nikah-mauve)', flexShrink: 0, marginLeft: 'auto' }} />
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
-      </div>
-      </div>{/* end mask wrapper */}
-
-      {/* Lock CTA — di luar wrapper mask agar tetap terlihat */}
-      <div
-        style={{ marginTop: -56, display: 'flex', justifyContent: 'center', position: 'relative', zIndex: 10 }}
-      >
-        <div
-          className="inline-flex items-center justify-center bg-white text-nikah-text"
-          style={{ gap: 8, borderRadius: 999, padding: '12px 20px', fontSize: 13.5, boxShadow: '0 8px 28px rgba(90,30,42,0.14)' }}
+        {/* CTA — link asli + tracking, bukan div statis */}
+        <TrackedLink
+          href="/premium"
+          event="result_premium_cta_clicked"
+          eventProps={{ cta_location: 'result_priority_lock' }}
+          className="inline-flex items-center justify-center w-full md:w-auto font-extrabold transition hover:brightness-105 active:scale-[0.99]"
+          style={{
+            gap: 8,
+            borderRadius: 999,
+            padding: '14px 24px',
+            fontSize: 14,
+            color: '#4A1822',
+            background: 'linear-gradient(180deg, #E8D7A8 0%, #C9A961 100%)',
+            boxShadow: '0 8px 22px rgba(90,30,42,0.12), inset 0 1px 0 rgba(255,255,255,0.34)',
+          }}
         >
-          <Lock size={13} strokeWidth={1.8} aria-hidden="true" style={{ color: '#5A1E2A' }} />
-          Buka akses lengkap — Rp 149rb, sekali bayar
-        </div>
+          <Lock size={14} strokeWidth={2} aria-hidden="true" />
+          Buka akses lengkap — Rp 149rb
+        </TrackedLink>
       </div>
 
     </section>
