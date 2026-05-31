@@ -27,7 +27,7 @@ export function MobileHero() {
         className="max-w-[340px] text-[37px] font-medium italic leading-[1.01] text-[#3D1419]"
         style={{ fontFamily: SERIF }}
       >
-        Paket terlihat cocok. Tapi aman tidak buat cashflow kalian?
+        Paket terlihat cocok. Tapi aman tidak buat keuangan kalian?
       </h1>
 
       <p className="mt-3 max-w-[330px] text-[14.5px] leading-6 text-[#6E5359]">

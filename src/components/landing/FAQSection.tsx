@@ -1,14 +1,14 @@
 const FAQS = [
   {
-    q: 'Apakah data saya aman?',
-    a: 'Ya. Data kamu disimpan di Supabase dengan enkripsi dan kebijakan keamanan Row Level Security — hanya kamu yang bisa mengakses datamu sendiri.',
+    q: 'Apakah datamu aman?',
+    a: 'Ya. Datamu dienkripsi dan terisolasi per akun — hanya kamu yang bisa mengaksesnya.',
   },
   {
     q: 'Bisa diakses dari mana saja?',
     a: 'BudgetNikah adalah web app yang bisa dibuka dari HP, laptop, atau tablet — tidak perlu install apa pun.',
   },
   {
-    q: 'Bagaimana setelah saya bayar?',
+    q: 'Bagaimana setelah kamu bayar?',
     a: 'Langsung aktif. Setelah pembayaran berhasil, kamu otomatis diarahkan ke dashboard — tidak ada langkah tambahan. Login dengan akun yang sama dan semua fitur langsung terbuka. WhatsApp kami tetap tersedia kalau ada pertanyaan.',
   },
   {

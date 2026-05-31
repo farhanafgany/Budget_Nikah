@@ -9,7 +9,7 @@ export function Footer() {
         <BrandLogo size="md" color="#ffffff" />
 
         <p className="max-w-[260px] text-center text-xs leading-5 md:max-w-none">
-          Wedding financial planner untuk pasangan Indonesia.
+          Bantu pasangan Indonesia merencanakan budget pernikahan dengan tenang.
         </p>
 
         <nav

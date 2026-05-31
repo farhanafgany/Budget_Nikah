@@ -138,7 +138,7 @@ export function SimulationPreview() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] items-center" style={{ gap: 'clamp(24px, 3.2vw, 46px)' }}>
-          <ScenarioCard label="Sebelum" guests="600 orang" score="52" status="Moderate" />
+          <ScenarioCard label="Sebelum" guests="600 orang" score="55" status="Moderate" />
 
           <div
             className="flex items-center justify-center text-white mx-auto rotate-90 lg:rotate-0"
@@ -156,7 +156,7 @@ export function SimulationPreview() {
             </svg>
           </div>
 
-          <ScenarioCard label="Sesudah" guests="350 orang" score="78" status="Healthy" />
+          <ScenarioCard label="Sesudah" guests="350 orang" score="80" status="Healthy" />
         </div>
 
         {/* Transparansi skor — kenapa angkanya bisa beda, biar tidak terasa ngarang */}

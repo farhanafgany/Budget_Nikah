@@ -10,7 +10,7 @@ const FACTS = [
     body: 'Tersusun dari H-12 bulan sampai H-1 minggu, berdasarkan urutan prioritas nyata.',
   },
   {
-    value: '6',
+    value: '8',
     label: 'kategori biaya',
     body: 'Catering, venue, dekor, dokumentasi, MUA, dan pos penting lain — bukan satu angka gelondongan.',
   },
