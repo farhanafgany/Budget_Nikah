@@ -3,7 +3,6 @@
 import Link from 'next/link'
 import { useEffect, useState, type ReactNode } from 'react'
 import { useRouter } from 'next/navigation'
-import { ChevronRight } from 'lucide-react'
 import { useAnimatedNumber } from '@/hooks/useAnimatedNumber'
 import { bucketBudget, bucketGuests, scoreBand, track } from '@/lib/analytics'
 import { clearOnboardingStore } from '@/stores/onboardingStore'
@@ -21,10 +20,11 @@ import {
   calculateDashboardChecklistProgress,
   calculateDashboardReadiness,
   type DashboardFinance,
-  type DashboardInsight,
 } from '@/lib/dashboardInsights'
 import { buildDashboardActivities } from '@/lib/dashboardActivity'
 import { buildVendorReminderSummary } from '@/lib/dashboardReminders'
+import { calculateMonthlySavings, monthsUntilDate } from '@/lib/savings'
+import { SESERAHAN_ITEMS } from '@/lib/seserahanItems'
 import { formatRupiah, formatRupiahExact } from '@/lib/utils'
 import type { PressureLevel } from '@/lib/scoring'
 import type { CustomChecklistInput, CustomSeserahanInput, SavingsHistoryInput, VendorPaymentInput } from '@/lib/dashboardActions'
@@ -69,12 +69,10 @@ const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
 function BudgetHealthCard({
   totalBudget,
   vendorPayments,
-  tabunganCollected,
   finance,
 }: {
   totalBudget: number
   vendorPayments: VendorPaymentInput[]
-  tabunganCollected: number
   finance: DashboardFinance
 }) {
   const STATUS_LABELS = {
@@ -141,11 +139,10 @@ function BudgetHealthCard({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3" style={{ gap: 12, marginBottom: 14 }}>
+      <div className="grid grid-cols-2" style={{ gap: 12, marginBottom: 14 }}>
         {[
           { val: formatRupiahExact(finance.vendorCommitted), lbl: 'Komitmen' },
           { val: formatRupiahExact(finance.vendorOutstanding), lbl: 'Belum dibayar' },
-          { val: formatRupiahExact(tabunganCollected), lbl: 'Tabungan' },
         ].map(item => (
           <div key={item.lbl}>
             <div className="font-extrabold text-nikah-deep tabular-nums" style={{ fontSize: 12.5, lineHeight: 1.2 }}>
@@ -172,50 +169,60 @@ function BudgetHealthCard({
   )
 }
 
-function DashboardGuidanceCard({ insights }: { insights: DashboardInsight[] }) {
-  const KIND_STYLES = {
-    good: { background: '#F0FDF4', border: '#BBF7D0', text: '#166534' },
-    info: { background: '#FBF6F1', border: '#E8DACF', text: 'var(--nikah-deep)' },
-    warning: { background: '#FFFBEB', border: '#FDE68A', text: '#92400E' },
-    critical: { background: '#FEF2F2', border: '#FECACA', text: '#991B1B' },
-  }
-  const primary = insights[0]
-
-  if (!primary) return null
+function SavingsSummaryCard({
+  collected,
+  target,
+  weddingDate,
+}: {
+  collected: number
+  target: number
+  weddingDate: string | null
+}) {
+  const months = monthsUntilDate(weddingDate)
+  const monthly = calculateMonthlySavings(target, collected, months)
+  const progress = target > 0 ? Math.min(100, Math.round((collected / target) * 100)) : 0
+  const onTrack = progress >= 100 || monthly <= 0
+  const remaining = Math.max(0, target - collected)
 
   return (
-    <div className="bg-white border border-nikah-border shadow-sm" style={{ borderRadius: 'var(--d-radius)', padding: 20 }}>
-      <CardTitle>Langkah Terbaik Berikutnya</CardTitle>
-      <div className="grid" style={{ gap: 9, marginTop: 14, marginBottom: 16 }}>
-        {insights.map((insight, index) => {
-          const style = KIND_STYLES[insight.kind]
-          return (
-            <div
-              key={insight.title}
-              style={{
-                background: style.background,
-                border: `1px solid ${style.border}`,
-                borderRadius: 12,
-                padding: index === 0 ? '12px 13px' : '10px 12px',
-              }}
-            >
-              <div style={{ color: style.text, fontSize: 13, fontWeight: 800, lineHeight: 1.35 }}>
-                {insight.title}
-              </div>
-              <p className="text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.45, margin: '4px 0 0' }}>
-                {insight.body}
-              </p>
-            </div>
-          )
-        })}
+    <div
+      className="bg-white border border-nikah-border"
+      style={{ borderRadius: 'var(--d-radius)', padding: '20px 22px', boxShadow: '0 4px 20px rgba(90,30,42,0.06)' }}
+    >
+      <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
+        <CardTitle>Dana Terkumpul</CardTitle>
+        <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-bold ${onTrack ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+          {onTrack ? 'Sesuai jalur' : 'Perlu dikejar'}
+        </span>
       </div>
-      <a
-        href={primary.href}
-        className="w-full inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
-        style={{ padding: '12px 16px' }}
-      >
-        {primary.actionLabel}
-      </a>
+
+      <p className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9.5, letterSpacing: '0.12em', margin: '0 0 4px' }}>
+        Total terkumpul
+      </p>
+      <div className="text-nikah-deep" style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 26, lineHeight: 1.1, marginBottom: 14 }}>
+        {formatRupiahExact(collected)}
+      </div>
+
+      <div className="bg-nikah-bg" style={{ borderRadius: 14, padding: '13px 14px', marginBottom: 14 }}>
+        <div style={{ color: 'var(--nikah-mauve)', fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 30, lineHeight: 1.05 }}>
+          {onTrack ? 'Target tercapai' : `${formatRupiahExact(monthly)}/bln`}
+        </div>
+        <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.12em', marginTop: 5 }}>
+          {onTrack ? `${progress}% dari target` : weddingDate ? `selama ${months} bln lagi` : 'estimasi 12 bulan'}
+        </div>
+      </div>
+
+      <div className="w-full bg-nikah-border rounded-full overflow-hidden" style={{ height: 6, marginBottom: 6 }}>
+        <div
+          className="h-full rounded-full transition-all duration-700"
+          style={{ width: `${progress}%`, background: 'linear-gradient(90deg, #C4798699, #C47986)' }}
+        />
+      </div>
+      <p className="text-nikah-muted" style={{ fontSize: 11.5, lineHeight: 1.45, margin: 0 }}>
+        {onTrack
+          ? `Tabungan sudah menutup target ${formatRupiahExact(target)}.`
+          : `Sisa ${formatRupiahExact(remaining)} menuju target ${formatRupiahExact(target)}.`}
+      </p>
     </div>
   )
 }
@@ -272,44 +279,16 @@ function CardTitle({
   )
 }
 
-function MobileScoreStrip({ score, label, copy }: { score: number; label: string; copy: string }) {
+function SectionHeader({ label, sub, spaced = false }: { label: string; sub: string; spaced?: boolean }) {
   return (
-    <Link
-      href="/dashboard/summary"
-      className="flex items-center bg-white border border-nikah-border active:scale-[0.985] active:brightness-95 transition-all"
-      style={{ borderRadius: 'var(--d-radius)', padding: '16px 18px', gap: 14, boxShadow: '0 2px 12px rgba(90,30,42,0.05)', textDecoration: 'none' }}
-    >
-      <div
-        style={{
-          width: 46,
-          height: 46,
-          borderRadius: '50%',
-          background: `radial-gradient(circle at center, white 55%, transparent 56%), conic-gradient(var(--nikah-deep) 0% ${score}%, #EEDCE0 ${score}% 100%)`,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}
-      >
-        <span style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 17, color: 'var(--nikah-deep)' }}>
-          {score}
-        </span>
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center" style={{ gap: 8, marginBottom: 4 }}>
-          <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-bold ${LABEL_COLORS[label] ?? ''}`}>
-            {label}
-          </span>
-          <span className="text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.1em' }}>
-            Score dashboard
-          </span>
-        </div>
-        <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.4, margin: 0 }}>
-          {copy}
-        </p>
-      </div>
-      <ChevronRight size={18} className="text-nikah-muted flex-shrink-0" />
-    </Link>
+    <div className={`hidden lg:block ${spaced ? 'lg:mt-3' : ''}`}>
+      <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve" style={{ margin: 0 }}>
+        {label}
+      </p>
+      <p className="text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.45, margin: '6px 0 0' }}>
+        {sub}
+      </p>
+    </div>
   )
 }
 
@@ -344,6 +323,7 @@ export function DashboardClient({
   // akibat perbedaan timezone server (UTC) vs device user (WIB/WITA/WIT).
   const [greeting, setGreeting] = useState('')
   const [isResetting, setIsResetting] = useState(false)
+  const [layoutMode, setLayoutMode] = useState<'band' | 'sidebar'>('band')
   const [liveSavings, setLiveSavings] = useState(tabunganCollected)
   const [liveSavingsHistory, setLiveSavingsHistory] = useState(savingsHistory)
   const [liveChecklistChecked, setLiveChecklistChecked] = useState(checklistChecked)
@@ -379,7 +359,14 @@ export function DashboardClient({
 
   useEffect(() => {
     setGreeting(getTimeGreeting())
+    const saved = localStorage.getItem('budgetnikah:dashboard:layout:v1')
+    if (saved === 'sidebar') setLayoutMode('sidebar')
   }, [])
+
+  function handleLayoutMode(mode: 'band' | 'sidebar') {
+    setLayoutMode(mode)
+    localStorage.setItem('budgetnikah:dashboard:layout:v1', mode)
+  }
 
   // Sebaran aktual: agregasi total vendor per kategori
   const spendByCategory: Record<string, number> = {}
@@ -423,14 +410,53 @@ export function DashboardClient({
     finance: guidance.finance,
     reminders,
   })
-  const readinessDeltaText = readiness.delta === 0
-    ? 'Score dinamis mengikuti data budget, pembayaran vendor, tabungan, dan checklist.'
-    : `Score ${readiness.delta > 0 ? 'naik' : 'turun'} ${Math.abs(readiness.delta)} poin dari score awal karena data dashboard terbaru.`
   const activityItems = buildDashboardActivities({
     savingsHistory: liveSavingsHistory,
     vendorPayments: liveVendorPayments,
     checklistProgress,
   })
+
+  // Actionable summary untuk kartu Kesiapan (gabungan dari checklist, vendor,
+  // seserahan, dan kelengkapan data). Semua angka diturunkan dari data live.
+  const checklistRemaining = Math.max(0, readiness.checklistProgress.total - readiness.checklistProgress.completed)
+  const unpaidVendorCount = liveVendorPayments.filter(v => v.totalAmount > v.paidAmount).length
+  const seserahanHiddenSet = new Set(hiddenSeserahanItemIds)
+  const seserahanVisibleDefaultIds = SESERAHAN_ITEMS.filter(item => !seserahanHiddenSet.has(item.id)).map(item => item.id)
+  const seserahanCheckedSet = new Set(seserahanChecked)
+  const seserahanTotal = seserahanVisibleDefaultIds.length + customSeserahanItems.length
+  const seserahanCompleted = [...seserahanVisibleDefaultIds, ...customSeserahanItems.map(item => item.id)]
+    .filter(id => seserahanCheckedSet.has(id)).length
+  const seserahanRemaining = Math.max(0, seserahanTotal - seserahanCompleted)
+
+  const readinessActions: string[] = []
+  if (checklistRemaining > 0) readinessActions.push(`${checklistRemaining} checklist belum selesai`)
+  if (unpaidVendorCount > 0) readinessActions.push(`${unpaidVendorCount} vendor belum lunas`)
+  if (seserahanRemaining > 0) readinessActions.push(`${seserahanRemaining} seserahan belum final`)
+  if (!weddingDate) readinessActions.push('Tanggal nikah belum dilengkapi')
+  else if (totalBudget <= 0) readinessActions.push('Total budget belum diisi')
+  else if (liveVendorPayments.length === 0) readinessActions.push('Vendor belum dicatat')
+  const topReadinessActions = readinessActions.slice(0, 4)
+
+  const primaryInsight = guidance.insights[0]
+
+  // Chip status ringkas di hero — diturunkan dari data yang sama dengan kartu KPI.
+  const savingsProgress = totalBudget > 0 ? Math.min(100, Math.round((liveSavings / totalBudget) * 100)) : 0
+  const budgetStatusChip = {
+    neutral: 'Mulai catat',
+    good: 'Budget aman',
+    attention: 'Perlu dana',
+    warning: 'Ruang tipis',
+    critical: 'Lewat budget',
+  }[guidance.finance.status]
+  const statusDotColor = {
+    neutral: '#A8A29E',
+    good: '#2F7A3F',
+    attention: '#B98C54',
+    warning: '#B98C54',
+    critical: '#B42318',
+  }[guidance.finance.status]
+  // Cerminkan jumlah item yang ditampilkan kartu Prioritas (maks 4).
+  const priorityCount = Math.min(4, unpaidVendorCount + checklistRemaining)
 
   useEffect(() => {
     track('dashboard_viewed', {
@@ -443,59 +469,61 @@ export function DashboardClient({
 
   const OverviewCard = (
     <div
-      className="bg-white border border-nikah-border shadow-sm overflow-hidden"
-      style={{ borderRadius: 'var(--d-radius)', padding: 24, boxShadow: '0 12px 34px rgba(90, 30, 42, 0.055)' }}
+      className="bg-white border border-nikah-border flex flex-col"
+      style={{ borderRadius: 'var(--d-radius)', padding: '20px 22px', boxShadow: '0 4px 20px rgba(90,30,42,0.06)' }}
     >
-      <div className="flex items-center justify-between" style={{ marginBottom: 17 }}>
+      <div className="flex items-center justify-between" style={{ marginBottom: 14 }}>
         <CardTitle>Kesiapan Dashboard</CardTitle>
         <span className={`inline-flex px-2.5 py-0.5 rounded-full text-xs font-bold ${LABEL_COLORS[readiness.label] ?? ''}`}>
           {readiness.label}
         </span>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-[auto_1fr] items-center" style={{ gap: 18 }}>
+      <div className="grid grid-cols-[auto_1fr] items-center" style={{ gap: 16 }}>
         <ScoreRing score={readiness.score} />
         <div>
           <h2
             className="text-nikah-text"
-            style={{
-              fontFamily: SERIF,
-              fontStyle: 'italic',
-              fontWeight: 500,
-              fontSize: 22,
-              lineHeight: 1.22,
-              margin: '0 0 8px',
-            }}
+            style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 19, lineHeight: 1.25, margin: '0 0 6px' }}
           >
             {statusCopy.readinessTitle}
           </h2>
-          <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: 0 }}>
+          <p className="text-nikah-muted" style={{ fontSize: 12.5, lineHeight: 1.45, margin: 0 }}>
             {statusCopy.readinessCopy}
-          </p>
-          <p className="text-nikah-muted" style={{ fontSize: 11.5, lineHeight: 1.45, margin: '8px 0 0' }}>
-            {readinessDeltaText} Checklist selesai {readiness.checklistProgress.percentage}%.
           </p>
         </div>
       </div>
-      <div style={{ height: 1, background: 'var(--landing-border, var(--nikah-border))', margin: '20px 0 14px' }} />
-      <div className="grid grid-cols-3 text-center" style={{ gap: 10 }}>
-        {[
-          { val: formatRupiah(totalBudget), lbl: 'Estimasi' },
-          ...(guestCount ? [{ val: String(guestCount), lbl: 'Undangan' }] : []),
-          ...(timeLeftText ? [{ val: timeLeftText.replace(' bulan', ' bln'), lbl: 'Sisa' }] : []),
-        ].map(s => (
-          <div key={s.lbl}>
-            <div
-              className="text-nikah-deep"
-              style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 18, lineHeight: 1.05 }}
-            >
-              {s.val}
-            </div>
-            <div className="text-nikah-muted uppercase font-bold" style={{ fontSize: 10, letterSpacing: '0.12em', marginTop: 4 }}>
-              {s.lbl}
-            </div>
+
+      <div style={{ height: 1, background: 'var(--nikah-border)', margin: '16px 0 14px' }} />
+
+      {topReadinessActions.length > 0 ? (
+        <>
+          <p className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9.5, letterSpacing: '0.12em', margin: '0 0 10px' }}>
+            Yang perlu dirapikan
+          </p>
+          <div className="grid" style={{ gap: 8 }}>
+            {topReadinessActions.map(action => (
+              <div key={action} className="flex items-center" style={{ gap: 10 }}>
+                <span aria-hidden="true" style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--nikah-mauve)', flexShrink: 0 }} />
+                <span className="font-bold text-nikah-text" style={{ fontSize: 13, lineHeight: 1.35 }}>{action}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      ) : (
+        <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: 0 }}>
+          Semua bagian utama sudah rapi. Pertahankan ritme tabungan dan checklist kalian.
+        </p>
+      )}
+
+      {primaryInsight && (
+        <a
+          href={primaryInsight.href}
+          className="inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
+          style={{ padding: '11px 16px', marginTop: 16 }}
+        >
+          {primaryInsight.actionLabel}
+        </a>
+      )}
     </div>
   )
 
@@ -583,38 +611,101 @@ export function DashboardClient({
             >
               {userName1} &amp; {userName2}
             </h1>
-            <div className="flex flex-col" style={{ gap: 8 }}>
-              {timeLeftText && weddingDateText && (
-                <div
-                  className="inline-flex items-center bg-white border border-nikah-border"
-                  style={{ borderRadius: 999, padding: '7px 16px', gap: 9 }}
-                >
+            <div className="flex flex-col" style={{ gap: 12 }}>
+              <div className="flex flex-wrap items-center" style={{ gap: 8 }}>
+                {timeLeftText && weddingDateText && (
+                  <div
+                    className="inline-flex items-center bg-white border border-nikah-border"
+                    style={{ borderRadius: 999, padding: '7px 16px', gap: 9 }}
+                  >
+                    <span
+                      aria-hidden="true"
+                      style={{ width: 8, height: 8, borderRadius: '50%', background: '#C16E73', flexShrink: 0 }}
+                    />
+                    <span className="font-bold text-nikah-text" style={{ fontSize: 13.5 }}>
+                      {weddingDateText}
+                    </span>
+                    <span className="text-nikah-muted" style={{ fontSize: 13 }}>
+                      · {timeLeftText} lagi
+                    </span>
+                  </div>
+                )}
+                {[
+                  { label: budgetStatusChip, dot: statusDotColor },
+                  { label: `Dana ${savingsProgress}%`, dot: null },
+                  { label: `Skor ${readiness.score}`, dot: null },
+                  ...(priorityCount > 0 ? [{ label: `${priorityCount} prioritas`, dot: '#C16E73' }] : []),
+                ].map(chip => (
                   <span
-                    aria-hidden="true"
-                    style={{ width: 8, height: 8, borderRadius: '50%', background: '#C16E73', flexShrink: 0 }}
-                  />
-                  <span className="font-bold text-nikah-text" style={{ fontSize: 13.5 }}>
-                    {weddingDateText}
+                    key={chip.label}
+                    className="inline-flex items-center bg-white border border-nikah-border font-bold text-nikah-text"
+                    style={{ borderRadius: 999, padding: '7px 14px', fontSize: 12.5, gap: 7 }}
+                  >
+                    {chip.dot && (
+                      <span aria-hidden="true" style={{ width: 7, height: 7, borderRadius: '50%', background: chip.dot, flexShrink: 0 }} />
+                    )}
+                    {chip.label}
                   </span>
-                  <span className="text-nikah-muted" style={{ fontSize: 13 }}>
-                    · {timeLeftText} lagi
-                  </span>
-                </div>
+                ))}
+              </div>
+              {statusCopy.countdownNote && (
+                <p className="text-nikah-muted" style={{ fontSize: 13.5, lineHeight: 1.45, margin: 0 }}>
+                  {statusCopy.countdownNote}
+                </p>
               )}
-              {(() => {
-                return statusCopy.countdownNote ? (
-                  <p className="text-nikah-muted" style={{ fontSize: 13.5, lineHeight: 1.45, margin: 0 }}>
-                    {statusCopy.countdownNote}
-                  </p>
-                ) : null
-              })()}
             </div>
           </div>
           <div id="dashboard-actions" className="hidden lg:flex flex-wrap items-center justify-start lg:justify-end" style={{ gap: 10 }}>
+            {/* Layout toggle */}
+            <div
+              className="inline-flex items-center border border-nikah-border bg-white"
+              style={{ borderRadius: 999, padding: 3, gap: 2 }}
+              title="Pilih tampilan dashboard"
+            >
+              <button
+                type="button"
+                onClick={() => handleLayoutMode('band')}
+                title="Prioritas melebar penuh"
+                aria-pressed={layoutMode === 'band'}
+                className="transition-all active:scale-[0.95]"
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  width: 30, height: 30, borderRadius: 999,
+                  background: layoutMode === 'band' ? 'var(--nikah-deep)' : 'transparent',
+                  border: 0, cursor: 'pointer',
+                }}
+              >
+                {/* icon: 3 baris horizontal (band layout) */}
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <rect x="1" y="2" width="12" height="2.5" rx="1" fill={layoutMode === 'band' ? '#fff' : 'var(--nikah-muted)'} />
+                  <rect x="1" y="6" width="12" height="2.5" rx="1" fill={layoutMode === 'band' ? '#fff' : 'var(--nikah-muted)'} />
+                  <rect x="1" y="10" width="12" height="2.5" rx="1" fill={layoutMode === 'band' ? '#fff' : 'var(--nikah-muted)'} />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => handleLayoutMode('sidebar')}
+                title="Prioritas di sidebar"
+                aria-pressed={layoutMode === 'sidebar'}
+                className="transition-all active:scale-[0.95]"
+                style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  width: 30, height: 30, borderRadius: 999,
+                  background: layoutMode === 'sidebar' ? 'var(--nikah-deep)' : 'transparent',
+                  border: 0, cursor: 'pointer',
+                }}
+              >
+                {/* icon: 2 kolom (sidebar layout) */}
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                  <rect x="1" y="2" width="7" height="10" rx="1" fill={layoutMode === 'sidebar' ? '#fff' : 'var(--nikah-muted)'} />
+                  <rect x="10" y="2" width="3" height="10" rx="1" fill={layoutMode === 'sidebar' ? '#fff' : 'var(--nikah-muted)'} />
+                </svg>
+              </button>
+            </div>
             <Link
               href="/dashboard/summary"
-              className="inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm text-center hover:opacity-90 transition-all active:scale-[0.97] active:brightness-90"
-              style={{ padding: '13px 24px' }}
+              className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-center hover:bg-nikah-bg transition-all active:scale-[0.97] active:brightness-90"
+              style={{ padding: '10px 18px', fontSize: 13 }}
             >
               Lihat Ringkasan
             </Link>
@@ -622,8 +713,8 @@ export function DashboardClient({
               type="button"
               onClick={handleResetPlan}
               disabled={isResetting}
-              className="hidden lg:inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm text-center hover:bg-nikah-bg transition-all active:scale-[0.97] active:brightness-90 disabled:opacity-60"
-              style={{ padding: '13px 24px' }}
+              className="hidden lg:inline-flex items-center justify-center text-nikah-muted font-bold rounded-full text-center hover:text-nikah-deep hover:bg-nikah-bg transition-all active:scale-[0.97] disabled:opacity-60"
+              style={{ padding: '10px 18px', fontSize: 13 }}
             >
               {isResetting ? 'Membuka...' : 'Atur Ulang Data'}
             </button>
@@ -632,112 +723,126 @@ export function DashboardClient({
       </div>
 
       <main className="max-w-[1200px] mx-auto" style={{ padding: '0 var(--d-pad-page) 40px' }}>
-        <div className="grid grid-cols-1 lg:grid-cols-[1.05fr_0.95fr]" style={{ gap: 20, marginBottom: 20 }}>
-          <BudgetHealthCard
-            totalBudget={totalBudget}
-            vendorPayments={liveVendorPayments}
-            tabunganCollected={liveSavings}
-            finance={guidance.finance}
-          />
-          <div className="hidden lg:block">{OverviewCard}</div>
-        </div>
-
-        <div className="lg:hidden" style={{ marginBottom: 20 }}>
-          <MobileScoreStrip score={readiness.score} label={readiness.label} copy={statusCopy.mobileReadinessCopy} />
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-[1.7fr_1fr]" style={{ gap: 20, marginBottom: 22 }}>
-          <div>
-            <DashboardGuidanceCard insights={guidance.insights} />
-          </div>
-          <div>
-            <CurrentPriorities
-              days={days}
-              checkedIds={liveChecklistChecked}
-              vendorPayments={liveVendorPayments}
-              customChecklistItems={liveCustomChecklistItems}
-              hiddenChecklistItemIds={liveHiddenChecklistItemIds}
-              onSelectVendor={handleSelectVendor}
-              onSelectChecklist={handleSelectChecklist}
-            />
-            <div style={{ marginTop: 20 }}>
-              <DashboardMinimizableSection
-                sectionId="activity"
-                title="Aktivitas Terbaru"
-                badge={`${activityItems.length} update`}
-              >
-                {({ minimizeButton }) => (
-                  <DashboardActivityTimeline items={activityItems} headerAction={minimizeButton} />
-                )}
-              </DashboardMinimizableSection>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex flex-col">
-          <p className="order-1 text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve border-l-[3px] border-nikah-mauve pl-3" style={{ margin: '0 0 14px' }}>
-            <span className="lg:hidden">Dana &amp; Pembayaran</span>
-            <span className="hidden lg:inline">Dana &amp; Pembayaran</span>
-          </p>
-          <div className="order-2 grid grid-cols-1 lg:grid-cols-2" style={{ gap: 20, marginBottom: 20, alignItems: 'start' }}>
-            <div id="savings">
-              <TabunganNikah
-                collected={tabunganCollected}
-                target={totalBudget}
-                weddingDate={weddingDate}
-                history={savingsHistory}
-                onSaved={(collected, history) => {
-                  setLiveSavings(collected)
-                  setLiveSavingsHistory(history)
-                }}
+        <div className="flex flex-col lg:block" style={{ gap: 20 }}>
+          {/* LEVEL 2 — KPI ringkasan */}
+          <div className="contents lg:grid lg:grid-cols-3 lg:gap-5 lg:items-start">
+            <div className="order-1 lg:order-none">
+              <BudgetHealthCard
+                totalBudget={totalBudget}
+                vendorPayments={liveVendorPayments}
+                finance={guidance.finance}
               />
             </div>
-            <div id="vendor-payments">
-              <VendorPaymentTracker
-                initialPayments={vendorPayments}
-                onSaved={setLiveVendorPayments}
-                focusRequest={vendorFocusRequest}
-              />
+            <div className="order-3 lg:order-none">
+              <SavingsSummaryCard collected={liveSavings} target={totalBudget} weddingDate={weddingDate} />
             </div>
+            <div className="order-8 lg:order-none">{OverviewCard}</div>
           </div>
 
-          <div className="order-3 lg:order-5" style={{ marginBottom: 28 }}>
-            <DashboardNote initialNote={dashboardNote} />
-          </div>
-
-          <p className="order-4 lg:order-3 text-xs font-extrabold uppercase tracking-[0.18em] text-nikah-mauve border-l-[3px] border-nikah-mauve pl-3" style={{ margin: '0 0 14px' }}>
-            <span className="lg:hidden">Persiapan &amp; Referensi</span>
-            <span className="hidden lg:inline">Tugas &amp; Referensi</span>
-          </p>
-          <div className="order-5 lg:order-4 grid grid-cols-1 lg:grid-cols-[1.08fr_0.92fr]" style={{ gap: 20, marginBottom: 28, alignItems: 'start' }}>
-            <div id="checklist">
-              <ChecklistPernikahan
-                checkedIds={checklistChecked}
+          {/* LEVEL 2.5 — Prioritas full-width band (hanya mode 'band') */}
+          {layoutMode === 'band' && (
+            <div className="order-2 lg:mt-5">
+              <CurrentPriorities
                 days={days}
-                customItems={customChecklistItems}
-                hiddenDefaultIds={hiddenChecklistItemIds}
-                onSaved={setLiveChecklistChecked}
-                onCustomItemsSaved={setLiveCustomChecklistItems}
-                onHiddenItemsSaved={setLiveHiddenChecklistItemIds}
-                focusRequest={checklistFocusRequest}
+                checkedIds={liveChecklistChecked}
+                vendorPayments={liveVendorPayments}
+                customChecklistItems={liveCustomChecklistItems}
+                hiddenChecklistItemIds={liveHiddenChecklistItemIds}
+                onSelectVendor={handleSelectVendor}
+                onSelectChecklist={handleSelectChecklist}
               />
             </div>
-            <div className="grid" style={{ gap: 20 }}>
-              <DashboardMinimizableSection
-                sectionId="seserahan"
-                title="Seserahan"
-                badge={`${seserahanChecked.length} siap`}
-              >
-                {({ minimizeButton }) => (
-                  <SeserahanList
-                    checkedIds={seserahanChecked}
-                    customItems={customSeserahanItems}
-                    hiddenDefaultIds={hiddenSeserahanItemIds}
-                    headerAction={minimizeButton}
+          )}
+
+          {/* LEVEL 3 — workspace 2 kolom */}
+          <div className="contents lg:grid lg:grid-cols-[1.9fr_1fr] lg:gap-6 lg:items-start lg:mt-5">
+            {/* KIRI — keuangan, tugas, catatan */}
+            <div className="contents lg:flex lg:flex-col lg:gap-5">
+              <SectionHeader label="Keuangan" sub="Pantau pembayaran vendor dan tabungan kalian." />
+              <div id="vendor-payments" className="order-4 lg:order-none">
+                <VendorPaymentTracker
+                  initialPayments={vendorPayments}
+                  onSaved={setLiveVendorPayments}
+                  focusRequest={vendorFocusRequest}
+                />
+              </div>
+              <div id="savings" className="order-5 lg:order-none">
+                <TabunganNikah
+                  collected={tabunganCollected}
+                  target={totalBudget}
+                  weddingDate={weddingDate}
+                  history={savingsHistory}
+                  onSaved={(collected, history) => {
+                    setLiveSavings(collected)
+                    setLiveSavingsHistory(history)
+                  }}
+                />
+              </div>
+
+              <SectionHeader label="Tugas Pernikahan" sub="Checklist dan seserahan yang perlu diselesaikan." spaced />
+              <div id="checklist" className="order-6 lg:order-none">
+                <ChecklistPernikahan
+                  checkedIds={checklistChecked}
+                  days={days}
+                  customItems={customChecklistItems}
+                  hiddenDefaultIds={hiddenChecklistItemIds}
+                  onSaved={setLiveChecklistChecked}
+                  onCustomItemsSaved={setLiveCustomChecklistItems}
+                  onHiddenItemsSaved={setLiveHiddenChecklistItemIds}
+                  focusRequest={checklistFocusRequest}
+                />
+              </div>
+              <div className="order-7 lg:order-none">
+                <DashboardMinimizableSection
+                  sectionId="seserahan"
+                  title="Seserahan"
+                  badge={`${seserahanChecked.length} siap`}
+                >
+                  {({ minimizeButton }) => (
+                    <SeserahanList
+                      checkedIds={seserahanChecked}
+                      customItems={customSeserahanItems}
+                      hiddenDefaultIds={hiddenSeserahanItemIds}
+                      headerAction={minimizeButton}
+                    />
+                  )}
+                </DashboardMinimizableSection>
+              </div>
+
+              <SectionHeader label="Catatan" sub="Simpan reminder dan keputusan penting." spaced />
+              <div className="order-11 lg:order-none">
+                <DashboardNote initialNote={dashboardNote} />
+              </div>
+            </div>
+
+            {/* KANAN — sidebar: Prioritas (mode sidebar) + Aktivitas + Sebaran */}
+            <div className="contents lg:flex lg:flex-col lg:gap-5">
+              <SectionHeader label="Monitoring" sub={layoutMode === 'sidebar' ? 'Prioritas, aktivitas terbaru, dan sebaran budget.' : 'Aktivitas terbaru dan sebaran budget.'} />
+              {layoutMode === 'sidebar' && (
+                <div className="order-2 lg:order-none">
+                  <CurrentPriorities
+                    days={days}
+                    checkedIds={liveChecklistChecked}
+                    vendorPayments={liveVendorPayments}
+                    customChecklistItems={liveCustomChecklistItems}
+                    hiddenChecklistItemIds={liveHiddenChecklistItemIds}
+                    onSelectVendor={handleSelectVendor}
+                    onSelectChecklist={handleSelectChecklist}
                   />
-                )}
-              </DashboardMinimizableSection>
-              <div id="allocation">
+                </div>
+              )}
+              <div className="order-9 lg:order-none">
+                <DashboardMinimizableSection
+                  sectionId="activity"
+                  title="Aktivitas Terbaru"
+                  badge={`${activityItems.length} update`}
+                >
+                  {({ minimizeButton }) => (
+                    <DashboardActivityTimeline items={activityItems} headerAction={minimizeButton} />
+                  )}
+                </DashboardMinimizableSection>
+              </div>
+              <div id="allocation" className="order-10 lg:order-none">
                 <DashboardMinimizableSection
                   sectionId="allocation"
                   title="Sebaran Budget"
@@ -748,26 +853,26 @@ export function DashboardClient({
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Mobile: bottom action buttons */}
-          <div className="order-6 flex flex-col lg:hidden" style={{ marginTop: 0, gap: 10 }}>
-            <Link
-              href="/dashboard/summary"
-              className="w-full inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
-              style={{ padding: '15px 24px' }}
-            >
-              Lihat Ringkasan
-            </Link>
-            <button
-              type="button"
-              onClick={handleResetPlan}
-              disabled={isResetting}
-              className="w-full inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
-              style={{ padding: '15px 24px' }}
-            >
-              {isResetting ? 'Membuka...' : 'Atur Ulang Data'}
-            </button>
-          </div>
+        {/* Mobile: bottom action buttons */}
+        <div className="flex flex-col lg:hidden" style={{ marginTop: 20, gap: 10 }}>
+          <Link
+            href="/dashboard/summary"
+            className="w-full inline-flex items-center justify-center bg-nikah-deep text-white font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
+            style={{ padding: '15px 24px' }}
+          >
+            Lihat Ringkasan
+          </Link>
+          <button
+            type="button"
+            onClick={handleResetPlan}
+            disabled={isResetting}
+            className="w-full inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full text-sm active:scale-[0.97] active:brightness-90 transition-all"
+            style={{ padding: '15px 24px' }}
+          >
+            {isResetting ? 'Membuka...' : 'Atur Ulang Data'}
+          </button>
         </div>
       </main>
     </>
