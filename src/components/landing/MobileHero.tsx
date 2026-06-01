@@ -27,11 +27,11 @@ export function MobileHero() {
         className="max-w-[340px] text-[37px] font-medium italic leading-[1.01] text-[#3D1419]"
         style={{ fontFamily: SERIF }}
       >
-        Paket terlihat cocok. Tapi aman tidak buat keuangan kalian?
+        Budget nikah kalian cukup, atau cuma terlihat aman?
       </h1>
 
       <p className="mt-3 max-w-[330px] text-[14.5px] leading-6 text-[#6E5359]">
-        Cek budget, tamu, kota, dan gaya acara sebelum DP vendor. BudgetNikah bantu baca mana yang aman, mana yang perlu direm.
+        Simulasikan budget, jumlah tamu, dan gaya acara dalam 2 menit sebelum ambil keputusan besar.
       </p>
 
       <div className="mt-5 rounded-[8px] border border-[#E2CFC3] bg-[#FFF9F3] p-4 shadow-[0_16px_38px_rgba(90,30,42,0.095)]">
