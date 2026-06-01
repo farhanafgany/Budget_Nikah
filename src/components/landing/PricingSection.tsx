@@ -1,3 +1,4 @@
+import { ShieldCheck } from 'lucide-react'
 import { TrackedLink } from '@/components/analytics/TrackedLink'
 
 const WHAT_YOU_GET = [
@@ -52,8 +53,8 @@ export function PricingSection() {
                 href="/onboarding"
                 event="landing_cta_clicked"
                 eventProps={{ cta_location: 'pricing', target: 'onboarding' }}
-                className="inline-flex w-full md:w-auto items-center justify-center text-nikah-deep font-semibold text-sm text-center hover:underline"
-                style={{ padding: '8px 0' }}
+                className="inline-flex w-full md:w-auto items-center justify-center bg-white text-nikah-deep font-bold rounded-full text-sm text-center border border-nikah-deep/35 transition-colors active:scale-95 hover:bg-[#FBF6F7]"
+                style={{ padding: '14px 28px' }}
               >
                 Coba gratis dulu →
               </TrackedLink>
@@ -78,9 +79,12 @@ export function PricingSection() {
               ))}
           </ul>
 
-          <p className="text-center text-sm text-nikah-muted mt-6 font-light" style={{ lineHeight: 1.55 }}>
-            3 hari tanpa pertanyaan — tidak cocok? Uang kembali penuh.
-          </p>
+          <div className="mt-6 flex justify-center">
+            <span className="inline-flex items-center gap-2 rounded-full border border-nikah-deep/15 bg-[#FBF6F7] px-4 py-2 text-center text-[12.5px] font-semibold text-nikah-deep" style={{ lineHeight: 1.4 }}>
+              <ShieldCheck aria-hidden="true" className="h-4 w-4 flex-shrink-0 text-nikah-deep" />
+              3 hari tanpa pertanyaan — tidak cocok? Uang kembali penuh.
+            </span>
+          </div>
         </div>
         </div>
 
