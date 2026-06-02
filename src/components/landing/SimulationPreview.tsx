@@ -22,6 +22,7 @@ function ScenarioCard({ label, guests, score, status }: ScenarioCardProps) {
 
   return (
     <div
+      data-landing-card="scenario"
       className="border border-nikah-border px-5 pt-5 pb-5 md:px-[34px] md:pt-8 md:pb-[30px]"
       style={{
         borderRadius: 28,
@@ -106,7 +107,7 @@ function ScenarioCard({ label, guests, score, status }: ScenarioCardProps) {
 
 export function SimulationPreview() {
   return (
-    <section id="contoh-hasil" className="px-6 md:px-8 pt-14 pb-14 md:pt-24 md:pb-28 bg-nikah-bg">
+    <section id="contoh-hasil" data-landing-section="simulation-preview" className="px-6 md:px-8 pt-14 pb-14 md:pt-24 md:pb-28 bg-nikah-bg">
       <div className="max-w-[1080px] mx-auto">
         <p className="text-center text-xs font-extrabold uppercase tracking-[0.2em] text-nikah-mauve" style={{ margin: '0 0 12px' }}>
           Lihat Bedanya
@@ -130,10 +131,11 @@ export function SimulationPreview() {
         <div className="text-center mb-8 md:mb-[56px]">
           <Link
             href="/onboarding"
+            data-landing-cta="free-block"
             className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm transition-colors hover:opacity-90 active:scale-95"
             style={{ padding: '15px 30px' }}
           >
-            Coba dengan angkamu sendiri →
+            Mulai simulasi gratis →
           </Link>
         </div>
 
@@ -161,6 +163,7 @@ export function SimulationPreview() {
 
         {/* Transparansi skor — kenapa angkanya bisa beda, biar tidak terasa ngarang */}
         <div
+          data-landing-card="score-explanation"
           className="max-w-[760px] mx-auto mt-8 md:mt-12 bg-white border border-nikah-border rounded-[20px]"
           style={{ padding: '24px', boxShadow: '0 2px 12px rgba(90,30,42,0.05)' }}
         >

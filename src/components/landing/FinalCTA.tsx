@@ -2,8 +2,9 @@ import { TrackedLink } from '@/components/analytics/TrackedLink'
 
 export function FinalCTA() {
   return (
-    <section className="px-6 md:px-8 pt-0 pb-14 md:pb-28 bg-nikah-bg">
+    <section data-landing-section="final-cta" className="px-6 md:px-8 pt-0 pb-14 md:pb-28 bg-nikah-bg">
       <div
+        data-landing-card="final-cta"
         className="max-w-[540px] mx-auto text-center text-white relative overflow-hidden"
         style={{
           background: 'linear-gradient(160deg, var(--landing-deep, var(--nikah-deep)) 0%, var(--landing-deep-dark, #3D1419) 100%)',
@@ -31,6 +32,7 @@ export function FinalCTA() {
           </p>
           <TrackedLink
             href="/onboarding"
+            data-landing-cta="final-inverse"
             event="landing_cta_clicked"
             eventProps={{ cta_location: 'final', target: 'onboarding' }}
             className="block w-full text-nikah-deep font-extrabold rounded-full text-center transition-colors hover:bg-nikah-pink"
@@ -41,7 +43,7 @@ export function FinalCTA() {
               boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
             }}
           >
-            Mulai sekarang →
+            Mulai simulasi gratis →
           </TrackedLink>
         </div>
       </div>

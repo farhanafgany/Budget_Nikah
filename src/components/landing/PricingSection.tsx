@@ -12,7 +12,7 @@ const WHAT_YOU_GET = [
 
 export function PricingSection() {
   return (
-    <section className="px-6 md:px-8 py-14 md:py-28 bg-white" id="harga">
+    <section data-landing-section="pricing" className="px-6 md:px-8 py-14 md:py-28 bg-white" id="harga">
       <div className="max-w-[1080px] mx-auto">
 
         <p className="text-xs font-extrabold uppercase tracking-widest text-nikah-mauve text-center mb-3">
@@ -27,6 +27,7 @@ export function PricingSection() {
 
         <div className="max-w-[760px] mx-auto">
         <div
+          data-landing-card="pricing"
           className="bg-white rounded-[24px] relative overflow-hidden"
           style={{ padding: '36px 36px 30px', border: '1px solid color-mix(in srgb, var(--landing-deep, #6B3545) 42%, var(--landing-border, #EDE4E6))', boxShadow: '0 12px 34px rgba(90,30,42,0.06)' }}
         >
@@ -42,6 +43,7 @@ export function PricingSection() {
             <div className="flex flex-col gap-3">
               <TrackedLink
                 href="/premium"
+                data-landing-cta="premium"
                 event="landing_cta_clicked"
                 eventProps={{ cta_location: 'pricing', target: 'premium' }}
                 className="inline-flex w-full md:w-auto items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm text-center transition-colors active:scale-95 hover:opacity-90"
@@ -51,6 +53,7 @@ export function PricingSection() {
               </TrackedLink>
               <TrackedLink
                 href="/onboarding"
+                data-landing-cta="free-secondary"
                 event="landing_cta_clicked"
                 eventProps={{ cta_location: 'pricing', target: 'onboarding' }}
                 className="inline-flex w-full md:w-auto items-center justify-center bg-white text-nikah-deep font-bold rounded-full text-sm text-center border border-nikah-deep/35 transition-colors active:scale-95 hover:bg-[#FBF6F7]"

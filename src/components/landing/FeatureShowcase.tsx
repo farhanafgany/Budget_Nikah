@@ -35,7 +35,7 @@ const FEATURES = [
 
 export function FeatureShowcase() {
   return (
-    <section id="fitur" className="px-6 md:px-8 py-14 md:py-28 bg-white">
+    <section id="fitur" data-landing-section="feature-showcase" className="px-6 md:px-8 py-14 md:py-28 bg-white">
       <div className="max-w-[1080px] mx-auto">
         <p className="text-xs font-extrabold uppercase tracking-widest text-nikah-mauve text-center mb-3">
           Semua dalam satu tempat
@@ -52,6 +52,7 @@ export function FeatureShowcase() {
           {FEATURES.map((f) => (
             <div
               key={f.title}
+              data-landing-card="feature"
               className="bg-white border border-nikah-border rounded-[16px]"
               style={{
                 padding: '16px 18px',

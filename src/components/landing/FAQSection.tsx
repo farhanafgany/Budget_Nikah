@@ -21,7 +21,7 @@ const FAQS = [
 // <details>/<summary> native HTML: zero JS, aksesibel, dan keyboard-navigable.
 export function FAQSection() {
   return (
-    <section className="px-6 md:px-8 py-14 md:py-28 bg-nikah-bg">
+    <section data-landing-section="faq" className="px-6 md:px-8 py-14 md:py-28 bg-nikah-bg">
       <div className="max-w-[660px] mx-auto">
         <p className="text-xs font-extrabold uppercase tracking-widest text-nikah-mauve text-center mb-3">FAQ</p>
         <h2
@@ -34,6 +34,7 @@ export function FAQSection() {
           {FAQS.map((faq, i) => (
             <details
               key={i}
+              data-landing-card="faq"
               className="border-b border-nikah-border overflow-hidden group"
               open={i === 0}
             >

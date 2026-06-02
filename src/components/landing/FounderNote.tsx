@@ -13,13 +13,14 @@ export function FounderNote() {
   )
 
   return (
-    <section className="px-6 md:px-8 py-14 md:py-24 bg-white">
+    <section data-landing-section="founder-note" className="px-6 md:px-8 py-14 md:py-24 bg-white">
       <div className="max-w-[720px] mx-auto">
         <p className="text-center text-xs font-extrabold uppercase tracking-widest text-nikah-mauve mb-6">
           Di balik BudgetNikah
         </p>
 
         <div
+          data-landing-card="founder"
           className="bg-nikah-bg border border-nikah-border rounded-[24px] text-center"
           style={{ padding: '36px 28px', boxShadow: '0 4px 18px rgba(90,30,42,0.05)' }}
         >

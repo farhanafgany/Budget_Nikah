@@ -12,10 +12,11 @@ import { FinalCTA }           from '@/components/landing/FinalCTA'
 import { Footer }             from '@/components/landing/Footer'
 import { FloatingWhatsApp }   from '@/components/landing/FloatingWhatsApp'
 import { SmoothSectionScroll } from '@/components/landing/SmoothSectionScroll'
+import styles from '@/components/landing/LandingMobilePolish.module.css'
 
 export default function LandingPage() {
   return (
-    <div className="landing-theme">
+    <div className={`landing-theme ${styles.mobilePolish}`}>
       <SmoothSectionScroll />
       <Navbar />
       <main>

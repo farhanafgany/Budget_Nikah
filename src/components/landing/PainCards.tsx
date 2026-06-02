@@ -21,7 +21,7 @@ const PAINS = [
 
 export function PainCards() {
   return (
-    <section className="px-6 md:px-8 py-14 md:py-28 bg-white">
+    <section data-landing-section="pain-cards" className="px-6 md:px-8 py-14 md:py-28 bg-white">
       <div className="max-w-[1080px] mx-auto">
         <p className="text-center text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-2">
           Kamu tidak sendirian
@@ -39,6 +39,7 @@ export function PainCards() {
           {PAINS.map((item) => (
             <div
               key={item.q}
+              data-landing-card="pain"
               className="bg-nikah-bg border border-nikah-border border-l-4 border-l-nikah-mauve rounded-[20px] hover:border-l-nikah-deep hover:translate-x-0.5 transition-all duration-150"
               style={{ padding: '18px 20px' }}
             >
@@ -51,10 +52,11 @@ export function PainCards() {
         <div className="mt-8 text-center max-w-[720px] mx-auto">
           <Link
             href="/onboarding"
+            data-landing-cta="free-block"
             className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm transition-colors hover:opacity-90 active:scale-95"
             style={{ padding: '16px 32px' }}
           >
-            Cek kesiapan nikahmu — gratis →
+            Mulai simulasi gratis →
           </Link>
           <p className="mt-3 text-xs text-nikah-muted font-light">Tanpa daftar · Selesai 2 menit</p>
         </div>

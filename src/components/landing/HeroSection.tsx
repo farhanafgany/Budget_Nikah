@@ -54,7 +54,7 @@ export function HeroSection() {
             <span>2 menit · tanpa daftar</span>
           </div>
 
-          {/* Mobile: interactive slider — client component */}
+          {/* Mobile hero — client component */}
           <MobileHero />
 
           {/* Desktop headline */}

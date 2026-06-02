@@ -28,7 +28,7 @@ const FACTS = [
 
 export function TrustMetrics() {
   return (
-    <section className="px-6 md:px-8 py-14 md:py-24 bg-white">
+    <section data-landing-section="trust-metrics" className="px-6 md:px-8 py-14 md:py-24 bg-white">
       <div className="max-w-[900px] mx-auto">
         <p className="text-center text-xs font-extrabold uppercase tracking-widest text-nikah-mauve mb-3">
           Cara kerja yang transparan
@@ -44,6 +44,7 @@ export function TrustMetrics() {
           {FACTS.map(f => (
             <div
               key={f.label}
+              data-landing-card="metric"
               className="bg-white border border-nikah-border"
               style={{
                 borderRadius: 20,
