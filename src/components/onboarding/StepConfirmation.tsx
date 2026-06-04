@@ -148,10 +148,11 @@ export function StepConfirmation() {
 
   return (
     <StepWrapper
-      stepIndex={6}
+      stepIndex={7}
       onNext={() => { void handleNext() }}
       onBack={prevStep}
       nextLabel={saving ? 'Menyimpan...' : 'Lihat hasilnya →'}
+      nextDisabled={saving}
       hideStepCounter
     >
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Hampir selesai</p>

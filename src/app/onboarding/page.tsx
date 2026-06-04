@@ -1,5 +1,5 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 import { bucketBudget, bucketGuests, track } from '@/lib/analytics'
 import { getCityTier } from '@/lib/cityTiers'
@@ -13,26 +13,32 @@ import { StepEventPriority } from '@/components/onboarding/StepEventPriority'
 import { StepConfirmation }  from '@/components/onboarding/StepConfirmation'
 
 const STEPS = [
-  StepNames,
   StepCity,
-  StepDate,
   StepBudget,
   StepGuests,
   StepStyle,
   StepEventPriority,
+  StepDate,
+  StepNames,
   StepConfirmation,
 ]
 
-const STEP_NAMES = ['names', 'city', 'date', 'budget', 'guests', 'style', 'event_priority', 'confirmation']
+const STEP_NAMES = ['city', 'budget', 'guests', 'style', 'event_priority', 'date', 'names', 'confirmation']
 
 export default function OnboardingPage() {
   const currentStep = useOnboardingStore(s => s.currentStep)
   const totalBudget = useOnboardingStore(s => s.totalBudget)
   const guestCount = useOnboardingStore(s => s.guestCount)
   const weddingCity = useOnboardingStore(s => s.weddingCity)
+  const startedTrackedRef = useRef(false)
+  const lastViewedStepRef = useRef<number | null>(null)
 
   useEffect(() => {
-    if (currentStep === 0) {
+    if (lastViewedStepRef.current === currentStep) return
+    lastViewedStepRef.current = currentStep
+
+    if (currentStep === 0 && !startedTrackedRef.current) {
+      startedTrackedRef.current = true
       track('onboarding_started')
     }
 

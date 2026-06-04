@@ -6,25 +6,26 @@ import { bucketBudget, bucketGuests, track } from '@/lib/analytics'
 import { getCityTier } from '@/lib/cityTiers'
 import { useOnboardingStore } from '@/stores/onboardingStore'
 
-const TOTAL_STEPS = 7
+const TOTAL_STEPS = 8
 
 const STEP_LABELS = [
-  { label: 'Pasangan',  hint: 'Nama kalian berdua' },
   { label: 'Kota',      hint: 'Lokasi pernikahan' },
-  { label: 'Tanggal',   hint: 'Hari H acara' },
   { label: 'Budget',    hint: 'Total biaya yang disiapkan' },
   { label: 'Tamu',      hint: 'Jumlah undangan' },
   { label: 'Gaya',      hint: 'Visi dan karakter acara' },
   { label: 'Prioritas', hint: 'Yang paling penting buat kalian' },
+  { label: 'Tanggal',   hint: 'Hari H acara' },
+  { label: 'Nama',      hint: 'Untuk personalisasi hasil' },
+  { label: 'Review',    hint: 'Cek sebelum lihat hasil' },
 ]
 
-const STEP_NAMES = ['names', 'city', 'date', 'budget', 'guests', 'style', 'event_priority']
+const STEP_NAMES = ['city', 'budget', 'guests', 'style', 'event_priority', 'date', 'names', 'confirmation']
 
 const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
 
 interface StepWrapperProps {
   children: ReactNode
-  onNext: () => void
+  onNext: () => void | false
   onBack?: () => void
   nextLabel?: string
   nextDisabled?: boolean
@@ -53,6 +54,9 @@ export function StepWrapper({
   }, [partnerOneName, stepIndex])
 
   function handleNext() {
+    const result = onNext()
+    if (result === false) return
+
     track('onboarding_step_completed', {
       step_index: stepIndex,
       step_name: STEP_NAMES[stepIndex] ?? 'unknown',
@@ -60,7 +64,6 @@ export function StepWrapper({
       guest_bucket: bucketGuests(guestCount),
       city_tier: weddingCity ? getCityTier(weddingCity) : 'unknown',
     })
-    onNext()
   }
 
   return (

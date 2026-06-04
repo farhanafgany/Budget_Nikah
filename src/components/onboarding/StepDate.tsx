@@ -25,7 +25,7 @@ export function StepDate() {
   const months = weddingDate ? monthsUntil(weddingDate) : null
 
   return (
-    <StepWrapper stepIndex={2} onNext={handleNext} onBack={prevStep}>
+    <StepWrapper stepIndex={5} onNext={handleNext} onBack={prevStep}>
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Tanggal</p>
       <h2 className="text-2xl font-extrabold text-nikah-text mb-1">Kapan rencananya?</h2>
       <p className="text-nikah-muted text-sm mb-8 font-light">

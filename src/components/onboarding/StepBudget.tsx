@@ -14,7 +14,7 @@ export function StepBudget() {
   const { totalBudget, setField, nextStep, prevStep } = useOnboardingStore()
 
   return (
-    <StepWrapper stepIndex={3} onNext={nextStep} onBack={prevStep} nextDisabled={totalBudget <= 0}>
+    <StepWrapper stepIndex={1} onNext={nextStep} onBack={prevStep} nextDisabled={totalBudget <= 0}>
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Budget</p>
       <h2 className="text-2xl font-extrabold text-nikah-text mb-1">Berapa total budget?</h2>
       <p className="text-nikah-muted text-sm mb-8 font-light">Total biaya yang kalian siapkan.</p>

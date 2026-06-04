@@ -4,13 +4,13 @@ import { StepWrapper } from './StepWrapper'
 import { CitySearchSelect } from './CitySearchSelect'
 
 export function StepCity() {
-  const { weddingCity, setField, nextStep, prevStep } = useOnboardingStore()
+  const { weddingCity, setField, nextStep } = useOnboardingStore()
 
   return (
-    <StepWrapper stepIndex={1} onNext={nextStep} onBack={prevStep} nextDisabled={!weddingCity}>
+    <StepWrapper stepIndex={0} onNext={nextStep} nextDisabled={!weddingCity}>
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Lokasi</p>
       <h2 className="text-2xl font-extrabold text-nikah-text mb-1">Di kota mana?</h2>
-      <p className="text-nikah-muted text-sm mb-6 font-light">Harga layanan berbeda di tiap kota.</p>
+      <p className="text-nikah-muted text-sm mb-6 font-light">Mulai dari kota dulu supaya estimasi biaya lebih realistis.</p>
 
       <div>
         <label className="block text-xs font-bold text-nikah-text mb-1.5">Kota pernikahan</label>

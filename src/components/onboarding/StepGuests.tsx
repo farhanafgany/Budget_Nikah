@@ -27,7 +27,7 @@ export function StepGuests() {
   const perGuest = guestCount > 0 && totalBudget > 0 ? Math.round(totalBudget / guestCount) : 0
 
   return (
-    <StepWrapper stepIndex={4} onNext={nextStep} onBack={prevStep} nextDisabled={guestCount <= 0}>
+    <StepWrapper stepIndex={2} onNext={nextStep} onBack={prevStep} nextDisabled={guestCount <= 0}>
       <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Tamu</p>
       <h2 className="text-2xl font-extrabold text-nikah-text mb-1">Berapa jumlah tamu?</h2>
       <p className="text-nikah-muted text-sm mb-8 font-light">Perkiraan total undangan dua keluarga.</p>

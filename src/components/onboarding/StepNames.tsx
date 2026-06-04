@@ -4,20 +4,22 @@ import { useOnboardingStore } from '@/stores/onboardingStore'
 import { StepWrapper } from './StepWrapper'
 
 export function StepNames() {
-  const { partnerOneName, partnerTwoName, setField, nextStep } = useOnboardingStore()
+  const { partnerOneName, partnerTwoName, setField, nextStep, prevStep } = useOnboardingStore()
   const [showHint, setShowHint] = useState(false)
   const canNext = partnerOneName.trim().length > 0
 
   function handleNext() {
-    if (!canNext) { setShowHint(true); return }
+    if (!canNext) { setShowHint(true); return false }
     nextStep()
   }
 
   return (
-    <StepWrapper stepIndex={0} onNext={handleNext} nextDisabled={false}>
-      <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Pasangan</p>
-      <h2 className="text-2xl font-extrabold text-nikah-text mb-1">Siapa nama kalian?</h2>
-      <p className="text-nikah-muted text-sm mb-8 font-light">Untuk personalisasi rencana wedding kalian.</p>
+    <StepWrapper stepIndex={6} onNext={handleNext} onBack={prevStep} nextDisabled={false}>
+      <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Nama</p>
+      <h2 className="text-2xl font-extrabold text-nikah-text mb-1">Mau kami panggil siapa?</h2>
+      <p className="text-nikah-muted text-sm mb-8 font-light">
+        Cukup nama panggilan kamu. Nama pasangan boleh dikosongkan.
+      </p>
 
       <div className="space-y-4">
         <div>
@@ -47,17 +49,20 @@ export function StepNames() {
         </div>
       </div>
 
+      <p className="text-nikah-muted text-xs mt-4">
+        Data onboarding tersimpan di perangkat kalian dan tidak dikirim tanpa izin.
+      </p>
+
       {partnerOneName && (
         <div
           className="mt-8 border border-nikah-border rounded-2xl px-4 py-4"
           style={{ background: 'linear-gradient(135deg, #FFFCF8 0%, #F8F1EA 100%)' }}
         >
-          <p className="text-xs font-bold text-nikah-mauve uppercase tracking-widest mb-2">Hanya 6 langkah lagi</p>
+          <p className="text-xs font-bold text-nikah-mauve uppercase tracking-widest mb-2">Satu langkah lagi</p>
           <p className="text-nikah-text text-sm font-medium" style={{ lineHeight: 1.55 }}>
-            Hai {partnerOneName.split(' ')[0]}! Kami akan hitung estimasi biaya, kesiapan, dan panduan prioritas
-            khusus untuk situasi kalian — dalam 2 menit.
+            Hai {partnerOneName.split(' ')[0]}! Setelah ini kami rangkum estimasi biaya, kesiapan, dan prioritas
+            yang cocok untuk situasi kalian.
           </p>
-          <p className="text-nikah-muted text-xs mt-2">🔒 Data tersimpan di perangkat kalian, tidak dikirim ke mana pun tanpa izin.</p>
         </div>
       )}
     </StepWrapper>

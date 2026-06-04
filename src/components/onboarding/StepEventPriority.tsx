@@ -25,16 +25,16 @@ export function StepEventPriority() {
 
   return (
     <StepWrapper
-      stepIndex={6}
+      stepIndex={4}
       onNext={nextStep}
       onBack={prevStep}
       nextLabel="Lanjut →"
       nextDisabled={!canNext}
     >
-      <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Terakhir</p>
+      <p className="text-xs font-bold uppercase tracking-widest text-nikah-mauve mb-1">Prioritas</p>
       <h2 className="text-2xl font-extrabold text-nikah-text mb-1">Jenis acara & prioritas</h2>
       <p className="text-nikah-muted text-sm mb-6 font-light">
-        {canNext ? '✓ Semua dipilih — siap lihat hasilnya!' : 'Dua pilihan terakhir sebelum hasil kalian.'}
+        {canNext ? '✓ Semua dipilih — tinggal detail akhir.' : 'Dua pilihan ini bantu kami membaca gaya keputusan kalian.'}
       </p>
 
       <div className="mb-6">
