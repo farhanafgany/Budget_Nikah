@@ -10,6 +10,8 @@ const WHAT_YOU_GET = [
   { label: 'Budget per kategori lebih terkendali',      note: 'benchmark agar tidak kebablasan' },
 ]
 
+const MOBILE_WHAT_YOU_GET = WHAT_YOU_GET.slice(0, 4)
+
 export function PricingSection() {
   return (
     <section data-landing-section="pricing" className="px-6 md:px-8 py-14 md:py-28 bg-white" id="harga">
@@ -66,20 +68,36 @@ export function PricingSection() {
 
           <div className="border-t border-nikah-border" style={{ margin: '30px 0 24px' }} />
 
-          <ul className="grid grid-cols-1 md:grid-cols-2" style={{ gap: '12px 24px' }}>
-              {WHAT_YOU_GET.map(item => (
-                <li key={item.label} className="flex items-start gap-2.5">
-                  <div className="w-4 h-4 rounded-full bg-[#F5E8EC] flex-shrink-0 flex items-center justify-center mt-0.5" aria-hidden="true">
-                    <svg className="w-2.5 h-2.5 text-nikah-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <div>
-                    <span className="text-sm font-semibold text-nikah-text">{item.label}</span>
-                    {item.note && <p className="text-xs text-nikah-muted font-light mt-0.5">{item.note}</p>}
-                  </div>
-                </li>
-              ))}
+          <ul className="grid grid-cols-1 md:hidden" style={{ gap: 12 }}>
+            {MOBILE_WHAT_YOU_GET.map(item => (
+              <li key={item.label} className="flex items-start gap-2.5">
+                <div className="w-4 h-4 rounded-full bg-[#F5E8EC] flex-shrink-0 flex items-center justify-center mt-0.5" aria-hidden="true">
+                  <svg className="w-2.5 h-2.5 text-nikah-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <span className="text-sm font-semibold text-nikah-text">{item.label}</span>
+                  {item.note && <p className="text-xs text-nikah-muted font-light mt-0.5">{item.note}</p>}
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <ul className="hidden md:grid md:grid-cols-2" style={{ gap: '12px 24px' }}>
+            {WHAT_YOU_GET.map(item => (
+              <li key={item.label} className="flex items-start gap-2.5">
+                <div className="w-4 h-4 rounded-full bg-[#F5E8EC] flex-shrink-0 flex items-center justify-center mt-0.5" aria-hidden="true">
+                  <svg className="w-2.5 h-2.5 text-nikah-deep" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <span className="text-sm font-semibold text-nikah-text">{item.label}</span>
+                  {item.note && <p className="text-xs text-nikah-muted font-light mt-0.5">{item.note}</p>}
+                </div>
+              </li>
+            ))}
           </ul>
 
           <div className="mt-6 flex justify-center">

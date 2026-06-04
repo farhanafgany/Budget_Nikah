@@ -19,6 +19,8 @@ const PAINS = [
   },
 ]
 
+const MOBILE_PAINS = PAINS.slice(0, 3)
+
 export function PainCards() {
   return (
     <section data-landing-section="pain-cards" className="px-6 md:px-8 py-14 md:py-28 bg-white">
@@ -35,7 +37,22 @@ export function PainCards() {
         <p className="text-center text-nikah-muted text-base md:text-lg mb-7 md:mb-12 font-light max-w-lg mx-auto leading-relaxed">
           Perencanaan wedding memang overwhelming — sampai kamu punya angka yang jelas.
         </p>
-        <div className="flex flex-col gap-4 md:gap-[18px] max-w-[720px] mx-auto">
+
+        <div className="flex flex-col gap-3 md:hidden max-w-[720px] mx-auto">
+          {MOBILE_PAINS.map((item) => (
+            <div
+              key={item.q}
+              data-landing-card="pain"
+              className="bg-nikah-bg border border-nikah-border"
+              style={{ padding: '16px 18px' }}
+            >
+              <p className="font-bold text-nikah-text leading-snug mb-1" style={{ fontSize: 15 }}>{item.q}</p>
+              <p className="text-nikah-muted font-light leading-relaxed" style={{ fontSize: 13.5 }}>{item.note}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden flex-col gap-4 md:flex md:gap-[18px] max-w-[720px] mx-auto">
           {PAINS.map((item) => (
             <div
               key={item.q}
@@ -49,7 +66,7 @@ export function PainCards() {
           ))}
         </div>
 
-        <div className="mt-8 text-center max-w-[720px] mx-auto">
+        <div className="mt-7 md:mt-8 text-center max-w-[720px] mx-auto">
           <Link
             href="/onboarding"
             data-landing-cta="free-block"

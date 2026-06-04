@@ -128,7 +128,7 @@ export function SimulationPreview() {
         <p className="text-center text-nikah-muted font-light" style={{ fontSize: 17, lineHeight: 1.5, margin: '0 auto 32px', maxWidth: 640 }}>
           Dari 600 ke 350 tamu: skornya langsung berbeda.
         </p>
-        <div className="text-center mb-8 md:mb-[56px]">
+        <div className="hidden md:block text-center mb-8 md:mb-[56px]">
           <Link
             href="/onboarding"
             data-landing-cta="free-block"
@@ -165,19 +165,19 @@ export function SimulationPreview() {
         <div
           data-landing-card="score-explanation"
           className="max-w-[760px] mx-auto mt-8 md:mt-12 bg-white border border-nikah-border rounded-[20px]"
-          style={{ padding: '24px', boxShadow: '0 2px 12px rgba(90,30,42,0.05)' }}
+          style={{ padding: '20px 22px', boxShadow: '0 2px 12px rgba(90,30,42,0.05)' }}
         >
           <p className="text-xs font-extrabold uppercase tracking-[0.16em] text-nikah-mauve" style={{ margin: '0 0 10px' }}>
             Kenapa skornya bisa beda?
           </p>
-          <p className="text-nikah-muted" style={{ fontSize: 14.5, lineHeight: 1.6, margin: '0 0 18px' }}>
+          <p className="text-nikah-muted" style={{ fontSize: 14.5, lineHeight: 1.6, margin: '0 0 6px' }}>
             Bukan angka acak. Dengan budget yang sama, menurunkan tamu dari 600 ke 350 menaikkan{' '}
             <strong className="text-nikah-text" style={{ fontWeight: 600 }}>budget per tamu</strong> — dan itulah yang mengangkat skor dari Moderate ke Healthy.
           </p>
-          <p className="text-[11px] font-bold uppercase tracking-wide text-nikah-muted" style={{ margin: '0 0 10px' }}>
+          <p className="hidden sm:block text-[11px] font-bold uppercase tracking-wide text-nikah-muted" style={{ margin: '18px 0 10px' }}>
             Yang dinilai:
           </p>
-          <ul className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: '8px 24px', margin: 0, padding: 0, listStyle: 'none' }}>
+          <ul className="hidden sm:grid grid-cols-1 sm:grid-cols-2" style={{ gap: '8px 24px', margin: 0, padding: 0, listStyle: 'none' }}>
             {SCORE_FACTORS.map(factor => (
               <li key={factor} className="flex items-start" style={{ gap: 10 }}>
                 <span aria-hidden="true" className="flex-shrink-0 rounded-full bg-nikah-mauve" style={{ width: 6, height: 6, marginTop: 7 }} />

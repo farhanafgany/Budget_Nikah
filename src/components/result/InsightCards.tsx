@@ -10,7 +10,7 @@ const DOT_COLOR: Record<string, string> = {
 
 export function InsightCards({ insights }: { insights: Insight[] }) {
   return (
-    <div className="bg-white rounded-[20px] border border-nikah-border shadow-sm" style={{ padding: 28 }}>
+    <div className="bg-white rounded-[20px] border border-nikah-border shadow-sm p-5 md:p-7">
       <div className="flex items-center justify-between gap-3" style={{ marginBottom: 6 }}>
         <span className="inline-flex items-center gap-2">
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-nikah-bg text-nikah-deep">
@@ -22,7 +22,7 @@ export function InsightCards({ insights }: { insights: Insight[] }) {
         </span>
       </div>
       <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: '0 0 16px' }}>
-        Kami menemukan beberapa hal dari jawaban kalian. Langkah menyelesaikannya tersusun di dalam rencana lengkap.
+        Kami menemukan beberapa hal dari jawaban kalian. Ini ringkasannya, sebelum kalian masuk ke rencana lengkap.
       </p>
 
       <div style={{ display: 'grid', gap: 10 }}>
@@ -30,10 +30,9 @@ export function InsightCards({ insights }: { insights: Insight[] }) {
           <div
             key={i}
             style={{
-              padding: '13px 14px', background: 'var(--nikah-bg)', borderRadius: 12,
+              padding: '14px 14px 13px', background: 'var(--nikah-bg)', borderRadius: 12,
             }}
           >
-            {/* Temuan — terbaca */}
             <div style={{ display: 'flex', gap: 12, alignItems: 'flex-start' }}>
               <span
                 style={{
@@ -46,35 +45,36 @@ export function InsightCards({ insights }: { insights: Insight[] }) {
                 {it.title}
               </strong>
             </div>
+            <p className="text-nikah-muted" style={{ fontSize: 12.5, lineHeight: 1.55, margin: '7px 0 0 20px' }}>
+              {it.body}
+            </p>
 
-            {/* Langkah penyelesaian — terkunci, tidak dirender ke DOM */}
             <div
               className="flex items-center"
-              style={{ gap: 9, marginTop: 9, marginLeft: 20 }}
-              aria-label="Langkah penyelesaian terkunci"
+              style={{ gap: 8, marginTop: 11, marginLeft: 20, color: 'var(--nikah-mauve)' }}
+              aria-label="Langkah detail tersedia di rencana lengkap"
             >
               <Lock size={12} strokeWidth={1.8} aria-hidden="true" style={{ color: 'var(--nikah-mauve)', flexShrink: 0 }} />
               <span
                 aria-hidden="true"
                 style={{
-                  flex: 1, maxWidth: ['74%', '60%', '68%'][i % 3], height: 8, borderRadius: 999,
+                  flex: 1, maxWidth: ['58%', '48%', '54%'][i % 3], height: 7, borderRadius: 999,
                   background: 'linear-gradient(90deg, #E7D6DC 0%, #EFE3E6 100%)',
                 }}
               />
-              <span className="text-nikah-muted" style={{ fontSize: 11, flexShrink: 0, whiteSpace: 'nowrap' }}>
-                Cara menyelesaikan
+              <span style={{ fontSize: 10.5, flexShrink: 0, whiteSpace: 'nowrap', fontWeight: 700 }}>
+                Langkah detail
               </span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* CTA */}
       <TrackedLink
         href="/premium"
         event="result_premium_cta_clicked"
         eventProps={{ cta_location: 'result_insight_lock' }}
-        className="inline-flex items-center justify-center w-full md:w-auto font-extrabold transition hover:brightness-105 active:scale-[0.99]"
+        className="hidden md:inline-flex items-center justify-center w-full md:w-auto font-extrabold transition hover:brightness-105 active:scale-[0.99]"
         style={{
           gap: 8, marginTop: 18, borderRadius: 999, padding: '13px 24px', fontSize: 14,
           color: '#4A1822',
@@ -83,7 +83,7 @@ export function InsightCards({ insights }: { insights: Insight[] }) {
         }}
       >
         <Lock size={14} strokeWidth={2} aria-hidden="true" />
-        Buka langkah penyelesaian — Rp 149rb
+        Buka rencana lengkap — Rp 149rb
       </TrackedLink>
     </div>
   )

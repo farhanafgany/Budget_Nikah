@@ -1,16 +1,16 @@
 @media (max-width: 767px) {
   .mobilePolish :global([data-landing-section]) {
-    padding-top: 52px;
-    padding-bottom: 52px;
+    padding-top: 44px;
+    padding-bottom: 44px;
   }
 
   .mobilePolish :global([data-landing-section="trust-metrics"]) {
-    padding-top: 48px;
+    padding-top: 40px;
   }
 
   .mobilePolish :global([data-landing-section="final-cta"]) {
     padding-top: 0;
-    padding-bottom: 52px;
+    padding-bottom: 48px;
   }
 
   .mobilePolish :global([data-landing-card="metric"]) {

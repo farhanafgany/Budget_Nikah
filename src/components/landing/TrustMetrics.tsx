@@ -7,21 +7,25 @@ const FACTS = [
   {
     value: '50+',
     label: 'checklist nikah',
+    mobileLabel: 'checklist',
     body: 'Tersusun dari H-12 bulan sampai H-1 minggu, berdasarkan urutan prioritas nyata.',
   },
   {
     value: '8',
     label: 'kategori biaya',
+    mobileLabel: 'biaya',
     body: 'Catering, venue, dekor, dokumentasi, MUA, dan pos penting lain — bukan satu angka gelondongan.',
   },
   {
     value: '3',
     label: 'tier kota',
+    mobileLabel: 'kota',
     body: 'Estimasi menyesuaikan Jakarta, kota besar, dan kota kecil — bukan satu rumus untuk semua.',
   },
   {
     value: '0–100',
     label: 'readiness score',
+    mobileLabel: 'score',
     body: 'Deterministik dan bisa dijelaskan — bukan angka acak, bukan AI. Kamu tahu kenapa skornya segitu.',
   },
 ]
@@ -40,7 +44,30 @@ export function TrustMetrics() {
           Bukan tebak-tebakan — semua angka punya dasar.
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2" style={{ gap: 16 }}>
+        <div
+          className="grid grid-cols-2 gap-3 md:hidden"
+          aria-label="Ringkasan dasar perhitungan BudgetNikah"
+        >
+          {FACTS.map(f => (
+            <div
+              key={f.label}
+              className="rounded-[16px] border border-nikah-border bg-white px-4 py-3"
+              style={{ boxShadow: '0 6px 18px rgba(90,30,42,0.045)' }}
+            >
+              <p
+                className="text-nikah-deep"
+                style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 27, lineHeight: 1, margin: '0 0 5px' }}
+              >
+                {f.value}
+              </p>
+              <p className="text-[10.5px] font-extrabold uppercase leading-snug text-nikah-mauve" style={{ letterSpacing: '0.08em' }}>
+                {f.mobileLabel}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <div className="hidden grid-cols-1 sm:grid md:grid-cols-2" style={{ gap: 16 }}>
           {FACTS.map(f => (
             <div
               key={f.label}
@@ -73,7 +100,7 @@ export function TrustMetrics() {
           ))}
         </div>
 
-        <p className="text-center text-nikah-muted" style={{ fontSize: 12.5, marginTop: 28, lineHeight: 1.5 }}>
+        <p className="text-center text-nikah-muted" style={{ fontSize: 12.5, marginTop: 22, lineHeight: 1.5 }}>
           ✓ Tanpa langganan &nbsp;·&nbsp; ✓ Sekali bayar, dipakai sampai hari H &nbsp;·&nbsp; ✓ Skor bisa dijelaskan
         </p>
       </div>

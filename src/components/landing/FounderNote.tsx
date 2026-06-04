@@ -39,7 +39,23 @@ export function FounderNote() {
           </div>
 
           <blockquote
-            className="text-nikah-text mx-auto"
+            className="md:hidden text-nikah-text mx-auto"
+            style={{
+              fontFamily: SERIF,
+              fontStyle: 'italic',
+              fontWeight: 500,
+              fontSize: 20,
+              lineHeight: 1.4,
+              letterSpacing: '-0.01em',
+              margin: '18px auto 16px',
+              maxWidth: 520,
+            }}
+          >
+            &ldquo;Saya bikin BudgetNikah supaya pasangan bisa melihat angka rencana nikahnya dengan lebih tenang sebelum DP vendor.&rdquo;
+          </blockquote>
+
+          <blockquote
+            className="hidden md:block text-nikah-text mx-auto"
             style={{
               fontFamily: SERIF,
               fontStyle: 'italic',

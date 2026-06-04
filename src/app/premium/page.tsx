@@ -46,6 +46,13 @@ const TRUST_ITEMS = [
   { icon: '∞', label: 'Model', value: 'Sekali bayar' },
 ]
 
+const FEATURE_PREVIEW_ITEMS = [
+  { title: 'Dashboard Persiapan', body: 'Progress, vendor, tabungan, dan checklist dalam satu layar.' },
+  { title: 'Prioritas Sekarang', body: '4-5 hal terdekat yang perlu dibereskan minggu ini.' },
+  { title: 'Tracking Pembayaran', body: 'DP, termin, pelunasan, dan jatuh tempo vendor.' },
+  { title: 'Catatan & Riwayat', body: 'Keputusan penting tersimpan sampai hari H.' },
+]
+
 function getFaqs(priceLabel: string) {
   return [
     {
@@ -375,35 +382,42 @@ export default async function PremiumPage() {
         </div>
       </section>
 
-      {/* "Yang Akan Kalian Buka" — mobile only */}
-      <section className="lg:hidden mx-auto max-w-[880px] px-6" style={{ paddingTop: 40, paddingBottom: 8 }}>
+      {/* "Yang Akan Kalian Buka" — compact mobile proof */}
+      <section className="lg:hidden mx-auto max-w-[880px] px-6" style={{ paddingTop: 28, paddingBottom: 0 }}>
         <p className="text-center text-xs font-extrabold uppercase text-nikah-mauve" style={{ letterSpacing: '0.18em', margin: '0 0 12px' }}>
-          Yang Akan Kalian Buka
+          Setelah Akses Aktif
         </p>
-        <div className="grid grid-cols-1" style={{ gap: 14 }}>
-          {[
-            { title: 'Dashboard Persiapan', body: 'Semua progress vendor, tabungan, dan checklist dalam satu layar.' },
-            { title: 'Prioritas Sekarang', body: 'Tahu 4–5 hal terdekat yang perlu dibereskan minggu ini.' },
-            { title: 'Tracking Pembayaran', body: 'DP, termin, dan pelunasan tidak lupa karena ada di satu tempat.' },
-            { title: 'Riwayat & Catatan', body: 'Simpan keputusan penting, ide, dan info vendor sampai hari H.' },
-          ].map(item => (
+        <div
+          className="bg-white border border-nikah-border"
+          style={{ borderRadius: 18, padding: '10px 16px', boxShadow: '0 1px 4px rgba(90,30,42,0.04)' }}
+        >
+          {FEATURE_PREVIEW_ITEMS.map(item => (
             <div
               key={item.title}
-              className="bg-white border border-nikah-border"
-              style={{ borderRadius: 16, padding: '18px 20px', boxShadow: '0 1px 4px rgba(90,30,42,0.04)' }}
+              className="flex items-start border-b border-nikah-border last:border-b-0"
+              style={{ gap: 11, padding: '12px 0' }}
             >
-              <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 15, lineHeight: 1.3, margin: '0 0 6px' }}>
-                {item.title}
-              </h3>
-              <p className="text-nikah-muted" style={{ fontSize: 13.5, lineHeight: 1.55, margin: 0 }}>
-                {item.body}
-              </p>
+              <span
+                className="inline-flex items-center justify-center rounded-full bg-nikah-bg text-nikah-deep"
+                style={{ width: 22, height: 22, flexShrink: 0, marginTop: 1 }}
+                aria-hidden="true"
+              >
+                <Check size={13} strokeWidth={2.6} />
+              </span>
+              <div>
+                <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 14, lineHeight: 1.3, margin: '0 0 2px' }}>
+                  {item.title}
+                </h3>
+                <p className="text-nikah-muted" style={{ fontSize: 12.5, lineHeight: 1.45, margin: 0 }}>
+                  {item.body}
+                </p>
+              </div>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="mx-auto max-w-[760px] px-6" style={{ paddingTop: 58, paddingBottom: 62 }}>
+      <section className="mx-auto max-w-[760px] px-6" style={{ paddingTop: 42, paddingBottom: 48 }}>
         <p className="text-center text-xs font-extrabold uppercase text-nikah-mauve" style={{ letterSpacing: '0.18em', margin: '0 0 12px' }}>
           Sering Ditanyakan
         </p>
@@ -416,12 +430,35 @@ export default async function PremiumPage() {
             fontSize: 'clamp(32px, 4vw, 42px)',
             lineHeight: 1.08,
             letterSpacing: '-0.018em',
-            margin: '0 0 26px',
+            margin: '0 0 20px',
           }}
         >
           Pertanyaan sebelum melanjutkan.
         </h2>
-        <div>
+        <div className="md:hidden">
+          {faqs.map((item, index) => (
+            <details
+              key={item.question}
+              className="border-b border-nikah-border"
+              style={{ padding: '15px 0' }}
+              open={index === 0}
+            >
+              <summary
+                className="cursor-pointer list-none text-nikah-text font-extrabold"
+                style={{ fontSize: 14.5, lineHeight: 1.35 }}
+              >
+                <span className="inline-flex w-full items-center justify-between" style={{ gap: 12 }}>
+                  {item.question}
+                  <ChevronRight size={16} strokeWidth={2.2} aria-hidden="true" style={{ flexShrink: 0 }} />
+                </span>
+              </summary>
+              <p className="text-nikah-muted" style={{ fontSize: 13.5, lineHeight: 1.6, margin: '9px 0 0' }}>
+                {item.answer}
+              </p>
+            </details>
+          ))}
+        </div>
+        <div className="hidden md:block">
           {faqs.map(item => (
             <div key={item.question} className="border-b border-nikah-border" style={{ padding: '19px 0' }}>
               <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 15.5, lineHeight: 1.35, margin: '0 0 8px' }}>

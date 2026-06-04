@@ -33,6 +33,8 @@ const FEATURES = [
   },
 ]
 
+const MOBILE_FEATURES = FEATURES.slice(0, 3)
+
 export function FeatureShowcase() {
   return (
     <section id="fitur" data-landing-section="feature-showcase" className="px-6 md:px-8 py-14 md:py-28 bg-white">
@@ -49,7 +51,7 @@ export function FeatureShowcase() {
 
         {/* Mobile: vertical list with cards */}
         <div className="lg:hidden grid grid-cols-1" style={{ gap: 10 }}>
-          {FEATURES.map((f) => (
+          {MOBILE_FEATURES.map((f) => (
             <div
               key={f.title}
               data-landing-card="feature"
@@ -83,6 +85,7 @@ export function FeatureShowcase() {
             </div>
           ))}
         </div>
+
         {/* Desktop: 3-col grid */}
         <div className="hidden lg:grid grid-cols-3" style={{ gap: 20 }}>
           {FEATURES.map(f => (
