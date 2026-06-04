@@ -30,7 +30,7 @@ function SuccessContent() {
       .then((r) => r.json())
       .then((data: { is_premium?: boolean }) => {
         if (data.is_premium) {
-          firePurchaseConversion(PREMIUM_PRICE)
+          firePurchaseConversion(PREMIUM_PRICE, orderId)
         }
       })
       .catch(() => null)
