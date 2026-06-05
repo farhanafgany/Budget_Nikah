@@ -16,8 +16,8 @@ const STATUS_STYLE: Record<ReadinessLabel, { background: string; color: string; 
 }
 
 const DISPLAY_LABEL: Record<ReadinessLabel, string> = {
-  Healthy:     'Healthy',
-  Moderate:    'Moderate',
+  Healthy:     'Aman',
+  Moderate:    'Cukup Aman',
   'High Risk': 'Perlu Perhatian',
 }
 
@@ -377,7 +377,7 @@ export function ScoreHero({
               {DISPLAY_LABEL[label]}
             </span>
             <span className="block text-nikah-muted font-bold uppercase" style={{ fontSize: 10, letterSpacing: '0.1em', marginTop: 5 }}>
-              Readiness
+              Kesiapan
             </span>
           </div>
         </div>

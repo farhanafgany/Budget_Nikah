@@ -163,41 +163,45 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         ))}
       </div>
 
-      {/* "Belum siap" section — visible on both mobile and desktop */}
+      {/* Closing CTA — beli sebagai aksi utama, simpan sebagai jalan sekunder */}
       <div className="text-center" style={{ marginTop: 52 }}>
         <h2
           className="text-nikah-deep"
           style={{ fontFamily: SERIF, fontStyle: 'italic', fontWeight: 500, fontSize: 'clamp(26px, 3.8vw, 38px)', lineHeight: 1.1, margin: '0 0 12px' }}
         >
-          Belum siap memutuskan?
+          Mulai susun rencana kalian.
         </h2>
         <p className="text-nikah-muted" style={{ fontSize: 15, lineHeight: 1.55, margin: '0 auto 22px', maxWidth: 560 }}>
-          Buat akun gratis untuk menyimpan hasil ini. Bisa dibuka lagi kapan saja dari perangkat mana pun.
+          Buka sekarang dan langsung pakai semua fitur sampai hari H. Sekali bayar Rp 149rb, tanpa langganan.
         </p>
-        {!isSignedIn ? (
+        <TrackedLink
+          href={continueHref}
+          event="result_premium_cta_clicked"
+          eventProps={{ cta_location: 'result_bottom', is_signed_in: isSignedIn }}
+          className="inline-flex items-center justify-center text-white font-extrabold rounded-full transition hover:brightness-105 active:scale-[0.97] w-full md:w-auto"
+          style={{
+            padding: '16px 32px',
+            fontSize: 15,
+            background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)',
+            boxShadow: '0 8px 22px rgba(90,30,42,0.2)',
+          }}
+        >
+          {isSignedIn ? 'Lanjutkan sekarang →' : 'Buka rencana — Rp 149rb →'}
+        </TrackedLink>
+        <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: '14px 0 0' }}>
+          ✓ Tanpa langganan · ✓ Garansi 3 hari tanpa pertanyaan
+        </p>
+        {!isSignedIn && (
           <TrackedLink
             href={saveHref}
             event="save_result_clicked"
             eventProps={{ cta_location: 'result_bottom', target: 'auth_login' }}
-            className="inline-flex items-center justify-center border border-nikah-border bg-white text-nikah-deep font-bold rounded-full transition hover:bg-nikah-bg active:scale-[0.97] active:brightness-90 w-full md:w-auto"
-            style={{ padding: '14px 28px', fontSize: 14 }}
+            className="block text-nikah-muted font-bold transition-opacity hover:opacity-70 active:opacity-60"
+            style={{ fontSize: 13, marginTop: 16 }}
           >
-            Simpan hasil ke akun →
-          </TrackedLink>
-        ) : (
-          <TrackedLink
-            href={continueHref}
-            event="result_premium_cta_clicked"
-            eventProps={{ cta_location: 'result_bottom', is_signed_in: true }}
-            className="inline-flex items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full transition hover:opacity-90 active:scale-[0.97] active:brightness-90 w-full md:w-auto"
-            style={{ padding: '14px 28px', fontSize: 14 }}
-          >
-            Lanjutkan sekarang →
+            Belum yakin? Simpan hasil dulu, gratis →
           </TrackedLink>
         )}
-        <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: '14px 0 0' }}>
-          ✓ Tanpa langganan · ✓ Garansi 3 hari tanpa pertanyaan
-        </p>
       </div>
 
       {/* Footer — mobile only */}

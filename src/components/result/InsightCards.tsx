@@ -14,7 +14,13 @@ interface Props {
 }
 
 export function InsightCards({ insights, primaryInsights = [] }: Props) {
-  const mainInsights = primaryInsights.slice(0, 2)
+  // Hanya tampilkan "insight utama" yang topiknya belum muncul di daftar catatan
+  // di atas, supaya pesan yang sama (mis. dana darurat / rencana realistis) tidak
+  // diulang dua kali dalam satu kartu.
+  const seenTopics = new Set(insights.map(i => i.topic).filter(Boolean))
+  const mainInsights = primaryInsights
+    .filter(i => !i.topic || !seenTopics.has(i.topic))
+    .slice(0, 2)
 
   return (
     <div className="bg-white rounded-[20px] border border-nikah-border shadow-sm p-5 md:p-7">

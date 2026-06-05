@@ -45,8 +45,17 @@ function applyDelta(base: AllocationMap, delta: Partial<AllocationMap>): Allocat
   for (const [k, v] of Object.entries(delta)) {
     result[k as keyof AllocationMap] = (result[k as keyof AllocationMap] ?? 0) + (v ?? 0)
   }
+  // Clamp agar tidak ada kategori yang persentasenya negatif. Beberapa kombinasi
+  // (mis. luxury / modern + experience) menurunkan emergencyFund di bawah 0;
+  // angka minus ini bocor sampai ke insight "Dana darurat ... Rp -X" di /result.
+  const keys = Object.keys(result) as (keyof AllocationMap)[]
+  for (const k of keys) {
+    if (result[k] < 0) result[k] = 0
+  }
+  // Selisih dari 100% (akibat clamp atau pembulatan delta) dialihkan ke catering
+  // sebagai kategori penyangga, tetap dijaga agar tidak ikut negatif.
   const total = Object.values(result).reduce((s, n) => s + n, 0)
-  if (total !== 100) result.catering += (100 - total)
+  if (total !== 100) result.catering = Math.max(0, result.catering + (100 - total))
   return result
 }
 
@@ -66,7 +75,9 @@ export function calculateAllocation(input: AllocationInput): AllocationResult {
       raw[k] = Math.round((pct[k] / 100) * input.totalBudget)
       allocated += raw[k]
     } else {
-      raw[k] = input.totalBudget - allocated
+      // Kategori terakhir menyerap sisa pembulatan; clamp ke 0 agar sisa minus
+      // beberapa rupiah saat persentasenya 0 tidak tampil sebagai nominal negatif.
+      raw[k] = Math.max(0, input.totalBudget - allocated)
     }
   })
 
