@@ -75,6 +75,30 @@ interface Props {
   checklistCount: number
   partnerOneName?: string
   weddingCity?: string
+  weddingStyle?: string
+  eventType?: string
+  planningPriority?: string
+}
+
+const STYLE_LABELS: Record<string, string> = {
+  simple: 'Simple',
+  elegant: 'Elegant',
+  luxury: 'Luxury',
+  traditional: 'Traditional',
+  modern: 'Modern',
+}
+
+const EVENT_TYPE_LABELS: Record<string, string> = {
+  akad_resepsi: 'Akad + Resepsi',
+  resepsi: 'Resepsi Saja',
+  akad: 'Akad Saja',
+  intimate: 'Intimate',
+}
+
+const PRIORITY_LABELS: Record<string, string> = {
+  hemat: 'Hemat Cerdas',
+  balanced: 'Seimbang',
+  experience: 'Kesan Tak Terlupakan',
 }
 
 function monthCopy(months: number) {
@@ -89,18 +113,92 @@ function shortRupiah(value: number) {
   return `Rp ${value.toLocaleString('id-ID')}`
 }
 
-export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, checklistCount, partnerOneName, weddingCity }: Props) {
+function snapshotNumberCopy(value: number, suffix: string) {
+  return value > 0 ? `${value.toLocaleString('id-ID')} ${suffix}` : 'Belum diisi'
+}
+
+function sentenceCaseLabel(value: string | undefined, labels: Record<string, string>) {
+  if (!value) return ''
+  return labels[value] ?? value
+}
+
+function lowerEventLabel(value: string | undefined) {
+  const label = sentenceCaseLabel(value, EVENT_TYPE_LABELS)
+  return label ? label.toLowerCase() : 'pernikahan'
+}
+
+export function ScoreHero({
+  score,
+  label,
+  totalBudget,
+  guestCount,
+  weddingDate,
+  checklistCount,
+  partnerOneName,
+  weddingCity,
+  weddingStyle,
+  eventType,
+  planningPriority,
+}: Props) {
   const months = Math.max(0, monthsUntilDate(weddingDate || null))
   const animatedRingScore = useAnimatedNumber(score, { duration: 700 })
   const scorePct = Math.min(100, Math.max(0, animatedRingScore))
   const status = STATUS_STYLE[label]
   const priorityPreviewItems = getPriorityPreviewItems(months)
+  const styleLabel = sentenceCaseLabel(weddingStyle, STYLE_LABELS)
+  const eventTypeLabel = sentenceCaseLabel(eventType, EVENT_TYPE_LABELS)
+  const priorityLabel = sentenceCaseLabel(planningPriority, PRIORITY_LABELS)
+
+  const planSnapshot = [
+    { label: 'Kota', value: weddingCity?.trim() || 'Belum dipilih' },
+    { label: 'Budget', value: totalBudget > 0 ? shortRupiah(totalBudget) : 'Belum diisi' },
+    { label: 'Tamu', value: snapshotNumberCopy(guestCount, 'orang') },
+    { label: 'Gaya', value: styleLabel || 'Belum dipilih' },
+    { label: 'Acara', value: eventTypeLabel || 'Belum dipilih' },
+    { label: 'Prioritas', value: priorityLabel || 'Belum dipilih' },
+  ]
 
   const metrics = [
     { label: 'Estimasi',  value: shortRupiah(totalBudget) },
     { label: 'Undangan',  value: guestCount.toLocaleString('id-ID') },
-    { label: 'Sisa',      value: `${months} bln` },
+    { label: 'Waktu',     value: `~${months} bln` },
   ]
+
+  const PlanSnapshot = (
+    <div
+      className="border border-nikah-border bg-white"
+      style={{
+        borderRadius: 18,
+        padding: '14px 14px 12px',
+        margin: '0 0 24px',
+        boxShadow: '0 1px 2px rgba(90,30,42,0.035)',
+      }}
+    >
+      <p className="text-nikah-muted font-extrabold uppercase" style={{ fontSize: 10, letterSpacing: '0.16em', margin: '0 0 10px' }}>
+        Rencana yang Kami Baca
+      </p>
+      <div className="grid grid-cols-2 md:grid-cols-3" style={{ gap: 8 }}>
+        {planSnapshot.map(item => (
+          <div
+            key={item.label}
+            style={{
+              borderRadius: 12,
+              background: '#F8F0EA',
+              padding: '10px 11px',
+              minWidth: 0,
+            }}
+          >
+            <div className="text-nikah-muted font-bold uppercase" style={{ fontSize: 9, letterSpacing: '0.12em', marginBottom: 4 }}>
+              {item.label}
+            </div>
+            <div className="text-nikah-text font-extrabold truncate" style={{ fontSize: 13.5, lineHeight: 1.25 }}>
+              {item.value}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 
   /* Shared score card — vertical layout, works in right column (desktop) and inline (mobile) */
   const ScoreCard = (
@@ -197,7 +295,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
               fontWeight: 500,
               fontSize: 'clamp(42px, 5.2vw, 62px)',
               lineHeight: 1.04,
-              letterSpacing: '-0.024em',
+              letterSpacing: 0,
               margin: '0 0 18px',
               textWrap: 'balance',
             } as React.CSSProperties}
@@ -209,8 +307,10 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
             className="text-nikah-muted"
             style={{ fontSize: 'clamp(16px, 1.7vw, 19px)', lineHeight: 1.6, margin: '0 0 28px' }}
           >
-            {partnerOneName ? `${partnerOneName}, ` : ''}rencana nikah{weddingCity ? ` di ${weddingCity}` : ''} dengan sisa {monthCopy(months)} — detail kecil mudah tercecer dan jadwal cepat menumpuk kalau tidak disusun dari sekarang. Kami sudah siapkan panduan khusus berdasarkan jawaban kalian.
+            {partnerOneName ? `${partnerOneName}, ` : ''}kami membaca rencana {lowerEventLabel(eventType)}{weddingCity ? ` di ${weddingCity}` : ''} dengan estimasi waktu {monthCopy(months)}. Angka dan prioritas di bawah ini mengikuti budget, tamu, gaya, dan prioritas yang kalian isi.
           </p>
+
+          {PlanSnapshot}
 
           {/* Desktop CTAs */}
           <div className="hidden lg:flex items-center" style={{ gap: 16, marginBottom: 14 }}>
@@ -419,7 +519,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           href="/premium"
           event="result_premium_cta_clicked"
           eventProps={{ cta_location: 'result_priority_lock' }}
-          className="inline-flex items-center justify-center w-full md:w-auto font-extrabold transition hover:brightness-105 active:scale-[0.99]"
+          className="hidden md:inline-flex items-center justify-center w-full md:w-auto font-extrabold transition hover:brightness-105 active:scale-[0.99]"
           style={{
             gap: 8,
             borderRadius: 999,
@@ -431,7 +531,7 @@ export function ScoreHero({ score, label, totalBudget, guestCount, weddingDate, 
           }}
         >
           <Lock size={14} strokeWidth={2} aria-hidden="true" />
-          Buka akses lengkap — Rp 149rb
+          Buka rencana — Rp 149rb
         </TrackedLink>
       </div>
 

@@ -11,27 +11,27 @@ const PREMIUM_FEATURES = [
   {
     icon: '📋',
     title: 'Checklist Pernikahan',
-    body: 'Item tersusun dari 12 bulan hingga H-1 minggu. Ceklis sambil jalan.',
+    body: 'Urutan tugas dari H-12 bulan sampai hari H.',
   },
   {
     icon: '💰',
     title: 'Tabungan Nikah',
-    body: 'Pantau saldo tabungan vs target. Riwayat input tersimpan.',
+    body: 'Pantau target bulanan dan progres tabungan.',
   },
   {
     icon: '🧾',
     title: 'Pembayaran Vendor',
-    body: 'DP, termin, sisa tagihan, dan jatuh tempo dalam satu tabel.',
+    body: 'Catat DP, pelunasan, dan tempo pembayaran.',
   },
   {
     icon: '🔔',
     title: 'Prioritas Sekarang',
-    body: 'Gabungan checklist + vendor terdekat. Tahu harus mulai dari mana.',
+    body: 'Tahu vendor mana yang harus diselesaikan dulu.',
   },
   {
     icon: '💎',
     title: 'Seserahan Custom',
-    body: 'Atur daftar seserahan sesuai kebiasaan keluarga kalian.',
+    body: 'Susun daftar seserahan sesuai kebiasaan keluarga.',
   },
   {
     icon: '📝',
@@ -104,8 +104,11 @@ export function PremiumTease({ isSignedIn = false }: Props) {
         >
           Buka rencana — Rp 149rb ›
         </TrackedLink>
+        <p className="text-center text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.5, marginTop: 9 }}>
+          Termasuk checklist, tabungan nikah, prioritas vendor, dan catatan persiapan.
+        </p>
         <p className="text-center text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.5, marginTop: 8 }}>
-          ✓ Garansi 3 hari — tidak cocok, uang kembali penuh.
+          Garansi 3 hari — tidak cocok, uang kembali penuh.
         </p>
         {!isSignedIn && (
           <TrackedLink
