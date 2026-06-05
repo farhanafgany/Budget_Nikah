@@ -14,7 +14,7 @@ import { PremiumTease }       from '@/components/result/PremiumTease'
 import { InsightCards }       from '@/components/result/InsightCards'
 import { BrandLogo }          from '@/components/ui/BrandLogo'
 import { TrackedLink }        from '@/components/analytics/TrackedLink'
-import { generateInsights }   from '@/lib/insights'
+import { generateInsights, generatePrimaryInsights } from '@/lib/insights'
 
 function ResultSkeleton() {
   return (
@@ -160,7 +160,7 @@ export default function ResultPage() {
     }
   }, [mounted, isComplete, authChecked, isSignedIn, onboarding.guestCount, onboarding.weddingStyle, router, initSimulation])
 
-  const { scoreResult, insights } = useMemo(() => {
+  const { scoreResult, insights, primaryInsights } = useMemo(() => {
     const alloc = calculateAllocation({
       totalBudget: onboarding.totalBudget,
       guestCount: sim.guestCount || onboarding.guestCount,
@@ -175,7 +175,7 @@ export default function ResultPage() {
       weddingCity: onboarding.weddingCity,
       allocation: alloc,
     })
-    const ins = generateInsights({
+    const insightInput = {
       totalBudget: onboarding.totalBudget,
       guestCount: sim.guestCount || onboarding.guestCount,
       weddingStyle: sim.weddingStyle || onboarding.weddingStyle,
@@ -184,8 +184,10 @@ export default function ResultPage() {
       allocation: alloc,
       score: sr.score,
       weddingDate: onboarding.weddingDate,
-    })
-    return { scoreResult: sr, insights: ins }
+    }
+    const ins = generateInsights(insightInput)
+    const primary = generatePrimaryInsights(insightInput)
+    return { scoreResult: sr, insights: ins, primaryInsights: primary }
   }, [onboarding.totalBudget, onboarding.guestCount, onboarding.weddingStyle, onboarding.planningPriority, onboarding.weddingCity,
       onboarding.weddingDate, sim.guestCount, sim.weddingStyle])
 
@@ -217,11 +219,14 @@ export default function ResultPage() {
           checklistCount={CHECKLIST_ITEMS.length}
           partnerOneName={onboarding.partnerOneName}
           weddingCity={onboarding.weddingCity}
+          weddingStyle={sim.weddingStyle || onboarding.weddingStyle}
+          eventType={onboarding.eventType}
+          planningPriority={onboarding.planningPriority}
         />
 
         {insights.length > 0 && (
           <div style={{ marginTop: 28 }}>
-            <InsightCards insights={insights} />
+            <InsightCards insights={insights} primaryInsights={primaryInsights} />
           </div>
         )}
 

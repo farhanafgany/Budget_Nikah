@@ -86,3 +86,52 @@ export function generateInsights(input: InsightInput): Insight[] {
 
   return insights.slice(0, 5)
 }
+
+export function generatePrimaryInsights(input: InsightInput): Insight[] {
+  const { allocation, totalBudget, guestCount, score, weddingDate } = input
+  const months = monthsUntilDate(weddingDate || null)
+  const monthlySaving = calculateMonthlySavings(totalBudget, 0, months)
+  const insights: Insight[] = []
+
+  if (allocation.emergencyFund.percentage < 10) {
+    insights.push({
+      kind: 'warn',
+      title: 'Dana darurat masih terlalu kecil.',
+      body: 'Idealnya minimal 10% dari total budget disisihkan agar rencana tidak mudah terganggu.',
+    })
+  }
+
+  if (months <= 3) {
+    insights.push({
+      kind: 'warn',
+      title: 'Waktu persiapan cukup mepet.',
+      body: 'Prioritaskan keputusan besar seperti venue, catering, dan MUA lebih awal.',
+    })
+  }
+
+  if (guestCount > 600) {
+    insights.push({
+      kind: 'info',
+      title: 'Jumlah tamu menjadi faktor terbesar.',
+      body: 'Sedikit perubahan jumlah tamu bisa berdampak besar ke catering dan venue.',
+    })
+  }
+
+  if (score >= 70) {
+    insights.push({
+      kind: 'good',
+      title: 'Rencana kalian cukup realistis.',
+      body: `Dengan tabungan sekitar ${formatRupiah(monthlySaving)}/bulan selama ${months} bulan, target masih masuk akal.`,
+    })
+  }
+
+  if (insights.length === 0) {
+    insights.push({
+      kind: 'info',
+      title: 'Fokus utama kalian adalah menjaga ritme.',
+      body: 'Pantau budget dan keputusan vendor setiap bulan agar rencana tetap terasa terkendali.',
+    })
+  }
+
+  return insights.slice(0, 2)
+}

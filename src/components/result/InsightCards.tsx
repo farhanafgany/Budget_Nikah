@@ -1,6 +1,6 @@
 import type { Insight } from '@/lib/insights'
 import { TrackedLink } from '@/components/analytics/TrackedLink'
-import { Lightbulb, Lock } from 'lucide-react'
+import { Lightbulb, Lock, Target, TriangleAlert } from 'lucide-react'
 
 const DOT_COLOR: Record<string, string> = {
   good: '#4CAF82',
@@ -8,7 +8,14 @@ const DOT_COLOR: Record<string, string> = {
   info: 'var(--nikah-mauve)',
 }
 
-export function InsightCards({ insights }: { insights: Insight[] }) {
+interface Props {
+  insights: Insight[]
+  primaryInsights?: Insight[]
+}
+
+export function InsightCards({ insights, primaryInsights = [] }: Props) {
+  const mainInsights = primaryInsights.slice(0, 2)
+
   return (
     <div className="bg-white rounded-[20px] border border-nikah-border shadow-sm p-5 md:p-7">
       <div className="flex items-center justify-between gap-3" style={{ marginBottom: 6 }}>
@@ -70,6 +77,60 @@ export function InsightCards({ insights }: { insights: Insight[] }) {
         ))}
       </div>
 
+      {mainInsights.length > 0 && (
+        <div className="border-t border-nikah-border" style={{ marginTop: 18, paddingTop: 18 }}>
+          <div className="flex items-center" style={{ gap: 9, marginBottom: 12 }}>
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-nikah-bg text-nikah-deep">
+              <Target size={15} strokeWidth={1.9} />
+            </span>
+            <h3 className="text-nikah-text font-extrabold" style={{ fontSize: 15, lineHeight: 1.3, margin: 0 }}>
+              Insight utama kalian
+            </h3>
+          </div>
+
+          <div style={{ display: 'grid', gap: 10 }}>
+            {mainInsights.map((it) => {
+              const Icon = it.kind === 'warn' ? TriangleAlert : Target
+
+              return (
+                <div
+                  key={it.title}
+                  className="border border-nikah-border bg-white"
+                  style={{
+                    borderRadius: 14,
+                    padding: '13px 14px',
+                    boxShadow: '0 1px 2px rgba(90,30,42,0.035)',
+                  }}
+                >
+                  <div className="flex items-start" style={{ gap: 10 }}>
+                    <span
+                      className="inline-flex items-center justify-center rounded-full"
+                      style={{
+                        width: 26,
+                        height: 26,
+                        color: DOT_COLOR[it.kind] ?? 'var(--nikah-mauve)',
+                        background: 'var(--nikah-bg)',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Icon size={14} strokeWidth={2} aria-hidden="true" />
+                    </span>
+                    <div style={{ minWidth: 0 }}>
+                      <strong className="text-nikah-text" style={{ display: 'block', fontSize: 13.5, lineHeight: 1.35 }}>
+                        {it.title}
+                      </strong>
+                      <p className="text-nikah-muted" style={{ fontSize: 12.5, lineHeight: 1.55, margin: '5px 0 0' }}>
+                        {it.body}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
       <TrackedLink
         href="/premium"
         event="result_premium_cta_clicked"
@@ -83,8 +144,14 @@ export function InsightCards({ insights }: { insights: Insight[] }) {
         }}
       >
         <Lock size={14} strokeWidth={2} aria-hidden="true" />
-        Buka rencana lengkap — Rp 149rb
+        Buka rencana — Rp 149rb
       </TrackedLink>
+      <p className="hidden md:block text-nikah-muted" style={{ fontSize: 12.5, lineHeight: 1.5, margin: '9px 0 0' }}>
+        Termasuk checklist, tabungan nikah, prioritas vendor, dan catatan persiapan.
+      </p>
+      <p className="hidden md:block text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.5, margin: '5px 0 0' }}>
+        Garansi 3 hari — tidak cocok, uang kembali penuh.
+      </p>
     </div>
   )
 }
