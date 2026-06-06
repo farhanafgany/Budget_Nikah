@@ -14,6 +14,9 @@ describe('analytics helpers', () => {
     jest.resetModules()
     process.env = { ...originalEnv }
     ;(global.fetch as jest.Mock | undefined) = jest.fn().mockResolvedValue({ ok: true })
+    window.history.replaceState(null, '', '/')
+    window.localStorage.clear()
+    window.sessionStorage.clear()
     Object.defineProperty(navigator, 'sendBeacon', {
       configurable: true,
       value: undefined,
@@ -74,6 +77,61 @@ describe('analytics helpers', () => {
     expect(JSON.parse(options.body)).toEqual(expect.objectContaining({
       api_key: 'ph_project_token',
       event: 'page_viewed',
+    }))
+  })
+
+  it('adds Google Ads attribution from the landing URL to browser events', () => {
+    process.env.NEXT_PUBLIC_POSTHOG_KEY = 'ph_test_key'
+    process.env.NEXT_PUBLIC_POSTHOG_HOST = 'https://posthog.test'
+    window.history.replaceState(
+      null,
+      '',
+      '/nikah/budget?gclid=test-click&utm_source=google&utm_medium=cpc&utm_campaign=bn_high_intent',
+    )
+
+    track('landing_cta_clicked', {
+      cta_location: 'hero',
+      target: 'onboarding',
+    })
+
+    const [, options] = (global.fetch as jest.Mock).mock.calls[0]
+    expect(JSON.parse(options.body)).toEqual(expect.objectContaining({
+      event: 'landing_cta_clicked',
+      properties: expect.objectContaining({
+        cta_location: 'hero',
+        target: 'onboarding',
+        gclid: 'test-click',
+        utm_source: 'google',
+        utm_medium: 'cpc',
+        utm_campaign: 'bn_high_intent',
+        landing_path: '/nikah/budget',
+        traffic_source: 'google_ads',
+        has_ad_click_id: true,
+        attribution_captured_at: expect.any(String),
+      }),
+    }))
+  })
+
+  it('persists attribution after route changes without query parameters', () => {
+    process.env.NEXT_PUBLIC_POSTHOG_KEY = 'ph_test_key'
+    process.env.NEXT_PUBLIC_POSTHOG_HOST = 'https://posthog.test'
+    window.history.replaceState(null, '', '/nikah/budget?gclid=test-click&utm_source=google')
+
+    track('landing_cta_clicked', { cta_location: 'hero' })
+
+    window.history.replaceState(null, '', '/result')
+    track('result_viewed', { score_band: 'healthy' })
+
+    const [, options] = (global.fetch as jest.Mock).mock.calls[1]
+    expect(JSON.parse(options.body)).toEqual(expect.objectContaining({
+      event: 'result_viewed',
+      properties: expect.objectContaining({
+        score_band: 'healthy',
+        gclid: 'test-click',
+        utm_source: 'google',
+        landing_path: '/nikah/budget',
+        traffic_source: 'google_ads',
+      }),
     }))
   })
 
