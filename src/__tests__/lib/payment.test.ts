@@ -1,4 +1,4 @@
-import { PREMIUM_PRICE, formatPaymentAmount, getPremiumPaymentAmount } from '@/lib/payment'
+import { PREMIUM_PRICE, buildPremiumSuccessUrl, formatPaymentAmount, getPremiumPaymentAmount } from '@/lib/payment'
 
 const originalPaymentTestAmount = process.env.PAYMENT_TEST_AMOUNT
 
@@ -36,5 +36,15 @@ describe('payment helpers', () => {
   it('formats the regular price and test amount for display', () => {
     expect(formatPaymentAmount(PREMIUM_PRICE)).toBe('Rp 149rb')
     expect(formatPaymentAmount(1000)).toBe('Rp 1.000')
+  })
+
+  it('builds a premium success URL with the payment order id', () => {
+    expect(buildPremiumSuccessUrl('https://budget-nikah.vercel.app', 'BN-123-abcdef12'))
+      .toBe('https://budget-nikah.vercel.app/premium/success?order_id=BN-123-abcdef12')
+  })
+
+  it('builds a premium success URL without an order id when one is not available', () => {
+    expect(buildPremiumSuccessUrl('https://budget-nikah.vercel.app/'))
+      .toBe('https://budget-nikah.vercel.app/premium/success')
   })
 })

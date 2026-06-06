@@ -23,9 +23,9 @@ export function GoogleAdsScript() {
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GOOGLE_ADS_ID}');
+            window.gtag = window.gtag || function gtag(){window.dataLayer.push(arguments);}
+            window.gtag('js', new Date());
+            window.gtag('config', '${GOOGLE_ADS_ID}');
           `,
         }}
       />

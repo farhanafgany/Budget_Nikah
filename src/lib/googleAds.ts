@@ -8,6 +8,18 @@ declare global {
   }
 }
 
+function getGtag() {
+  window.dataLayer = window.dataLayer || []
+
+  if (typeof window.gtag !== 'function') {
+    window.gtag = (...args: unknown[]) => {
+      window.dataLayer?.push(args)
+    }
+  }
+
+  return window.gtag
+}
+
 /**
  * Fire a Google Ads purchase conversion event.
  * Hanya dipanggil setelah pembayaran sukses — jangan dipanggil
@@ -20,9 +32,9 @@ declare global {
  *   tracking server-side tambahan.
  */
 export function firePurchaseConversion(value: number, transactionId?: string) {
-  if (typeof window === 'undefined' || typeof window.gtag !== 'function') return
+  if (typeof window === 'undefined') return
 
-  window.gtag('event', 'conversion', {
+  getGtag()('event', 'conversion', {
     send_to: `${GOOGLE_ADS_ID}/${GOOGLE_ADS_PURCHASE_LABEL}`,
     value,
     currency: 'IDR',

@@ -12,6 +12,13 @@ export function getPremiumPaymentAmount() {
   return Math.round(amount)
 }
 
+export function buildPremiumSuccessUrl(appUrl: string, orderId?: string) {
+  const url = new URL('/premium/success', appUrl)
+  if (orderId) url.searchParams.set('order_id', orderId)
+
+  return url.toString()
+}
+
 export function formatPaymentAmount(amount: number) {
   if (amount === PREMIUM_PRICE) return 'Rp 149rb'
 
