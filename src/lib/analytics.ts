@@ -133,8 +133,19 @@ function getAttributionProperties() {
   return properties
 }
 
+function getBaseBrowserProperties() {
+  if (typeof window === 'undefined') return {}
+
+  return {
+    referrer: document.referrer || null,
+    viewport_width: window.innerWidth,
+    is_mobile_viewport: window.innerWidth < 768,
+  }
+}
+
 function enrichBrowserProperties(properties: AnalyticsProps = {}) {
   return cleanProperties({
+    ...getBaseBrowserProperties(),
     ...getAttributionProperties(),
     ...properties,
   })

@@ -62,6 +62,9 @@ describe('analytics helpers', () => {
       properties: {
         cta_location: 'hero',
         target: 'onboarding',
+        referrer: null,
+        viewport_width: expect.any(Number),
+        is_mobile_viewport: expect.any(Boolean),
       },
     })
   })
