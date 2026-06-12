@@ -65,9 +65,9 @@ function ResultNavbar({ isSignedIn }: { isSignedIn: boolean }) {
           </TrackedLink>
         ) : (
           <TrackedLink
-            href="/auth/login?next=/premium"
+            href="/auth/signup?next=/premium"
             event="save_result_clicked"
-            eventProps={{ cta_location: 'result_nav_mobile', target: 'auth_login' }}
+            eventProps={{ cta_location: 'result_nav_mobile', target: 'auth_signup' }}
             className="md:hidden inline-flex items-center rounded-full font-bold transition-opacity hover:opacity-80"
             style={{ gap: 6, padding: '10px 16px', fontSize: 12, background: 'var(--nikah-deep)', color: '#fff' }}
           >

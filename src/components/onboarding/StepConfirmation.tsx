@@ -90,47 +90,52 @@ export function StepConfirmation() {
       })
     }
 
-    const supabase = createClient()
-    const { data } = await supabase.auth.getSession()
-    if (data.session?.user) {
-      const response = await fetch('/api/onboarding/submit', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          onboarding: {
-            partnerOneName,
-            partnerTwoName,
-            weddingCity,
-            weddingDate,
-            totalBudget,
-            guestCount,
-            weddingStyle,
-            eventType,
-            planningPriority,
-          },
-          replaceExisting,
-        }),
-      })
+    try {
+      const supabase = createClient()
+      const { data } = await supabase.auth.getSession()
+      if (data.session?.user) {
+        const response = await fetch('/api/onboarding/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            onboarding: {
+              partnerOneName,
+              partnerTwoName,
+              weddingCity,
+              weddingDate,
+              totalBudget,
+              guestCount,
+              weddingStyle,
+              eventType,
+              planningPriority,
+            },
+            replaceExisting,
+          }),
+        })
 
-      if (!response.ok) {
-        const data = await response.json().catch(() => null)
-        if (isProfileReplacementRequired(response.status, data)) {
+        if (!response.ok) {
+          const data = await response.json().catch(() => null)
+          if (isProfileReplacementRequired(response.status, data)) {
+            setSaving(false)
+            setReplacementRequired(true)
+            return
+          }
+
           setSaving(false)
-          setReplacementRequired(true)
+          setError('Data belum tersimpan. Coba lagi sebentar lagi.')
           return
         }
 
-        setSaving(false)
-        setError('Data belum tersimpan. Coba lagi sebentar lagi.')
-        return
+        const result = await response.json() as { isPremium?: boolean }
+        if (result.isPremium) {
+          await clearOnboardingStore()
+          router.replace('/dashboard')
+          return
+        }
       }
-
-      const result = await response.json() as { isPremium?: boolean }
-      if (result.isPremium) {
-        await clearOnboardingStore()
-        router.replace('/dashboard')
-        return
-      }
+    } catch {
+      // Data onboarding tetap aman di localStorage — hasil bisa tampil tanpa sesi.
+      // Jangan blokir user di "Menyimpan..." hanya karena auth/jaringan gagal.
     }
 
     router.push('/result')

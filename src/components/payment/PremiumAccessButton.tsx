@@ -125,11 +125,11 @@ export function PremiumAccessButton({
 
   return (
     <Link
-      href="/auth/login?next=/premium"
+      href="/auth/signup?next=/premium"
       onClick={() => {
         track('premium_auth_cta_clicked', {
           cta_location: variant === 'gold' ? 'premium_bottom' : 'premium_card',
-          target: 'auth_login',
+          target: 'auth_signup',
           is_signed_in: false,
         })
         track('auth_required_for_payment', {

@@ -41,7 +41,7 @@ const PREMIUM_FEATURES = [
 ]
 
 export function PremiumTease({ isSignedIn = false }: Props) {
-  const saveHref = '/auth/login?next=/premium'
+  const saveHref = '/auth/signup?next=/premium'
   const continueHref = '/premium'
 
   return (
