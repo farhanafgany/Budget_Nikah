@@ -3,6 +3,7 @@ import { BrandLogo } from '@/components/ui/BrandLogo'
 
 interface Props {
   isSignedIn?: boolean
+  scoreLabel?: 'Healthy' | 'Moderate' | 'High Risk'
 }
 
 const SERIF = 'var(--font-playfair), "Cormorant Garamond", Georgia, serif'
@@ -40,9 +41,17 @@ const PREMIUM_FEATURES = [
   },
 ]
 
-export function PremiumTease({ isSignedIn = false }: Props) {
+export function PremiumTease({ isSignedIn = false, scoreLabel }: Props) {
   const saveHref = '/auth/signup?next=/premium'
   const continueHref = '/premium'
+  // Skor tinggi butuh framing eksekusi, bukan perbaikan — "aman" saja tidak memberi alasan beli.
+  const isHealthy = scoreLabel === 'Healthy'
+  const bannerTitle = isHealthy
+    ? 'Rencana sudah sehat — saatnya dieksekusi.'
+    : 'Lanjutkan persiapan dengan lebih tenang.'
+  const mobileSupportCopy = isHealthy
+    ? 'Skor aman bukan berarti selesai — 12 bulan ke depan penuh DP vendor, target tabungan, dan deadline. Semua terpantau di sini.'
+    : 'Termasuk checklist, tabungan nikah, prioritas vendor, dan catatan persiapan.'
 
   return (
     <section id="premium-details" style={{ marginTop: 36 }}>
@@ -68,7 +77,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
               margin: 0,
             }}
           >
-            Lanjutkan persiapan dengan lebih tenang.
+            {bannerTitle}
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.76)', margin: '10px 0 0', fontSize: 14, lineHeight: 1.55, maxWidth: 640 }}>
             Rp 149rb · sekali bayar · dipakai sampai hari H · garansi 3 hari tanpa pertanyaan
@@ -105,7 +114,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           Buka rencana — Rp 149rb ›
         </TrackedLink>
         <p className="text-center text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.5, marginTop: 9 }}>
-          Termasuk checklist, tabungan nikah, prioritas vendor, dan catatan persiapan.
+          {mobileSupportCopy}
         </p>
         <p className="text-center text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.5, marginTop: 8 }}>
           Garansi 3 hari — tidak cocok, uang kembali penuh.
@@ -114,7 +123,7 @@ export function PremiumTease({ isSignedIn = false }: Props) {
           <TrackedLink
             href={saveHref}
             event="save_result_clicked"
-            eventProps={{ cta_location: 'result_inline_mobile', target: 'auth_login' }}
+            eventProps={{ cta_location: 'result_inline_mobile', target: 'auth_signup' }}
             className="block w-full text-center text-nikah-muted font-bold text-sm mt-3 active:opacity-60 transition-opacity"
           >
             Simpan hasil ke akun dulu →

@@ -232,6 +232,7 @@ export default function ResultPage() {
 
         <PremiumTease
           isSignedIn={isSignedIn}
+          scoreLabel={scoreResult.label}
         />
 
       </div>
