@@ -80,7 +80,7 @@ export function PremiumTease({ isSignedIn = false, scoreLabel }: Props) {
             {bannerTitle}
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.76)', margin: '10px 0 0', fontSize: 14, lineHeight: 1.55, maxWidth: 640 }}>
-            Rp 149rb · sekali bayar · dipakai sampai hari H · garansi 3 hari tanpa pertanyaan
+            <s style={{ opacity: 0.65 }}>Rp 149rb</s> <strong>Rp 49rb</strong> · sekali bayar · dipakai sampai hari H · garansi 3 hari tanpa pertanyaan
           </p>
         </div>
         <div className="flex justify-end" style={{ gap: 12 }}>
@@ -97,7 +97,7 @@ export function PremiumTease({ isSignedIn = false, scoreLabel }: Props) {
               boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.34)',
             }}
           >
-            Buka rencana — Rp 149rb ›
+            Buka rencana — Rp 49rb ›
           </TrackedLink>
         </div>
       </div>
@@ -111,7 +111,7 @@ export function PremiumTease({ isSignedIn = false, scoreLabel }: Props) {
           className="block w-full text-white font-bold py-4 rounded-full text-center text-sm active:opacity-75 active:scale-[0.98] transition-all"
           style={{ background: 'linear-gradient(160deg, #5A1E2A 0%, #3D1419 100%)', boxShadow: '0 6px 20px rgba(90,30,42,0.22)' }}
         >
-          Buka rencana — Rp 149rb ›
+          Buka rencana — Rp 49rb ›
         </TrackedLink>
         <p className="text-center text-nikah-muted" style={{ fontSize: 12, lineHeight: 1.5, marginTop: 9 }}>
           {mobileSupportCopy}
@@ -181,7 +181,7 @@ export function PremiumTease({ isSignedIn = false, scoreLabel }: Props) {
           Mulai susun rencana kalian.
         </h2>
         <p className="text-nikah-muted" style={{ fontSize: 15, lineHeight: 1.55, margin: '0 auto 22px', maxWidth: 560 }}>
-          Buka sekarang dan langsung pakai semua fitur sampai hari H. Sekali bayar Rp 149rb, tanpa langganan.
+          Buka sekarang dan langsung pakai semua fitur sampai hari H. Sekali bayar Rp 49rb, tanpa langganan.
         </p>
         <TrackedLink
           href={continueHref}
@@ -195,7 +195,7 @@ export function PremiumTease({ isSignedIn = false, scoreLabel }: Props) {
             boxShadow: '0 8px 22px rgba(90,30,42,0.2)',
           }}
         >
-          {isSignedIn ? 'Lanjutkan sekarang →' : 'Buka rencana — Rp 149rb →'}
+          {isSignedIn ? 'Lanjutkan sekarang →' : 'Buka rencana — Rp 49rb →'}
         </TrackedLink>
         <p className="text-nikah-muted" style={{ fontSize: 13, lineHeight: 1.5, margin: '14px 0 0' }}>
           ✓ Tanpa langganan · ✓ Garansi 3 hari tanpa pertanyaan

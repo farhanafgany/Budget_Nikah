@@ -15,6 +15,17 @@ const nextConfig = {
       { source: '/ingest/:path*', destination: `${posthogHost}/:path*` },
     ]
   },
+  // Link pendek untuk bio sosmed — langsung ke onboarding dengan UTM terpasang,
+  // supaya trafik bio kelacak di PostHog (analytics.ts sudah simpan UTM 30 hari).
+  async redirects() {
+    return [
+      {
+        source: '/tiktok',
+        destination: '/onboarding?utm_source=tiktok&utm_medium=bio&utm_campaign=ruangsakinahku',
+        permanent: false,
+      },
+    ]
+  },
   async headers() {
     return [
       {

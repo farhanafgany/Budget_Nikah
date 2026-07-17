@@ -303,7 +303,7 @@ function SignupContent() {
             <p className="text-nikah-muted text-sm text-center font-light" style={{ marginBottom: isPremiumContinuation ? 12 : 28 }}>{formCopy}</p>
             {isPremiumContinuation && (
               <div className="flex items-center justify-center gap-2 mb-6 px-3 py-2 rounded-full border border-nikah-border bg-nikah-bg" style={{ fontSize: 12 }}>
-                <span className="font-extrabold text-nikah-deep">Rp 149rb</span>
+                <span className="font-extrabold text-nikah-deep">Rp 49rb</span>
                 <span className="text-nikah-muted">·</span>
                 <span className="text-nikah-muted">Sekali bayar</span>
                 <span className="text-nikah-muted">·</span>

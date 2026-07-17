@@ -150,7 +150,7 @@ export function InsightCards({ insights, primaryInsights = [] }: Props) {
         }}
       >
         <Lock size={14} strokeWidth={2} aria-hidden="true" />
-        Buka rencana — Rp 149rb
+        Buka rencana — Rp 49rb
       </TrackedLink>
       <p className="hidden md:block text-nikah-muted" style={{ fontSize: 12.5, lineHeight: 1.5, margin: '9px 0 0' }}>
         Termasuk checklist, tabungan nikah, prioritas vendor, dan catatan persiapan.

@@ -4,7 +4,7 @@ import { Check, ChevronRight, Minus } from 'lucide-react'
 import { BrandLogo } from '@/components/ui/BrandLogo'
 import { PremiumAccessButton } from '@/components/payment/PremiumAccessButton'
 import { createClient } from '@/lib/supabase/server'
-import { formatPaymentAmount, getPremiumPaymentAmount } from '@/lib/payment'
+import { PREMIUM_ORIGINAL_PRICE_LABEL, formatPaymentAmount, getPremiumPaymentAmount } from '@/lib/payment'
 
 // Label metode pembayaran yang dikenal pengguna Indonesia
 const PAYMENT_METHODS = ['QRIS', 'GoPay', 'OVO', 'Dana', 'BCA', 'Mandiri', 'BNI']
@@ -199,6 +199,9 @@ export default async function PremiumPage() {
               className="text-nikah-deep"
               style={{ fontFamily: SERIF, fontStyle: 'italic', fontSize: 48, lineHeight: 1, letterSpacing: '-0.018em', marginBottom: 6 }}
             >
+              <s className="text-nikah-muted" style={{ fontSize: 24, fontStyle: 'normal', fontFamily: 'inherit', marginRight: 10, textDecorationThickness: 1.5 }}>
+                {PREMIUM_ORIGINAL_PRICE_LABEL}
+              </s>
               {priceLabel}
             </div>
             <p className="text-nikah-muted" style={{ fontSize: 14, lineHeight: 1.55, margin: '0 0 24px' }}>
@@ -276,6 +279,9 @@ export default async function PremiumPage() {
                   marginBottom: 8,
                 }}
               >
+                <s className="text-nikah-muted" style={{ fontSize: 26, fontStyle: 'normal', fontFamily: 'inherit', marginRight: 10, textDecorationThickness: 1.5 }}>
+                  {PREMIUM_ORIGINAL_PRICE_LABEL}
+                </s>
                 {priceLabel}
               </div>
               <p className="text-nikah-muted" style={{ fontSize: 14.8, lineHeight: 1.55, margin: '0 0 2px' }}>

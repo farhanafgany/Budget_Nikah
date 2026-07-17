@@ -34,7 +34,7 @@ describe('payment helpers', () => {
   })
 
   it('formats the regular price and test amount for display', () => {
-    expect(formatPaymentAmount(PREMIUM_PRICE)).toBe('Rp 149rb')
+    expect(formatPaymentAmount(PREMIUM_PRICE)).toBe('Rp 49rb')
     expect(formatPaymentAmount(1000)).toBe('Rp 1.000')
   })
 

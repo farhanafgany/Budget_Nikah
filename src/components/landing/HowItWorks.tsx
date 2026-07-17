@@ -61,7 +61,7 @@ export function HowItWorks() {
                   className="inline-flex items-center gap-1 mt-2 text-[10px] font-extrabold uppercase tracking-wide rounded-full px-2.5 py-1"
                   style={{ background: '#FBF2EC', border: '1px solid #E8D0C0', color: '#8B4513' }}
                 >
-                  🔓 Fitur Premium · Rp 149rb
+                  🔓 Fitur Premium · Rp 49rb
                 </span>
               )}
             </div>

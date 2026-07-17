@@ -1,5 +1,8 @@
 export const PREMIUM_PRODUCT_NAME = 'BudgetNikah Premium'
-export const PREMIUM_PRICE = 149_000
+export const PREMIUM_PRICE = 49_000
+// Harga sebelum diskon — tampil dicoret di UI sebagai jangkar harga.
+export const PREMIUM_ORIGINAL_PRICE = 149_000
+export const PREMIUM_ORIGINAL_PRICE_LABEL = 'Rp 149rb'
 export const PAYMENT_CURRENCY = 'IDR'
 
 export function getPremiumPaymentAmount() {
@@ -20,7 +23,7 @@ export function buildPremiumSuccessUrl(appUrl: string, orderId?: string) {
 }
 
 export function formatPaymentAmount(amount: number) {
-  if (amount === PREMIUM_PRICE) return 'Rp 149rb'
+  if (amount === PREMIUM_PRICE) return 'Rp 49rb'
 
   return new Intl.NumberFormat('id-ID', {
     style: 'currency',

@@ -37,7 +37,10 @@ export function PricingSection() {
             <div>
               <p className="text-[10px] font-extrabold uppercase tracking-widest text-nikah-mauve mb-3">Akses Sampai Hari H</p>
               <div className="text-nikah-deep mb-1" style={{ fontFamily: 'var(--font-playfair), "Cormorant Garamond", Georgia, serif', fontStyle: 'italic', fontSize: 46, fontWeight: 500, letterSpacing: '-0.02em', lineHeight: 1 }}>
-                Rp 149rb
+                <s className="text-nikah-muted" style={{ fontSize: 24, fontStyle: 'normal', marginRight: 8, textDecorationThickness: 1.5 }}>
+                  Rp 149rb
+                </s>
+                Rp 49rb
               </div>
               <p className="text-nikah-muted text-sm font-light">Bayar sekali · dipakai sampai hari H · bukan langganan</p>
             </div>
@@ -51,7 +54,7 @@ export function PricingSection() {
                 className="inline-flex w-full md:w-auto items-center justify-center bg-nikah-deep text-white font-extrabold rounded-full text-sm text-center transition-colors active:scale-95 hover:opacity-90"
                 style={{ padding: '16px 28px' }}
               >
-                Beli akses premium — Rp 149rb →
+                Beli akses premium — Rp 49rb →
               </TrackedLink>
               <TrackedLink
                 href="/onboarding"

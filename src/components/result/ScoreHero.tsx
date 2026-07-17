@@ -324,7 +324,7 @@ export function ScoreHero({
                 boxShadow: '0 14px 30px rgba(90,30,42,0.12), inset 0 1px 0 rgba(255,255,255,0.34)',
               }}
             >
-              Buka rencana — Rp 149rb
+              Buka rencana — Rp 49rb
             </Link>
             <a
               href="#premium-details"
@@ -531,7 +531,7 @@ export function ScoreHero({
           }}
         >
           <Lock size={14} strokeWidth={2} aria-hidden="true" />
-          Buka rencana — Rp 149rb
+          Buka rencana — Rp 49rb
         </TrackedLink>
       </div>
 

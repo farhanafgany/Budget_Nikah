@@ -61,7 +61,7 @@ function ResultNavbar({ isSignedIn }: { isSignedIn: boolean }) {
             className="md:hidden inline-flex items-center rounded-full font-bold transition-colors hover:bg-nikah-bg"
             style={{ gap: 6, padding: '10px 16px', fontSize: 12, background: 'var(--nikah-bg)', color: 'var(--nikah-deep)', border: '1px solid var(--nikah-border)' }}
           >
-            Buka rencana — Rp 149rb →
+            Buka rencana — Rp 49rb →
           </TrackedLink>
         ) : (
           <TrackedLink
